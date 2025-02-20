@@ -325,9 +325,5 @@ const Flow = () => {
 };
 
 export default function Home() {
-  return (
-    <>
-      <Flow />
-    </>
-  );
+  return <Flow />;
 }
