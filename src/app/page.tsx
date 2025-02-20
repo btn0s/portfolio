@@ -21,6 +21,7 @@ import {
   applyNodeChanges,
   useReactFlow,
 } from "@xyflow/react";
+import { CheckCircleIcon } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +45,7 @@ const BaseCustomNode = ({
     <div
       className={cn(
         "flex flex-col gap-4 border border-border bg-background/90 backdrop-blur-xl rounded shadow p-6 duration-100 group",
-        className,
+        className
       )}
     >
       {title || buttonLabel ? (
@@ -188,6 +189,8 @@ const ToolBar = ({
 }) => {
   const flow = useReactFlow();
 
+  if (process.env.NODE_ENV !== "development") return null;
+
   const resetNodes = () => {
     flow.setNodes(INITIAL_NODES);
   };
@@ -202,8 +205,7 @@ const ToolBar = ({
     }));
     const nodesJSON = JSON.stringify(nodes);
     navigator.clipboard.writeText(nodesJSON).then(() => {
-      console.log("Nodes copied to clipboard");
-      toast("Nodes copied to clipboard", { type: "success" });
+      toast("Nodes copied to clipboard");
     });
   };
 
@@ -215,7 +217,10 @@ const ToolBar = ({
   };
 
   return (
-    <div className="absolute top-0 right-0 flex gap-2 z-50 p-6">
+    <div className="absolute top-6 right-6 flex gap-2 z-50 p-2 border border-border rounded-lg bg-background/90 backdrop-blur-sm">
+      <span className="bg-black px-1 font-mono font-medium absolute -top-3 text-xs right-3 text-background">
+        DEV TOOLS
+      </span>
       <Button onClick={resetNodes} variant="outline" size="sm">
         Reset Nodes
       </Button>
@@ -293,12 +298,12 @@ const Flow = () => {
   const onNodesChange = useCallback(
     (changes: NodeChange[]) =>
       setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
+    []
   );
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) =>
       setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
+    []
   );
 
   return (
@@ -312,7 +317,7 @@ const Flow = () => {
         {...config}
       >
         <ToolBar config={config} setConfig={setConfig} />
-        <Controls />
+        <Controls position="bottom-right" />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
     </div>
