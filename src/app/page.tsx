@@ -289,10 +289,8 @@ const Flow = () => {
 
   // config
   const [config, setConfig] = useState<Partial<ReactFlowProps>>({
-    snapToGrid: true,
+    snapToGrid: process.env.NODE_ENV === "development",
     snapGrid: [16, 16],
-    minZoom: 0.5,
-    maxZoom: 2,
   });
 
   const onNodesChange = useCallback(
