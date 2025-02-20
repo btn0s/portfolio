@@ -1,0 +1,150 @@
+---
+description: Framer Motion
+globs: src/**/*.tsx
+---
+# Motion Best Practices Guide
+
+## Core Rules
+
+1. ALWAYS use `motion/react` over `framer-motion`
+   - Smaller bundle size through better tree-shaking
+   - More consistent API surface
+   - Better TypeScript support out of the box
+   - Future-proof for upcoming React features
+
+2. Component Structure
+   ```tsx
+   // ✅ DO: Use motion components directly
+   <motion.div animate={{ scale: 1.1 }} />
+
+   // ❌ DON'T: Wrap regular components
+   <motion.div><div>content</div></motion.div>
+   ```
+
+3. Animation Properties
+   ```tsx
+   // ✅ DO: Use transform properties
+   animate={{ scale: 1.1, x: 100 }}
+
+   // ❌ DON'T: Animate layout properties
+   animate={{ width: 200, marginLeft: 100 }}
+   ```
+
+## Performance Rules
+
+1. Layout Animations
+   ```tsx
+   // ✅ DO: Use layout prop for automatic animations
+   <motion.div layout />
+
+   // ✅ DO: Use layoutId for shared elements
+   <motion.div layoutId="modal" />
+
+   // ❌ DON'T: Manually animate layout
+   <motion.div animate={{ width: isOpen ? 300 : 0 }} />
+   ```
+
+2. State Management
+   ```tsx
+   // ✅ DO: Use motion values for continuous updates
+   const x = useMotionValue(0)
+   const scale = useTransform(x, [0, 100], [1, 2])
+
+   // ❌ DON'T: Use React state for animations
+   const [scale, setScale] = useState(1)
+   ```
+
+## Animation Rules
+
+1. Spring Physics
+   ```tsx
+   // ✅ DO: Use spring transitions by default
+   transition: {
+     type: "spring",
+     stiffness: 400,
+     damping: 25
+   }
+
+   // ❌ DON'T: Use duration-based unless necessary
+   transition: { duration: 0.3 }
+   ```
+
+2. Gesture Handling
+   ```tsx
+   // ✅ DO: Use gesture props
+   <motion.button
+     whileHover={{ scale: 1.05 }}
+     whileTap={{ scale: 0.95 }}
+   />
+
+   // ❌ DON'T: Use event handlers
+   onMouseEnter={() => setScale(1.05)}
+   ```
+
+## Accessibility Rules
+
+1. Respect User Preferences
+   ```tsx
+   // ✅ DO: Check reduced motion
+   const shouldReduceMotion = useReducedMotion()
+   const animate = shouldReduceMotion ? { opacity: 1 } : { scale: 1 }
+   ```
+
+2. Animation Purpose
+   ```tsx
+   // ✅ DO: Use animation to enhance UX
+   <motion.div
+     initial={{ opacity: 0 }}
+     animate={{ opacity: 1 }}
+     exit={{ opacity: 0 }}
+   />
+
+   // ❌ DON'T: Add unnecessary motion
+   <motion.div animate={{ rotate: 360 }} />
+   ```
+
+## Code Organization
+
+1. Variants
+   ```tsx
+   // ✅ DO: Use variants for complex animations
+   const variants = {
+     open: { scale: 1, opacity: 1 },
+     closed: { scale: 0, opacity: 0 }
+   }
+
+   // ❌ DON'T: Inline complex animations
+   animate={{ scale: 1, opacity: 1, x: 100 }}
+   ```
+
+2. Reusable Transitions
+   ```tsx
+   // ✅ DO: Create shared transitions
+   const springTransition = {
+     type: "spring",
+     stiffness: 400,
+     damping: 25
+   }
+
+   // ❌ DON'T: Repeat transition configs
+   ```
+
+## Exit Animations
+
+1. Proper Cleanup
+   ```tsx
+   // ✅ DO: Use AnimatePresence
+   <AnimatePresence>
+     {isVisible && (
+       <motion.div exit={{ opacity: 0 }} />
+     )}
+   </AnimatePresence>
+
+   // ❌ DON'T: Remove elements without exit
+   {isVisible && <motion.div />}
+   ```
+
+Remember:
+- Performance > Polish
+- Accessibility > Animation
+- Purpose > Decoration

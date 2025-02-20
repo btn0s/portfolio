@@ -1,5 +1,8 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,9 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-[100svw] min-h-[100svh] font-[family-name:var(--font-geist-sans)]`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
