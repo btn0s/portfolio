@@ -1,4 +1,6 @@
 import playBackboneHome from "@/assets/images/playbackbone-home.jpg";
+import figmaPluginCover from "@/assets/images/work/games-db-figma-plugin/cover.png";
+import timeMachineCover from "@/assets/images/work/time-machine/cover.png";
 import type { StaticImageData } from "next/image";
 
 export interface FeaturedWorkItem {
@@ -24,7 +26,7 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
       "A Figma plugin developed for Backbone that allows designers to access and integrate game data directly into their designs.",
       "The plugin streamlines the design workflow by providing easy access to game assets, metadata, and information from the GamesDB database.",
     ],
-    imageSrc: playBackboneHome,
+    imageSrc: figmaPluginCover,
     imageAlt:
       "Screenshot of the GamesDB Figma Plugin interface showing game data integration",
     link: {
@@ -37,12 +39,16 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
     title: "TimeMachine",
     subtitle: "for American Express",
     description: [
-      "A specialized tool developed for American Express that enables tracking and visualization of changes over time.",
-      "TimeMachine helps teams analyze historical data, identify trends, and make data-driven decisions with an intuitive interface.",
+      "A bridge system that enabled seamless modernization at scale—delivering new features without breaking legacy infrastructure.",
+      "TimeMachine allowed React and Angular to coexist, creating a path for incremental adoption without disrupting business operations.",
     ],
-    imageSrc: playBackboneHome,
+    imageSrc: timeMachineCover,
     imageAlt:
-      "Screenshot of the TimeMachine interface showing timeline visualization for American Express",
+      "Screenshot of the TimeMachine bridge system architecture showing React and Angular integration",
+    link: {
+      url: "/work/time-machine",
+      text: "View Project",
+    },
   },
   {
     id: "backbone-homepage",

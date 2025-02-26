@@ -104,7 +104,7 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
               variant="outline"
               className="group"
               asChild
-              size="sm"
+              size="lg"
               onClick={() => setOpen(false)}
             >
               <span>Close</span>
@@ -113,7 +113,7 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
             <Button
               variant="outline"
               className="group"
-              size="sm"
+              size="lg"
               onClick={() => setOpen(false)}
             >
               <span>Close</span>
