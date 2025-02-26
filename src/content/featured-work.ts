@@ -27,6 +27,10 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
     imageSrc: playBackboneHome,
     imageAlt:
       "Screenshot of the GamesDB Figma Plugin interface showing game data integration",
+    link: {
+      url: "/work/games-db-figma-plugin",
+      text: "View Project",
+    },
   },
   {
     id: "timemachine",
