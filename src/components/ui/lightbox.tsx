@@ -35,20 +35,18 @@ export function Lightbox({ src, alt, className }: LightboxProps) {
     <>
       <motion.div
         layoutId={!animatingClosed && open ? id : undefined}
-        className={`cursor-pointer transition-all hover:opacity-90 ${className} overflow-hidden rounded-lg`}
+        className={`cursor-pointer transition-all hover:opacity-90 ${className} overflow-hidden rounded-lg border aspect-[4/3]`}
         onClick={() => {
           setAnimatingClosed(false);
           setOpen(true);
         }}
       >
-        <div className="">
-          <Image
-            src={src}
-            alt={alt}
-            className="w-full h-full object-cover"
-            priority
-          />
-        </div>
+        <Image
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover m-0"
+          priority
+        />
       </motion.div>
 
       <AnimatePresence onExitComplete={() => setAnimatingClosed(false)}>

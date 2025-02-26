@@ -21,7 +21,7 @@ const ResumePage = () => {
 
   return (
     <>
-      <header className="flex justify-between max-w-4xl mx-auto fixed p-6 inset-x-0 top-0 z-10 items-center pointer-events-none">
+      <header className="flex justify-between max-w-3xl mx-auto fixed p-6 inset-x-0 top-0 z-10 items-center pointer-events-none">
         <div />
         <Button
           onClick={handleDownload}

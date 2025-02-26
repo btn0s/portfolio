@@ -9,7 +9,7 @@ const Main = ({ children }: { children: React.ReactNode }) => {
       variants={VARIANTS_CONTAINER}
       initial="hidden"
       animate="visible"
-      className="px-4 sm:px-6 max-w-4xl mx-auto"
+      className="px-4 sm:px-6 max-w-3xl mx-auto"
     >
       {children}
     </motion.main>

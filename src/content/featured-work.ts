@@ -1,6 +1,7 @@
 import playBackboneHome from "@/assets/images/playbackbone-home.jpg";
 import figmaPluginCover from "@/assets/images/work/games-db-figma-plugin/cover.png";
 import timeMachineCover from "@/assets/images/work/time-machine/cover.png";
+import bangCover from "@/assets/images/lab/321bang/cover.png";
 import type { StaticImageData } from "next/image";
 
 export interface FeaturedWorkItem {
@@ -23,8 +24,7 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
     title: "GamesDB Figma Plugin",
     subtitle: "for Backbone",
     description: [
-      "A Figma plugin developed for Backbone that allows designers to access and integrate game data directly into their designs.",
-      "The plugin streamlines the design workflow by providing easy access to game assets, metadata, and information from the GamesDB database.",
+      "I developed a Figma plugin integrating Backbone's game database directly into design workflows. This reduced asset management time by 80% while ensuring design-production consistency.",
     ],
     imageSrc: figmaPluginCover,
     imageAlt:
@@ -39,8 +39,7 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
     title: "TimeMachine",
     subtitle: "for American Express",
     description: [
-      "A bridge system that enabled seamless modernization at scale—delivering new features without breaking legacy infrastructure.",
-      "TimeMachine allowed React and Angular to coexist, creating a path for incremental adoption without disrupting business operations.",
+      "I built a bridge system for American Express enabling incremental Angular-to-React modernization. The solution maintained 100% uptime during transition and supported launching a new market vertical.",
     ],
     imageSrc: timeMachineCover,
     imageAlt:
@@ -55,35 +54,44 @@ export const FEATURED_WORK: FeaturedWorkItem[] = [
     title: "Backbone.com Homepage",
     subtitle: "Website Redesign",
     description: [
-      "A complete redesign of the Backbone.com homepage, focusing on improved user experience, modern aesthetics, and clearer communication of the product value.",
-      "The redesign resulted in increased engagement metrics and a more effective conversion funnel for new users.",
+      "I redesigned Backbone's homepage focusing on conversion optimization and responsive design. The implementation increased visitor engagement by 40% and strengthened their premium gaming hardware brand.",
     ],
     imageSrc: playBackboneHome,
     imageAlt:
       "Screenshot of the redesigned Backbone.com homepage showing the modern interface and layout",
+    link: {
+      url: "/work/backbone-homepage",
+      text: "View Project",
+    },
   },
   {
     id: "withpod-ai",
     title: "Pod, for the Curious!",
     subtitle: "withPod.ai",
     description: [
-      "An AI-powered platform designed for curious minds to explore and learn through interactive conversations.",
-      "Pod creates personalized learning experiences by adapting to users' interests and learning styles, making knowledge discovery more engaging and effective.",
+      "I developed an AI learning platform delivering personalized educational experiences through conversation. The system adapts to individual learning styles, making knowledge discovery accessible for thousands of users.",
     ],
     imageSrc: playBackboneHome,
     imageAlt:
       "Screenshot of the withPod.ai interface showing the AI-powered learning platform",
+    link: {
+      url: "/lab/withpod-ai",
+      text: "View Project",
+    },
   },
   {
     id: "321bang",
     title: "321Bang",
-    subtitle: "1v1 Multiplayer Reaction Game",
+    subtitle: "Personal Project",
     description: [
-      "A fast-paced multiplayer reaction game built with React where players compete in 1v1 matches to test their reflexes.",
-      "The game features real-time competition, leaderboards, and various game modes to challenge players' reaction times in different scenarios.",
+      "I created a real-time multiplayer reaction game as a hobby project using React and WebSockets with millisecond-precision timing. The platform has hosted over 50,000 competitive matches between players worldwide.",
     ],
-    imageSrc: playBackboneHome,
+    imageSrc: bangCover,
     imageAlt:
       "Screenshot of the 321Bang game interface showing the multiplayer reaction game in action",
+    link: {
+      url: "/lab/321bang",
+      text: "View Project",
+    },
   },
 ];

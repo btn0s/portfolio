@@ -1,0 +1,112 @@
+---
+description: Writing Tone Guide for Portfolio
+globs: *.tsx
+alwaysApply: false
+---
+# Writing Tone Guide for Portfolio
+
+This document captures the distinctive writing style and tone used across the portfolio site, providing guidelines to maintain consistency in future content.
+
+## Voice & Tone
+
+### Overall Voice
+- **Confident but humble**: Statements are direct and authoritative without being boastful
+- **Personal and authentic**: First-person perspective with genuine enthusiasm
+- **Technical yet accessible**: Complex concepts explained clearly without oversimplification
+- **Concise and impactful**: Every sentence serves a purpose with minimal fluff
+
+### Emotional Tone
+- **Passionate**: Conveys genuine excitement about the work
+- **Thoughtful**: Demonstrates careful consideration of problems and solutions
+- **Curious**: Shows an inquisitive mindset and desire to explore
+- **Playful**: Occasional moments of levity while maintaining professionalism
+
+## Section-Specific Tone
+
+### Page Titles
+- **MUST start with "I built/led/designed/created..."**: All page titles in `/work/<project>` and `/lab/<project>` directories should begin with a first-person action verb
+- **Bold and declarative**: Make clear statements about achievements
+- **Action-oriented**: Emphasize your agency and ownership of the work
+- **Highlight impact**: Focus on outcomes rather than just activities
+- **Example**: "I built a design system tool that reduced asset management time by 80%."
+- **Example**: "I led front-end development of a global-scale ecommerce store."
+
+### Section Headers
+- **Clear and descriptive**: Communicate the purpose of each section
+- **Consistent structure**: Use similar patterns across different projects
+- **Concise**: Keep headers brief but informative
+- **Examples**: "The Challenge", "Process", "Technical Implementation", "Results"
+
+### Project Overviews
+- **Problem-first approach**: Begin by establishing context and challenges
+- **Personal connection**: Explain your relationship to the project/company
+- **Concise scene-setting**: Brief but vivid descriptions of the environment
+- **Example**: "Backbone is all about creating mind-blowing gaming experiences. The gaming industry is a content-first industry, and the design team at Backbone has to work with a lot of game assets and metadata to bring these experiences to life."
+
+### Process Descriptions
+- **Narrative flow**: Present work as a journey with clear progression
+- **Decision-focused**: Emphasize reasoning behind choices
+- **Technical precision**: Use accurate terminology without jargon overload
+- **Example**: "With the goals established it was fairly obvious that the best solution was to build a custom Figma plugin that would connect the design team directly to the game assets they needed."
+
+### Technical Explanations
+- **Clear cause-effect relationships**: Connect technical decisions to outcomes
+- **Visual metaphors**: Use diagrams and comparisons to illustrate complex concepts
+- **Balanced detail**: Enough specificity to be credible without overwhelming
+- **Example**: "To ensure designers are always working with the most up-to-date data, I connected the plugin to the same data source used by the app: the Backbone Games DB."
+
+### Impact Statements
+- **Quantified results**: Use specific metrics where possible
+- **Human impact**: Balance numbers with qualitative improvements
+- **Forward-looking**: Connect past work to future possibilities
+- **Example**: "Reduced time spent searching for assets by 80% since designers no longer have to search for assets online or import them manually."
+
+## Writing Style Elements
+
+### Sentence Structure
+- **Varied length**: Mix of concise statements and more detailed explanations
+- **Active voice**: "I built" rather than "It was built"
+- **Strong verbs**: "revolutionizing," "architected," "streamlining" instead of weaker alternatives
+
+### Word Choice
+- **Precise technical terms**: Specific technologies and methodologies named directly
+- **Evocative adjectives**: "mind-blowing," "seamless," "premium" to create vivid impressions
+- **Human-centered language**: Focus on people and experiences, not just systems
+
+### Formatting Techniques
+- **Strategic highlighting**: Key phrases in white text for emphasis
+- **Bulleted lists**: For achievements, features, and key points
+- **Visual breaks**: Section headers and separators to create rhythm
+
+## Examples from Existing Pages
+
+### From TimeMachine Project
+"Anyone who's been a software engineer has experienced the pain of modernizing a legacy system. Engineers asking for rewrites are often met with resistance."
+
+*Analysis: Establishes shared experience, conversational tone, sets up the problem in relatable terms*
+
+### From GamesDB Figma Plugin
+"It was important to me that the plugin be delightful to use, but also feel like a natural extension of the existing design language used in the Backbone app."
+
+*Analysis: Shows personal investment, balances aesthetic and functional considerations*
+
+### From About Page
+"I've always been a builder. As a kid, it was buckets of Legos in the basement—stacking, breaking, reshaping until something clicked."
+
+*Analysis: Uses personal anecdote to establish authentic voice, creates visual imagery*
+
+## Tone Checklist
+
+When writing new content, ensure it:
+
+- [ ] Uses first-person perspective consistently
+- [ ] Starts page titles with "I built/led/designed/created..."
+- [ ] Balances technical detail with accessibility
+- [ ] Quantifies impact where possible
+- [ ] Explains the "why" behind decisions
+- [ ] Maintains a confident but humble tone
+- [ ] Connects work to human experiences
+- [ ] Varies sentence structure for rhythm
+- [ ] Uses strong, specific verbs
+- [ ] Incorporates strategic highlighting for emphasis
+- [ ] Tells a coherent story from problem to solution to impact 

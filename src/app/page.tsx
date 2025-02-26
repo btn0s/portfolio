@@ -56,7 +56,7 @@ export default function Home() {
           <Button variant="secondary" asChild>
             <a href="https://cal.com/btnorris/30-min">Let's chat</a>
           </Button>
-          <Button variant="ghost" asChild>
+          <Button variant="link" asChild>
             <Link href="/resume" prefetch>
               /resume
             </Link>
@@ -66,7 +66,7 @@ export default function Home() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 group"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 grou pb-24"
       >
         {FEATURED_WORK.map((work) => (
           <FeaturedWorkCard key={work.id} {...work} imageSrc={work.imageSrc} />

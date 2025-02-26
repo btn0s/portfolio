@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="px-6 pt-6 flex justify-between items-center max-w-4xl mx-auto">
+    <header className="px-6 pt-6 flex justify-between items-center max-w-3xl mx-auto">
       <Link href="/" className="font-medium leading-none">
         <div className="flex items-center gap-2">
           <TextEffect as="span" preset="blur" per="char">

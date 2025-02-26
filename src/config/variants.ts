@@ -3,7 +3,7 @@ const TRANSITION_DEFAULT = {
 };
 
 const TRANSITION_STAGGER = {
-  staggerChildren: 0,
+  staggerChildren: 0.1,
 };
 
 export const VARIANTS_HEADER = {
@@ -13,7 +13,7 @@ export const VARIANTS_HEADER = {
 
 export const TRANSITION_HEADER = {
   ...TRANSITION_DEFAULT,
-  delay: 1,
+  delay: 0.2,
 };
 
 export const VARIANTS_SECTION = {
@@ -31,6 +31,14 @@ export const VARIANTS_CONTAINER = {
     opacity: 1,
     transition: {
       ...TRANSITION_STAGGER,
+      when: "beforeChildren",
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      ...TRANSITION_DEFAULT,
+      duration: 0.2,
     },
   },
 };

@@ -1,0 +1,69 @@
+---
+description: Knowledgebase, General Guidelines
+globs: *.tsx
+alwaysApply: false
+---
+# Portfolio Project Guidelines
+
+## Project Structure
+
+### URL Paths
+- Professional projects: `/work/<project-id>`
+- Personal/hobby projects: `/lab/<project-id>`
+
+## Content Guidelines
+
+### Project Descriptions
+- Keep descriptions professional but concise (2-3 sentences)
+- Always start with "I built/developed/created/designed" to clearly establish ownership
+- Include who the project was for (client or target audience)
+- Highlight key metrics and impact where applicable
+- Mention key technologies only when relevant
+- Avoid unnecessary adjectives and wordiness
+
+### Project Subtitles
+- Professional projects: "for [Company Name]"
+- Personal projects: "Personal Project" or specific category
+
+## Featured Work Format
+
+```typescript
+{
+  id: "project-id",
+  title: "Project Title",
+  subtitle: "for Company / Personal Project",
+  description: [
+    "I developed/built/created [what] for [whom]. This [solution/project] [key impact/metrics].",
+  ],
+  imageSrc: projectCoverImage,
+  imageAlt: "Descriptive alt text for the project image",
+  link: {
+    url: "/work/project-id" or "/lab/project-id",
+    text: "View Project",
+  },
+}
+```
+
+## UI Components
+
+### Text Highlighting
+- Use the `<TextHighlight>` component for emphasizing key phrases
+- Apply sparingly to maintain visual hierarchy
+- Focus on highlighting metrics, technical innovations, and key benefits
+
+### Code Components
+- `CodeBlock`: For multi-line code examples with syntax highlighting
+- `InlineCode`: For short code snippets within text
+
+## Case Study Structure
+1. Overview/Introduction
+2. Challenge/Problem
+3. Solution
+4. Technical Implementation
+5. Results/Impact
+6. Key Takeaways
+
+## Image Guidelines
+- Use high-quality screenshots
+- Include descriptive alt text
+- Maintain consistent aspect ratios when possible 

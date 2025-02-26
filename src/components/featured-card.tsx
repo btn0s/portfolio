@@ -60,14 +60,14 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const CardContent = () => (
     <>
-      <div className="relative w-full px-4 pt-4">
+      <div className="relative w-full aspect-[4/3] border rounded-lg overflow-hidden">
         <Image
           src={imageSrc}
           alt={imageAlt}
-          className="border aspect-[4/3] rounded-lg"
+          className="size-full object-cover"
         />
       </div>
-      <div className="px-4 pt-4 pb-6">
+      <div className="pt-4 pb-6">
         <div className="flex flex-col mb-2">
           {isDesktop ? (
             <DialogTitle className="text-foreground text-sm">
@@ -94,8 +94,8 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
         <div className="flex flex-col gap-2">
           <Button variant="secondary" size="lg" asChild>
             <Link href={link?.url ?? ""}>
-              <span>See more</span>
-              {/* <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform duration-300" /> */}
+              <span>See the project</span>
+              <ArrowRight className="size-4" />
             </Link>
           </Button>
 
@@ -136,8 +136,6 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
         <Image
           src={imageSrc}
           alt={imageAlt}
-          width={500}
-          height={375}
           className="h-full w-full object-cover"
         />
       </div>
@@ -154,7 +152,7 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{CardTrigger}</DialogTrigger>
-        <DialogContent className="p-0 overflow-hidden border bg-background sm:rounded-2xl sm:max-w-[600px]">
+        <DialogContent className="p-4 overflow-hidden border bg-background sm:rounded-2xl sm:max-w-[600px]">
           <CardContent />
         </DialogContent>
       </Dialog>

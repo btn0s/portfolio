@@ -15,31 +15,33 @@ const PageContent = () => {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="flex flex-col gap-4 max-w-4xl py-10"
+        className="flex flex-col gap-4 max-w-xl py-10"
       >
         <h1 className="text-xl font-medium mb-4">
           A bridge system that enabled seamless modernization—delivering new
           features in a legacy system without a rewrite
         </h1>
 
-        <div className="aspect-video w-full rounded-lg mb-6 overflow-hidden">
+        <div className="w-full rounded-lg mb-6 overflow-hidden">
           <Lightbox src={coverImage} alt="TimeMachine Bridge System" />
         </div>
 
         <div className="prose prose-sm prose-invert max-w-none">
           <h2>Overview</h2>
 
+          <p>
+            American Express needed to modernize a critical Angular 1.x system
+            that processed millions of daily interactions without disruption.
+          </p>
+          <p>
+            I designed TimeMachine, a bridge system enabling incremental React
+            adoption while maintaining business continuity.
+          </p>
+
           <div className="mb-3 flex items-center gap-2 text-xs">
             <strong>My Role:</strong>
             <span>Project Lead, Software Engineer II</span>
           </div>
-
-          <p>
-            American Express needed to modernize a legacy system without
-            disrupting the business. I designed a bridge system that enabled
-            incremental modernization and delivered new features that were used
-            to bring on a new vertical market.
-          </p>
 
           <div className="mb-3 flex items-center gap-2 text-xs">
             <strong>Team:</strong>
@@ -55,68 +57,47 @@ const PageContent = () => {
 
           <h2>The Challenge</h2>
           <p>
-            Anyone who's been a software engineer has experienced the pain of
-            modernizing a legacy system. Engineers asking for rewrites are often
-            met with resistance.
-          </p>
-          <p>
-            This was the reality for the engineering team at American Express.
-            The existing system, built in Angular 1.x, processed millions of
-            interactions per day—any downtime would have massive business and
-            customer experience implications.
+            The existing Angular 1.x system at American Express was critical but
+            aging. Any downtime would impact millions of customer interactions
+            and business operations. A complete rewrite was too risky, but
+            modernization was essential.
           </p>
 
           <p>
-            A complete rewrite wasn't an option. But modernization was critical.
-            The engineering team needed a way to incrementally adopt React while
-            keeping the Angular app running smoothly—without slowing product
-            velocity.
+            We needed to adopt React incrementally while keeping the Angular app
+            fully operational and maintaining product velocity.
           </p>
 
           <h2>The Hypothesis</h2>
           <p>
-            Knowing that a rewrite would be a massive undertaking, I started
-            exploring ways to incrementally modernize the system. Fairly quickly
-            I began to wonder if it would be possible to run React alongside
-            Angular in the same browser.
+            I theorized we could run React alongside Angular in the same browser
+            by leveraging two key capabilities:
           </p>
-          <p>
-            A few things about React and the DOM made me think it might be
-            possible.
-          </p>
+
           <ul>
             <li>
-              React apps run in the shadow DOM and are then given a root div to
-              mount into.
+              React's ability to run in a shadow DOM with an isolated root
             </li>
             <li>
-              React also provides a native way to mount components outside of
-              the React hierarchy.
+              React Portals for mounting components outside the React hierarchy
             </li>
           </ul>
 
           <p>
-            So in theory it seemed possible to run React invisibly (in the
-            shadow DOM) and then mount the components we wanted into the Angular
-            app where they should live. The Angular app could feed data to the
-            React app and as long as we used a Flux-like architecture all the
-            React components would be in sync.
+            This approach would allow React to run invisibly in the shadow DOM
+            while mounting components directly into the Angular app. With a
+            shared event system, both frameworks could maintain synchronized
+            state.
           </p>
 
-          <p>This was the hypothesis. What were the risks?</p>
+          <h2>Technical Solutions</h2>
 
-          <h2>Challenges & Solutions</h2>
-
-          <h3>Embedding React Inside Angular Without Conflicts</h3>
+          <h3>Shadow DOM Isolation</h3>
           <p>
-            The first issue was how to embed a React app into an existing
-            Angular system without breaking styles, scripts, or execution flow.
-          </p>
-
-          <p>
-            The solution: run React inside the Shadow DOM. This created a
-            self-contained environment where React could operate without
-            interfering with Angular's global styles or scripts.
+            I ran React inside the Shadow DOM to create an invisible parallel
+            environment that could exist alongside the legacy Angular app
+            without interfering with it. This approach let React operate behind
+            the scenes while only exposing components where needed.
           </p>
 
           <CodeBlock
@@ -145,23 +126,16 @@ ReactDOM.render(<App />, shadow);`}
         `}
           />
 
-          <h3>Making Angular and React Communicate</h3>
+          <h3>Cross-Framework Communication</h3>
           <p>
-            The second major challenge: how do Angular and React talk to each
-            other? They had separate component trees, separate event systems,
-            and no shared state.
-          </p>
-
-          <p>
-            We needed a universal messaging system. Instead of tightly coupling
-            them, we built a global event bus on
-            <InlineCode>window</InlineCode>—acting as a shared communication
-            layer between both frameworks.
+            I built a global event bus on <InlineCode>window</InlineCode> that
+            served as a universal messaging system between Angular and React,
+            allowing them to share data without direct dependencies.
           </p>
 
           <CodeBlock
             language="typescript"
-            value={`// Simple event bus implementation
+            value={`// Event bus implementation
 const eventBus = {
   dispatch: (event, data) => window.dispatchEvent(
     new CustomEvent(event, { detail: data })
@@ -173,12 +147,6 @@ const eventBus = {
   }
 };`}
           />
-
-          <p>
-            This event bus worked similarly to the browser's native event
-            system, allowing Angular and React to dispatch and listen for events
-            without direct dependencies.
-          </p>
 
           <Mermaid
             id="event-bus-diagram"
@@ -201,18 +169,17 @@ const eventBus = {
         `}
           />
 
-          <h3>Preventing Stale State & Event Issues</h3>
+          <h3>Preventing Stale State</h3>
           <p>
-            React's functional components use closures, meaning event handlers
-            could reference outdated state if not managed correctly. This led to
-            stale event listeners and inconsistencies between Angular and React
-            updates.
+            React's functional components created a risk of stale closures. I
+            implemented a pattern using <InlineCode>useCallback</InlineCode> to
+            ensure event handlers always referenced the latest state, preventing
+            race conditions.
           </p>
 
           <CodeBlock
             language="typescript"
             value={`function Component() {
-  // Prevent stale closures with useCallback
   const handleEvent = useCallback((data) => {
     setState(prevState => ({ ...prevState, ...data }));
   }, []);
@@ -222,13 +189,6 @@ const eventBus = {
   }, [handleEvent]);
 }`}
           />
-
-          <p>
-            We solved this by using <InlineCode>useMemo</InlineCode> and
-            <InlineCode>useCallback</InlineCode> to ensure event handlers always
-            referenced the latest state. This prevented race conditions and
-            guaranteed reliable data flow.
-          </p>
 
           <Mermaid
             id="react-memoization-diagram"
@@ -246,134 +206,78 @@ const eventBus = {
         `}
           />
 
-          <h2>The Solution: TimeMachine</h2>
+          <h2>TimeMachine: The Bridge System</h2>
           <p>
-            At its core, TimeMachine wasn't just a technical fix—it was a
-            mindset shift. It proved that modernization didn't have to mean
-            stopping everything and starting over. Instead, we could layer the
-            new on top of the old, using existing infrastructure as a foundation
-            for the future rather than something to be discarded.
-          </p>
-
-          <p>
-            TimeMachine worked because it was designed for gradual evolution.
-          </p>
-
-          <p>
-            It let teams ship React-powered features immediately—without waiting
-            for a full migration. Angular components could still function as
-            they always had, but over time, new development naturally shifted
-            toward React. This meant:
+            TimeMachine enabled gradual modernization without disruption. Teams
+            could ship React features immediately while maintaining existing
+            Angular functionality. This approach delivered:
           </p>
 
           <ul>
-            <li>Zero downtime. Existing functionality was untouched.</li>
-            <li>
-              No immediate rewrites. Engineers didn't have to halt progress
-              while reworking foundational systems.
-            </li>
-            <li>
-              A migration path that fit within product velocity. React adoption
-              wasn't disruptive—it happened organically.
-            </li>
+            <li>Zero downtime during modernization</li>
+            <li>Continuous feature development without pausing for rewrites</li>
+            <li>Organic React adoption that aligned with product velocity</li>
           </ul>
 
-          <p>Under the hood, TimeMachine consisted of three key innovations:</p>
+          <h3>Key Components</h3>
 
-          <h3>A Shadow DOM container for React</h3>
-          <ul>
-            <li>
-              Ensured isolation, preventing conflicts with Angular's global
-              styles or execution flow.
-            </li>
-            <li>
-              Allowed React to function as a self-contained environment,
-              rendering independently while still being present in the same DOM.
-            </li>
-          </ul>
+          <h4>1. Shadow DOM Container</h4>
+          <p>
+            Created an invisible runtime for React that coexisted with Angular
+            without disrupting the existing application. This allowed React to
+            operate in the background while selectively exposing UI only where
+            needed.
+          </p>
 
-          <h3>React Portals to bridge the two worlds</h3>
-          <ul>
-            <li>
-              Enabled React to mount components inside Angular templates, giving
-              us the ability to place new UI elements anywhere in the existing
-              app without hacking around Angular's structure.
-            </li>
-            <li>
-              Allowed for progressive replacement—React components could
-              gradually replace Angular ones without breaking anything.
-            </li>
-          </ul>
+          <h4>2. React Portals</h4>
+          <p>
+            Enabled React components to render directly within Angular
+            templates, allowing precise placement and gradual replacement of UI
+            elements.
+          </p>
 
           <CodeBlock
             language="tsx"
-            value={`// Portal component to inject React into Angular DOM
+            value={`// Portal component for Angular integration
 function AngularPortal({ selector, children }) {
   const targetRef = useRef(document.querySelector(selector));
   return targetRef.current ? createPortal(children, targetRef.current) : null;
 }`}
           />
 
-          <h3>A global event system for seamless communication</h3>
-          <ul>
-            <li>
-              Allowed Angular and React to share data, actions, and events via
-              the browser's window object.
-            </li>
-            <li>
-              Created a decoupled architecture, ensuring neither framework had
-              to know about the internals of the other.
-            </li>
-            <li>
-              Used <InlineCode>useMemo</InlineCode> and{" "}
-              <InlineCode>useCallback</InlineCode> in React to prevent stale
-              event listeners and race conditions.
-            </li>
-          </ul>
+          <h4>3. Global Event System</h4>
+          <p>
+            Created a decoupled communication layer that allowed both frameworks
+            to share data and events without tight coupling.
+          </p>
 
           <p>
-            What made TimeMachine different from other modernization strategies
-            was that it required no buy-in beyond the engineers using it. There
-            was no need to ask leadership for a full rewrite, no need to
-            convince product teams to stop feature work. It just worked. Over
-            time, as React components naturally replaced Angular ones, the
-            migration happened almost invisibly.
+            What made TimeMachine powerful was its simplicity. It required no
+            management approval for a rewrite and no disruption to product
+            roadmaps. Engineers could adopt React incrementally, and the
+            migration happened organically as new features were built.
           </p>
 
           <Separator className="my-8" />
 
-          <h2>Conclusion: A Blueprint for the Future</h2>
-          <p>
-            TimeMachine proved that modernization doesn't have to be an
-            all-or-nothing effort. The industry often frames legacy systems as
-            something to escape from, but in reality, they are systems that
-            work—they just need a way forward.
-          </p>
-
-          <p>This approach became a repeatable pattern beyond our team:</p>
+          <h2>Results</h2>
+          <p>TimeMachine enabled American Express to:</p>
 
           <ul>
+            <li>Launch a new vertical market without modernization delays</li>
+            <li>Maintain 100% system uptime throughout the transition</li>
+            <li>Gradually shift to React without a disruptive rewrite</li>
             <li>
-              It showed that React and Angular could coexist indefinitely if
-              needed, meaning no hard deadlines or rewrites.
-            </li>
-            <li>
-              It provided a framework for adopting modern tools incrementally,
-              reducing risk while still making forward progress.
-            </li>
-            <li>
-              It laid the foundation for other teams at American Express to
-              follow a similar migration strategy, accelerating adoption without
-              disruption.
+              Create a reusable pattern for other teams facing similar
+              challenges
             </li>
           </ul>
 
           <p>
-            By the time I left, TimeMachine had enabled the successful launch of
-            a new vertical market—without any of the usual modernization pain.
-            It wasn't just about making React work in an Angular app. It was
-            about proving that with the right approach, you don't have to stop
-            building to evolve.
+            This approach proved that legacy modernization doesn't require
+            choosing between business continuity and technical evolution. With
+            the right architecture, you can build for the future while
+            preserving what works today.
           </p>
         </div>
       </motion.section>
