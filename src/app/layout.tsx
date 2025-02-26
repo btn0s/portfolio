@@ -1,18 +1,20 @@
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import Main from "@/components/main";
+import Header from "@/components/header";
 
-import "@xyflow/react/dist/style.css";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+export const interFont = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -28,9 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-[100svw] min-h-[100svh] font-[family-name:var(--font-geist-sans)]`}
+        className={`${geistMono.variable} ${interFont.variable} antialiased min-w-[100svw] dark min-h-[100svh] font-[family-name:var(--font-inter)]`}
       >
-        {children}
+        <Header />
+        <Main>{children}</Main>
         <Toaster />
       </body>
     </html>

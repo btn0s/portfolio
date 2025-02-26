@@ -1,0 +1,6 @@
+---
+description: Button
+globs: *.tsx
+alwaysApply: false
+---
+DO NOT ADD MARGINS (ml-x or mr-x, etc) TO ICONS INSIDE BUTTONS
