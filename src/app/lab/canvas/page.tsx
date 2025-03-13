@@ -3,7 +3,9 @@ import FlowCanvas from "@/components/flow-canvas";
 
 import "@xyflow/react/dist/style.css";
 
-export async function Page() {
+async function Page() {
   const savedPositions = await getSavedNodePositions();
   return <FlowCanvas savedPositions={savedPositions} />;
 }
+
+export default Page;
