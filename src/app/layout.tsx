@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-export const interFont = Inter({
+const interFont = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
