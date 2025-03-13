@@ -19,35 +19,29 @@ export default function Home() {
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="flex flex-col gap-4 max-w-lg py-20 text-muted-foreground text-sm md:text-base"
+        className="flex flex-col gap-4 max-w-2xl py-20 text-muted-foreground text-sm md:text-base"
       >
         <h3>
           I'm a self-taught{" "}
           <span className="font-medium text-foreground">designer</span> and{" "}
-          <span className="font-medium text-foreground">programmer</span> with a
-          passion for building products that are both useful and playful.
+          <span className="font-medium text-foreground">programmer</span>{" "}
+          crafting digital experiences at the intersection of utility and{" "}
+          playfulness—solving problems while preserving the{" "}
+          <span className="font-medium text-foreground">joy of discovery</span>.
         </h3>
-        <p className="text-balance">
-          I'm currently{" "}
-          <span className="font-medium text-foreground">
-            Senior Design Engineer
-          </span>{" "}
-          at{" "}
+        <p className="text-balance text-sm">
+          I'm currently <span>Senior Design Engineer</span> at{" "}
           <Link
             href="/roles/backbone"
             className="underline font-medium text-foreground"
           >
             Backbone
           </Link>
-          .
         </p>
-        <p className="text-pretty mb-4">
-          This site is my workspace, I actively use it in my creative process to
-          bring ideas to life outside my{" "}
-          <Link
-            href="/sketchbook"
-            className="underline font-medium text-foreground"
-          >
+        <p className="text-pretty mb-4 text-sm max-w-md">
+          This site is my digital garden; a living workspace I actively use in
+          my creative process to bring ideas to life outside my{" "}
+          <Link href="/sketchbook" className="underline text-foreground">
             sketchbook
           </Link>
           .

@@ -1,11 +1,20 @@
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
+import localFont from "next/font/local";
+
 import Main from "@/components/main";
 import Header from "@/components/header";
 
 import "./globals.css";
+
+const oracle = localFont({
+  src: "../assets/fonts/ABCOracleVariable-Trial.woff2",
+  variable: "--font-oracle",
+  display: "swap",
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -32,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} ${interFont.variable} antialiased min-w-[100svw] dark min-h-[100svh] font-[family-name:var(--font-inter)]`}
+        className={`${geistMono.variable} ${oracle.variable} antialiased min-w-[100svw] dark min-h-[100svh] font-[family-name:var(--font-oracle)]`}
       >
         <Header />
         <Main>{children}</Main>

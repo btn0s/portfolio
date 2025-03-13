@@ -6,13 +6,19 @@ import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
 import { Separator } from "@/components/ui/separator";
 import { Lightbox } from "@/components/ui/lightbox";
 import { CodeBlock } from "@/components/ui/code-block";
-import Image from "next/image";
 import React from "react";
 
 // Game screenshots
 import gameInterface from "@/assets/images/lab/321bang/game-interface.png";
 import gameResults from "@/assets/images/lab/321bang/game-results.png";
 import gameArchitecture from "@/assets/images/lab/321bang/game-architecture.png";
+
+export const featured_item = {
+  title: "321Bang",
+  description: "A real-time multiplayer reaction game",
+  image: gameInterface,
+  link: "/lab/321bang",
+};
 
 const PageContent = () => {
   return (

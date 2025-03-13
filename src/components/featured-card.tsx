@@ -127,7 +127,7 @@ const FeaturedWorkCard: FC<FeaturedWorkItem> = ({
   // Card trigger component
   const CardTrigger = (
     <motion.div
-      className="relative flex flex-col overflow-hidden rounded-lg gap-2"
+      className="relative flex flex-col overflow-hidden rounded-lg gap-2 cursor-pointer"
       whileHover={{ scale: 1.02 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
