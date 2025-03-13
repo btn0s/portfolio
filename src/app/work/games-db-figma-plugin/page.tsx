@@ -1,17 +1,17 @@
 "use client";
 
 import { ImageGrid } from "@/components/image-grid";
-import { Separator } from "@/components/ui/separator";
 import { Lightbox } from "@/components/ui/lightbox";
-import { motion } from "motion/react";
-import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
+import { Separator } from "@/components/ui/separator";
 import { TextHighlight } from "@/components/ui/text-highlight";
+import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
+import { motion } from "motion/react";
 
+import appCloseup from "@/assets/images/work/games-db-figma-plugin/app-closeup.png";
 // Import images
 import coverImage from "@/assets/images/work/games-db-figma-plugin/cover.png";
-import appCloseup from "@/assets/images/work/games-db-figma-plugin/app-closeup.png";
-import pluginCloseup from "@/assets/images/work/games-db-figma-plugin/plugin-closeup.png";
 import feedbackImage from "@/assets/images/work/games-db-figma-plugin/feedback.png";
+import pluginCloseup from "@/assets/images/work/games-db-figma-plugin/plugin-closeup.png";
 
 export default function GamesDBFigmaPluginPage() {
   return (
@@ -36,17 +36,17 @@ export default function GamesDBFigmaPluginPage() {
           <h2>Overview</h2>
 
           <p>
-            At Backbone, a company creating{" "}
+            At Backbone, a company creating
             <TextHighlight>premium gaming experiences</TextHighlight>, designers
             were spending hours manually searching for and importing game assets
             into their designs.
           </p>
 
           <p className="mb-8">
-            I built a custom Figma plugin that{" "}
+            I built a custom Figma plugin that
             <TextHighlight>directly integrated</TextHighlight> our Games
             Database with their design workflow, eliminating repetitive tasks
-            and keeping assets{" "}
+            and keeping assets
             <TextHighlight>consistent with production</TextHighlight>.
           </p>
 
@@ -73,9 +73,9 @@ export default function GamesDBFigmaPluginPage() {
           <h2>The Challenge</h2>
           <p>
             Backbone's design team faced a significant workflow bottleneck: they
-            needed to work with{" "}
+            needed to work with
             <TextHighlight>thousands of game assets</TextHighlight> and metadata
-            to create gaming experiences, but had{" "}
+            to create gaming experiences, but had
             <TextHighlight>no efficient way</TextHighlight> to access these
             resources within Figma.
           </p>
@@ -89,7 +89,7 @@ export default function GamesDBFigmaPluginPage() {
           </ul>
 
           <p>
-            This process consumed up to{" "}
+            This process consumed up to
             <TextHighlight>25% of their productive time</TextHighlight> and
             created inconsistencies between designs and the final product.
           </p>
@@ -105,22 +105,22 @@ export default function GamesDBFigmaPluginPage() {
           <h3>Key Features</h3>
           <ul>
             <li>
-              <strong>Direct Database Integration:</strong>{" "}
+              <strong>Direct Database Integration:</strong>
               <TextHighlight>Live connection</TextHighlight> to the same data
               source used in production
             </li>
             <li>
-              <strong>Instant Search:</strong>{" "}
+              <strong>Instant Search:</strong>
               <TextHighlight>Algolia-powered</TextHighlight> search for
               immediate asset discovery
             </li>
             <li>
-              <strong>One-Click Import:</strong>{" "}
+              <strong>One-Click Import:</strong>
               <TextHighlight>Automatic insertion</TextHighlight> of assets and
               metadata into Figma designs
             </li>
             <li>
-              <strong>Consistent Styling:</strong>{" "}
+              <strong>Consistent Styling:</strong>
               <TextHighlight>Matching the Backbone app's</TextHighlight>
               design language for visual continuity
             </li>
@@ -128,7 +128,7 @@ export default function GamesDBFigmaPluginPage() {
 
           <h3>Design Approach</h3>
           <p>
-            I designed the plugin to{" "}
+            I designed the plugin to
             <TextHighlight>
               mirror Backbone's existing UI patterns
             </TextHighlight>
@@ -171,19 +171,19 @@ export default function GamesDBFigmaPluginPage() {
 
           <ul>
             <li>
-              <strong>80% reduction</strong> in time spent on{" "}
+              <strong>80% reduction</strong> in time spent on
               <TextHighlight>asset management</TextHighlight>
             </li>
             <li>
-              <strong>5+ hours saved weekly</strong> per{" "}
+              <strong>5+ hours saved weekly</strong> per
               <TextHighlight>designer</TextHighlight>
             </li>
             <li>
-              <strong>100% adoption rate</strong> across the{" "}
+              <strong>100% adoption rate</strong> across the
               <TextHighlight>design team</TextHighlight>
             </li>
             <li>
-              <strong>Improved design consistency</strong> with the{" "}
+              <strong>Improved design consistency</strong> with the
               <TextHighlight>production app</TextHighlight>
             </li>
           </ul>
@@ -213,18 +213,15 @@ export default function GamesDBFigmaPluginPage() {
           <h2>Key Takeaways</h2>
           <p>
             This project demonstrated how targeted developer tools can
-            <TextHighlight>
-              {" "}
-              dramatically improve design workflows
-            </TextHighlight>
+            <TextHighlight>dramatically improve design workflows</TextHighlight>
             . By bridging the gap between our data and the design environment,
-            we eliminated friction and enabled designers to focus on{" "}
+            we eliminated friction and enabled designers to focus on
             <TextHighlight>creative work</TextHighlight> rather than asset
             management.
           </p>
 
           <p>
-            The success of this plugin highlights the value of{" "}
+            The success of this plugin highlights the value of
             <TextHighlight>cross-functional collaboration</TextHighlight> and
             the impact of solving specific, well-defined problems with
             purpose-built tools.

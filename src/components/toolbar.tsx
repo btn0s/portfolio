@@ -32,7 +32,7 @@ const Panel: FC<PropsWithChildren<{ className?: string; pill?: boolean }>> = ({
           {
             "rounded-full": pill,
             "rounded-lg": !pill,
-          }
+          },
         )}
       >
         {children}
@@ -82,7 +82,7 @@ const NavLink: FC<
         {
           "rounded-l-full": isFirstChild,
           "rounded-r-full": isLastChild,
-        }
+        },
       )}
       onClick={handleClick}
     >
@@ -94,7 +94,7 @@ const NavLink: FC<
             "rounded-r-full": isLastChild,
             "[boxShadow:inset_0px_12px_15px_-3px_rgba(0,0,0,0.5),_inset_0px_10px_24px_0px_rgba(0,0,0,0.1)]":
               isActive,
-          }
+          },
         )}
       />
       <div
@@ -105,7 +105,7 @@ const NavLink: FC<
             "scale-100": !isActive,
             "rounded-l-full pl-1 ": isFirstChild,
             "rounded-r-full pr-1": isLastChild,
-          }
+          },
         )}
         style={{
           boxShadow: !isActive

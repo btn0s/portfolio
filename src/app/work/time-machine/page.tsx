@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { createMetaTitle } from "@/lib/utils";
+import type { Metadata } from "next";
 import PageContent from "./page-content";
 
 // Import images

@@ -1,7 +1,7 @@
+import bangCover from "@/assets/images/lab/321bang/cover.png";
 import playBackboneHome from "@/assets/images/playbackbone-home.jpg";
 import figmaPluginCover from "@/assets/images/work/games-db-figma-plugin/cover.png";
 import timeMachineCover from "@/assets/images/work/time-machine/cover.png";
-import bangCover from "@/assets/images/lab/321bang/cover.png";
 import type { StaticImageData } from "next/image";
 
 export interface FeaturedWorkItem {

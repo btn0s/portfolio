@@ -1,17 +1,17 @@
 "use client";
 
-import { TextHighlight } from "@/components/ui/text-highlight";
-import { motion } from "motion/react";
-import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
-import { Separator } from "@/components/ui/separator";
-import { Lightbox } from "@/components/ui/lightbox";
 import { CodeBlock } from "@/components/ui/code-block";
+import { Lightbox } from "@/components/ui/lightbox";
+import { Separator } from "@/components/ui/separator";
+import { TextHighlight } from "@/components/ui/text-highlight";
+import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
+import { motion } from "motion/react";
 import React from "react";
 
+import gameArchitecture from "@/assets/images/lab/321bang/game-architecture.png";
 // Game screenshots
 import gameInterface from "@/assets/images/lab/321bang/game-interface.png";
 import gameResults from "@/assets/images/lab/321bang/game-results.png";
-import gameArchitecture from "@/assets/images/lab/321bang/game-architecture.png";
 
 export const featured_item = {
   title: "321Bang",
@@ -72,22 +72,22 @@ const PageContent = () => {
 
           <h2>Game Design</h2>
           <p>
-            My primary goal was to create a{" "}
+            My primary goal was to create a
             <TextHighlight>simple, engaging game</TextHighlight> that would
-            allow me to explore{" "}
+            allow me to explore
             <TextHighlight>
               server-authoritative multiplayer architecture
-            </TextHighlight>{" "}
+            </TextHighlight>
             and its challenges.
           </p>
 
           <p>
             The game pits two players against each other in a test of reflexes:
             after joining a match, players watch a countdown, then race to tap
-            the BANG button first when it appears.{" "}
+            the BANG button first when it appears.
             <TextHighlight>
               The fastest player wins the round in a best-of-five format.
-            </TextHighlight>{" "}
+            </TextHighlight>
             What makes this challenging is that the BANG moment comes after a
             random delay (3-6 seconds), so players can't simply time their
             clicks—they must genuinely react.
@@ -104,15 +104,15 @@ const PageContent = () => {
 
           <h2>Technical Goals</h2>
           <p>
-            My primary objective was to implement a{" "}
-            <TextHighlight>truly fair multiplayer experience</TextHighlight>{" "}
+            My primary objective was to implement a
+            <TextHighlight>truly fair multiplayer experience</TextHighlight>
             where:
           </p>
           <ul>
             <li>The server maintains authoritative control over game state</li>
             <li>Client-side prediction is minimized to prevent cheating</li>
             <li>
-              Reaction times are measured with{" "}
+              Reaction times are measured with
               <TextHighlight>millisecond precision</TextHighlight>
             </li>
             <li>Network latency is accounted for in determining winners</li>
@@ -156,8 +156,8 @@ interface Round {
 
           <h2>Implementation</h2>
           <p>
-            I built 321Bang using{" "}
-            <TextHighlight>React for the frontend</TextHighlight> and{" "}
+            I built 321Bang using
+            <TextHighlight>React for the frontend</TextHighlight> and
             <TextHighlight>Node.js with Socket.IO</TextHighlight> for real-time
             communication. The architecture includes:
           </p>
@@ -221,7 +221,7 @@ const startGameLoop = (gameId) => {
 
           <h2>Challenges & Solutions</h2>
           <p>
-            The biggest challenge was{" "}
+            The biggest challenge was
             <TextHighlight>
               ensuring fairness despite varying network conditions
             </TextHighlight>
@@ -315,7 +315,7 @@ socket.on('player-reaction', ({ clientTime, gameId, playerId }) => {
           />
 
           <p>
-            Another significant challenge was{" "}
+            Another significant challenge was
             <TextHighlight>preventing cheating</TextHighlight>. Since reaction
             games are particularly susceptible to exploitation, I implemented
             several anti-cheat measures:
@@ -334,7 +334,7 @@ socket.on('player-reaction', ({ clientTime, gameId, playerId }) => {
 
           <h2>Results</h2>
           <p>
-            Building 321Bang taught me valuable lessons about{" "}
+            Building 321Bang taught me valuable lessons about
             <TextHighlight>
               real-time multiplayer game development
             </TextHighlight>
@@ -363,7 +363,7 @@ socket.on('player-reaction', ({ clientTime, gameId, playerId }) => {
 
           <p>
             The most rewarding outcome was seeing friends compete against each
-            other, with reaction time differences of just{" "}
+            other, with reaction time differences of just
             <TextHighlight>5-10 milliseconds</TextHighlight> determining
             winners. The game successfully created those "just one more round"
             moments that make simple games addictive.

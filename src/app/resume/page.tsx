@@ -3,11 +3,11 @@
 import { pdf } from "@react-pdf/renderer";
 
 import { ResumePDF } from "@/components/resume-pdf";
-import { resumeData } from "@/content/resume";
 import { Button } from "@/components/ui/button";
-import { motion } from "motion/react";
-import { VARIANTS_SECTION, TRANSITION_SECTION } from "@/config/variants";
+import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
+import { resumeData } from "@/content/resume";
 import { Download } from "lucide-react";
+import { motion } from "motion/react";
 const ResumePage = () => {
   const handleDownload = async () => {
     const blob = await pdf(<ResumePDF />).toBlob();
@@ -48,7 +48,7 @@ const ResumePage = () => {
               {resumeData.title}
             </p>
             <p className="text-sm text-zinc-500">
-              {resumeData.contact.location} •{" "}
+              {resumeData.contact.location} •
               <a
                 href={`https://${resumeData.contact.website}`}
                 className="text-zinc-500 hover:text-zinc-300"
@@ -112,8 +112,8 @@ const ResumePage = () => {
             <ul className="max-w-none space-y-1.5">
               {resumeData.previousRoles.map((role, i) => (
                 <li key={i} className="text-sm text-zinc-300">
-                  <span className="font-medium text-white">{role.title}</span>{" "}
-                  at <span className="text-zinc-400">{role.company}</span>{" "}
+                  <span className="font-medium text-white">{role.title}</span>
+                  at <span className="text-zinc-400">{role.company}</span>
                   <span className="text-zinc-500">({role.period})</span>
                 </li>
               ))}
@@ -129,7 +129,7 @@ const ResumePage = () => {
                 <li key={i} className="text-sm text-zinc-300">
                   <span className="font-medium text-white">
                     {project.title}
-                  </span>{" "}
+                  </span>
                   - {project.description}
                 </li>
               ))}
@@ -145,7 +145,7 @@ const ResumePage = () => {
                 <li key={i} className="text-sm text-zinc-300">
                   <span className="font-medium text-white">
                     {skill.category}:
-                  </span>{" "}
+                  </span>
                   {skill.items.join(", ")}
                 </li>
               ))}

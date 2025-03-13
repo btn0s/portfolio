@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, Font, Link } from "@react-pdf/renderer";
+import { Document, Font, Link, Page, Text, View } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 
 import { resumeData } from "@/content/resume";
@@ -73,7 +73,7 @@ export const ResumePDF = () => (
           {resumeData.title}
         </Text>
         <Text style={tw("text-sm text-zinc-500")}>
-          {resumeData.contact.location} •{" "}
+          {resumeData.contact.location} •
           <Link
             style={tw("text-zinc-500")}
             src={`https://${resumeData.contact.website}`}
@@ -124,7 +124,7 @@ export const ResumePDF = () => (
         <BulletList>
           {resumeData.previousRoles.map((role, i) => (
             <BulletPoint key={i}>
-              <Text style={tw("text-white font-bold")}>{role.title}</Text> at{" "}
+              <Text style={tw("text-white font-bold")}>{role.title}</Text> at
               {role.company} ({role.period})
             </BulletPoint>
           ))}
@@ -137,7 +137,7 @@ export const ResumePDF = () => (
         <BulletList>
           {resumeData.currentProjects.map((project, i) => (
             <BulletPoint key={i}>
-              <Text style={tw("text-white font-bold")}>{project.title}</Text> -{" "}
+              <Text style={tw("text-white font-bold")}>{project.title}</Text> -
               {project.description}
             </BulletPoint>
           ))}

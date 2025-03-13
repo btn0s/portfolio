@@ -1,11 +1,11 @@
 "use client";
 
+import useClickOutside from "@/hooks/use-click-outside";
 import { X } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useId, useRef, useState } from "react";
 import { Button } from "./button";
-import useClickOutside from "@/hooks/use-click-outside";
 
 interface LightboxProps {
   src: any; // StaticImageData or string

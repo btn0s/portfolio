@@ -22,15 +22,15 @@ export default function Home() {
         className="flex flex-col gap-4 max-w-xl py-20 text-muted-foreground text-sm md:text-base"
       >
         <h3>
-          I'm a self-taught{" "}
-          <span className="font-medium text-foreground">designer</span> and{" "}
-          <span className="font-medium text-foreground">programmer</span>{" "}
+          I'm a self-taught
+          <span className="font-medium text-foreground">designer</span> and
+          <span className="font-medium text-foreground">programmer</span>
           interested in tools, games, artifical intelligence, and solving
-          problems while preserving the{" "}
+          problems while preserving the
           <span className="font-medium text-foreground">joy of discovery</span>.
         </h3>
         <p className="text-balance">
-          I'm currently leading the Labs team at{" "}
+          I'm currently leading the Labs team at
           <Link
             href="/roles/backbone"
             className="underline font-medium text-foreground"
@@ -41,7 +41,7 @@ export default function Home() {
         </p>
         <p className="text-pretty mb-4">
           This site is my digital garden; a living workspace I actively use in
-          my creative process to bring ideas to life outside my{" "}
+          my creative process to bring ideas to life outside my
           <Link href="/sketchbook" className="underline text-foreground">
             sketchbook
           </Link>

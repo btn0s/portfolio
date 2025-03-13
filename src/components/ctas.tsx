@@ -1,6 +1,6 @@
+import { ArrowRight, Mail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { ArrowRight, Mail } from "lucide-react";
 
 export const GetInTouchCTA = ({ topic }: { topic: string }) => {
   return (

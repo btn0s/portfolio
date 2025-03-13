@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Define the props interface
 interface MermaidProps {

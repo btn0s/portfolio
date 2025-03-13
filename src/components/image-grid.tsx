@@ -1,7 +1,7 @@
 "use client";
 
 import { Lightbox } from "@/components/ui/lightbox";
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 
 interface ImageItem {
   src: StaticImageData;

@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, memo } from "react";
+import { type FC, memo } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -30,7 +30,7 @@ const CodeBlock: FC<CodeBlockProps> = memo(
         </SyntaxHighlighter>
       </div>
     );
-  }
+  },
 );
 
 CodeBlock.displayName = "CodeBlock";

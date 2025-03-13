@@ -5,8 +5,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
-import Main from "@/components/main";
 import Header from "@/components/header";
+import Main from "@/components/main";
 
 import "./globals.css";
 

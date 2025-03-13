@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
-import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
-import { Separator } from "@/components/ui/separator";
-import { Lightbox } from "@/components/ui/lightbox";
+import coverImage from "@/assets/images/work/time-machine/cover.png";
 import Mermaid from "@/components/mermaid";
 import { CodeBlock } from "@/components/ui/code-block";
 import { InlineCode } from "@/components/ui/inline-code";
-import coverImage from "@/assets/images/work/time-machine/cover.png";
+import { Lightbox } from "@/components/ui/lightbox";
+import { Separator } from "@/components/ui/separator";
+import { TRANSITION_SECTION, VARIANTS_SECTION } from "@/config/variants";
+import { motion } from "motion/react";
 
 const PageContent = () => {
   return (

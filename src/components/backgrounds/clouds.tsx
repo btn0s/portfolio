@@ -1,7 +1,7 @@
 "use client";
 
+import { Cloud, Clouds, Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Clouds, Cloud, Stars } from "@react-three/drei";
 import { MeshBasicMaterial } from "three";
 
 const CloudsBackground = () => {
@@ -21,7 +21,7 @@ const CloudsBackground = () => {
           segments={40}
           bounds={[10, 2, 2]}
           volume={10}
-          color={"black"}
+          color="black"
           speed={0.2}
         />
         <Cloud
