@@ -106,8 +106,8 @@ export const ResumePDF = () => (
                   {role.period}
                 </Text>
                 <BulletList>
-                  {role.achievements.map((achievement, i) => (
-                    <BulletPoint key={i}>{achievement}</BulletPoint>
+                  {role.achievements.map((achievement) => (
+                    <BulletPoint key={achievement}>{achievement}</BulletPoint>
                   ))}
                 </BulletList>
               </View>
@@ -122,8 +122,8 @@ export const ResumePDF = () => (
           Earlier Experience
         </Text>
         <BulletList>
-          {resumeData.previousRoles.map((role, i) => (
-            <BulletPoint key={i}>
+          {resumeData.previousRoles.map((role) => (
+            <BulletPoint key={role.title}>
               <Text style={tw("text-white font-bold")}>{role.title}</Text> at
               {role.company} ({role.period})
             </BulletPoint>
@@ -136,7 +136,7 @@ export const ResumePDF = () => (
         <SectionHeader>Current Projects</SectionHeader>
         <BulletList>
           {resumeData.currentProjects.map((project, i) => (
-            <BulletPoint key={i}>
+            <BulletPoint key={project.title}>
               <Text style={tw("text-white font-bold")}>{project.title}</Text> -
               {project.description}
             </BulletPoint>
@@ -149,7 +149,7 @@ export const ResumePDF = () => (
         <SectionHeader>Skills & Expertise</SectionHeader>
         <BulletList>
           {resumeData.skills.map((skill, i) => (
-            <BulletPoint key={i}>
+            <BulletPoint key={skill.category}>
               <Text style={tw("text-white font-bold")}>{skill.category}: </Text>
               {skill.items.join(", ")}
             </BulletPoint>

@@ -92,7 +92,7 @@ const ResumePage = () => {
                     <ul className="max-w-none space-y-1.5">
                       {role.achievements.map((achievement, i) => (
                         <li
-                          key={i}
+                          key={achievement}
                           className="text-sm leading-relaxed text-zinc-300"
                         >
                           {achievement}
@@ -110,8 +110,8 @@ const ResumePage = () => {
               Earlier Experience
             </h2>
             <ul className="max-w-none space-y-1.5">
-              {resumeData.previousRoles.map((role, i) => (
-                <li key={i} className="text-sm text-zinc-300">
+              {resumeData.previousRoles.map((role) => (
+                <li key={role.title} className="text-sm text-zinc-300">
                   <span className="font-medium text-white">{role.title}</span>
                   at <span className="text-zinc-400">{role.company}</span>
                   <span className="text-zinc-500">({role.period})</span>
@@ -125,8 +125,8 @@ const ResumePage = () => {
               Current Projects
             </h2>
             <ul className="max-w-none space-y-1.5">
-              {resumeData.currentProjects.map((project, i) => (
-                <li key={i} className="text-sm text-zinc-300">
+              {resumeData.currentProjects.map((project) => (
+                <li key={project.title} className="text-sm text-zinc-300">
                   <span className="font-medium text-white">
                     {project.title}
                   </span>
@@ -141,8 +141,8 @@ const ResumePage = () => {
               Skills & Expertise
             </h2>
             <ul className="max-w-none space-y-1.5">
-              {resumeData.skills.map((skill, i) => (
-                <li key={i} className="text-sm text-zinc-300">
+              {resumeData.skills.map((skill) => (
+                <li key={skill.category} className="text-sm text-zinc-300">
                   <span className="font-medium text-white">
                     {skill.category}:
                   </span>

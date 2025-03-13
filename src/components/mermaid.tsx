@@ -19,6 +19,7 @@ const MermaidComponent: React.FC<MermaidProps> = ({
   title,
   className,
 }) => {
+  // biome-ignore lint/suspicious/noExplicitAny: Blah, something about mermaid types and SSR
   const [mermaid, setMermaid] = useState<any | null>(null);
   const mermaidRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState("");
@@ -57,6 +58,7 @@ const MermaidComponent: React.FC<MermaidProps> = ({
       <div
         ref={mermaidRef}
         className="mermaid flex w-full items-center justify-center"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: We need to render the SVG
         dangerouslySetInnerHTML={{
           __html: svg,
         }}
