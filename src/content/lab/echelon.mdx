@@ -1,0 +1,29 @@
+---
+title: Echelon
+description: A personal project prototype for an asymmetrical multiplayer stealth game
+imagePath: "lab/echelon/cover.png"
+---
+
+import coverImg from "@/assets/images/lab/echelon/cover.png";
+import mainMenuImg from "@/assets/images/lab/echelon/main-menu-concept.png";
+import menuWireframeImg from "@/assets/images/lab/echelon/menu-wireframes.png";
+import prematchImg from "@/assets/images/lab/echelon/prematch-concept.png";
+import matchStartSpiesImg from "@/assets/images/lab/echelon/match-start-spies.png";
+import damageMercImg from "@/assets/images/lab/echelon/damage-merc.png";
+import eliminatedImg from "@/assets/images/lab/echelon/eliminated.png";
+import repeatImg from "@/assets/images/lab/echelon/repeat.png";
+
+# Echelon
+
+Echelon is a personal project I worked on prototyping - an asymmetrical multiplayer game inspired by classic spies-vs-mercs gameplay. Players choose between stealthy spies or heavily armed mercenaries, each with distinct abilities and objectives. The game combines strategic planning phases with real-time action, emphasizing teamwork and creative problem-solving.
+
+{[coverImg, mainMenuImg, menuWireframeImg, prematchImg, matchStartSpiesImg, damageMercImg, eliminatedImg, repeatImg].map(img => (
+    <Image
+        key={img.src}
+        src={img}
+        alt="Echelon UX board"
+        width={1600}
+        height={900}
+        className="rounded-sm shrink-0 bg-muted border shadow aspect-video"
+    />
+))}

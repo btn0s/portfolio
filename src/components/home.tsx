@@ -60,7 +60,7 @@ export default function Home({
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
-        className="grid md:grid-cols-2 gap-8 md:gap-4"
+        className="grid md:grid-cols-2 gap-8 md:gap-4 md:gap-y-12"
       >
         {featuredWork.map((work) => (
           <WorkCard key={work.slug} {...work} />

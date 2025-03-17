@@ -4,6 +4,7 @@ import { getWorkFrontmatter } from "@/lib/utils";
 const FEATURED_WORK_SLUGS = [
   "/work/backbone/games-db-figma-plugin",
   "/work/amex/time-machine",
+  "/lab/echelon",
 ];
 
 export default async function Page() {

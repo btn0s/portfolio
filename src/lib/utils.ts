@@ -11,32 +11,48 @@ export function cn(...inputs: ClassValue[]) {
  */
 export async function getWorkFrontmatter(slug: string) {
   try {
-    // Remove leading "/work/" if present and trailing slash
-    const cleanPath = slug.replace(/^\/work\//, "").replace(/\/$/, "");
+    // Ensure slug starts with a slash for consistent processing
+    const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`;
 
-    // Split into work and project segments
+    // Extract the first segment from the path
+    const pathSegments = normalizedSlug.split("/").filter(Boolean);
+    const contentType = pathSegments[0];
+
+    // Remove leading path prefix and trailing slash
+    const cleanPath = normalizedSlug
+      .replace(new RegExp(`^\\/${contentType}\\/`), "")
+      .replace(/\/$/, "");
+
+    // Split into main and sub segments
     const segments = cleanPath.split("/");
-    const workSlug = segments[0];
-    const projectSlug = segments[1]; // Will be undefined for "/work/<workSlug>" format
+    const mainSlug = segments[0];
+    const subSlug = segments[1]; // Will be undefined for "/<contentType>/<mainSlug>" format
 
-    if (!workSlug) {
+    if (!mainSlug) {
       throw new Error("Invalid slug format");
     }
 
     // Import the MDX file and get its frontmatter
     let frontmatter;
-    if (projectSlug) {
-      // Format: /work/<workSlug>/<projectSlug>
-      const { frontmatter: projectFrontmatter } = await import(
-        `@/content/work/${workSlug}/${projectSlug}.mdx`
+
+    if (contentType === "lab") {
+      // Lab content structure: /lab/<filename>.mdx
+      const { frontmatter: labFrontmatter } = await import(
+        `@/content/lab/${mainSlug}.mdx`
       );
-      frontmatter = projectFrontmatter;
+      frontmatter = labFrontmatter;
+    } else if (subSlug) {
+      // Work content structure: /work/<workSlug>/<projectSlug>.mdx
+      const { frontmatter: subFrontmatter } = await import(
+        `@/content/${contentType}/${mainSlug}/${subSlug}.mdx`
+      );
+      frontmatter = subFrontmatter;
     } else {
-      // Format: /work/<workSlug>
-      const { frontmatter: workFrontmatter } = await import(
-        `@/content/work/${workSlug}/_main.mdx`
+      // Work content structure: /work/<workSlug>/_main.mdx
+      const { frontmatter: mainFrontmatter } = await import(
+        `@/content/${contentType}/${mainSlug}/_main.mdx`
       );
-      frontmatter = workFrontmatter;
+      frontmatter = mainFrontmatter;
     }
 
     // Handle image path
@@ -49,15 +65,25 @@ export async function getWorkFrontmatter(slug: string) {
     return {
       ...frontmatter,
       imagePath: JSON.stringify(imageImport),
-      slug,
+      slug: normalizedSlug,
     };
   } catch (error) {
-    console.error(`Error reading work data for ${slug}:`, error);
+    console.error(`Error reading content data for ${slug}:`, error);
+
+    // Ensure slug starts with a slash for consistent processing
+    const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`;
+
+    // Extract content type from the path for the error message
+    const pathSegments = normalizedSlug.split("/").filter(Boolean);
+    const contentType = pathSegments[0];
+
     return {
       imagePath: JSON.stringify("/placeholder.jpg"),
-      title: slug.replace(/^\/work\//, "").replace(/\/.*$/, ""),
+      title: normalizedSlug
+        .replace(new RegExp(`^\\/${contentType}\\/`), "")
+        .replace(/\/.*$/, ""),
       description: "Content unavailable",
-      slug,
+      slug: normalizedSlug,
     };
   }
 }
