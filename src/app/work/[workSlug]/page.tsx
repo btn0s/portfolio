@@ -17,7 +17,7 @@ export async function generateMetadata({
     : await import(`@/assets/images/placeholder.png`);
 
   const metadata: Metadata = {
-    title: `${frontmatter.title} | bt norris, design engineer`,
+    title: `${frontmatter.title} ✦ bt norris`,
     description: frontmatter.description,
     openGraph: {
       images: imageImport.src,
