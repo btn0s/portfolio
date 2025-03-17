@@ -60,8 +60,6 @@ export async function getFrontmatter(slug: string) {
       ? await import(`@/assets/images/${frontmatter.imagePath}`)
       : await import(`@/assets/images/placeholder.png`);
 
-    console.log(imageImport);
-
     return {
       ...frontmatter,
       imagePath: JSON.stringify(imageImport),
