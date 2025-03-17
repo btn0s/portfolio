@@ -21,6 +21,13 @@ export const metadata: Metadata = {
   title: "bt norris, design engineer",
   description:
     "I'm a designer and programmer interested in games, tools, artifical intelligence, and driven by the joy of discovery.",
+  openGraph: {
+    images: "/og.png",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: "/og.png",
+  },
 };
 
 export default function RootLayout({
