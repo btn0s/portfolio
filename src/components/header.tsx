@@ -145,7 +145,7 @@ const Header = () => {
           </div>
         </div>
       </Link>
-      <div className="hidden md:flex gap-2 items-center">
+      <div className="flex gap-2 items-center">
         {/*<Button variant="outline" size="sm" asChild>*/}
         {/*  <Link href="/lab" className="text-muted-foreground">*/}
         {/*    lab*/}
