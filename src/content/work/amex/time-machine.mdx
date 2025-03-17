@@ -22,23 +22,16 @@ import coverImg from "@/assets/images/work/amex/time-machine/cover.png";
 
 ## The Challenge
 
-American Express faced a critical modernization dilemma: how to upgrade their customer care platform—handling millions of daily interactions—without disrupting service quality or business operations. The existing Angular-based system was becoming increasingly difficult to maintain and enhance, but a complete rewrite posed unacceptable business risks.
-
-Key challenges included:
-- Modernizing without disrupting the customer experience
-- Enabling adoption of React without abandoning existing Angular code
-- Maintaining 99.9% uptime for a business-critical system
-- Empowering teams to deliver new features without waiting for full migration
+American Express needed to modernize their customer care platform that handled millions of daily interactions. The existing Angular system was becoming hard to maintain, but a complete rewrite was too risky for a business-critical application. We needed a way to gradually introduce React without disrupting the platform's 99.9% uptime requirement or blocking teams from shipping new features.
 
 ## The Solution
 
-I designed TimeMachine as a bidirectional bridge system enabling teams to build new features with modern React technology without rebuilding the existing Angular platform. This approach allowed for incremental modernization while maintaining system reliability.
+I designed TimeMachine as a bridge system that let teams build new features in React while keeping the existing Angular platform running. Instead of a risky rewrite, we could modernize the platform piece by piece.
 
-The solution had three core components:
+The system had three main parts:
 
 #### 1. DOM Integration Layer
-
-I created a portal system that enabled React components to be seamlessly mounted within Angular's DOM hierarchy. This allowed teams to develop independent React features that could be rendered within the existing application structure, providing a path for incremental adoption.
+A portal system that let React components live inside Angular's DOM. This meant teams could build independent React features that worked within the existing app structure.
 
 ```typescript
 // Angular directive for React components
@@ -61,36 +54,10 @@ export class ReactPortalDirective {
 ```
 
 #### 2. Cross-Framework Communication
-
-A high-performance event system ensured reliable communication between React and Angular components. This bidirectional messaging infrastructure allowed new React features to integrate naturally with existing Angular functionality through a standardized API.
-
-```typescript
-// Simplified event bus implementation
-class EventBus {
-  private handlers = new Map();
-
-  publish(event, data) {
-    if (!this.handlers.has(event)) return;
-    this.handlers.get(event).forEach(handler => {
-      setTimeout(() => handler(data), 0);
-    });
-  }
-
-  subscribe(event, handler) {
-    if (!this.handlers.has(event)) {
-      this.handlers.set(event, []);
-    }
-    this.handlers.get(event).push(handler);
-    return () => this.unsubscribe(event, handler);
-  }
-}
-
-export const eventBus = new EventBus();
-```
+An event system that let React and Angular components talk to each other through a standard API.
 
 #### 3. State Synchronization
-
-The state management system maintained consistency across both frameworks, ensuring that data remained synchronized regardless of which technology initiated changes. This was crucial for complex customer interactions that spanned multiple features built with different technologies.
+A system to keep data in sync between both frameworks, which was crucial for features that used both technologies.
 
 ```typescript
 // React hook for Angular state
@@ -119,22 +86,22 @@ function useAngularState(stateKey) {
 
 ## Implementation Process
 
-The project evolved through several phases:
+We rolled out the system in phases:
 
-1. **Proof of Concept**: Initial testing with non-critical features to validate the approach
-2. **Framework Adoption**: Creating documentation and tooling for teams to adopt the new system
-3. **Strategic Rollout**: Prioritizing high-value features for modernization while maintaining existing functionality
-4. **Scaled Implementation**: Expanding usage across multiple teams and business units
+1. **Proof of Concept**: Tested with low-risk features first
+2. **Framework Adoption**: Built tools and docs for teams to use the system
+3. **Strategic Rollout**: Started with high-value features
+4. **Scaled Implementation**: Expanded to more teams and business units
 
 ## Results & Impact
 
-TimeMachine delivered significant business and technical value:
+TimeMachine delivered clear results:
 
-- **Platform Reliability**: Maintained 99.9% uptime across millions of daily customer interactions throughout the modernization process
-- **Business Growth**: Enabled the successful launch of a new travel vertical, expanding operations to 300+ specialized agents
-- **Development Velocity**: Reduced feature development time by allowing teams to build with modern tools without waiting for full migration
-- **Technical Innovation**: Established a proven pattern for incremental modernization that was adopted across other legacy systems
-- **Team Empowerment**: Enabled engineers to learn and use modern technologies while continuing to support existing systems
+- Kept 99.9% uptime while modernizing a system handling millions of daily customer interactions
+- Helped launch a new travel vertical with 300+ specialized agents
+- Sped up feature development by letting teams use modern tools right away
+- Created a pattern for modernizing other legacy systems
+- Let engineers use new tech while supporting existing systems
 
 ## Technical Architecture
 

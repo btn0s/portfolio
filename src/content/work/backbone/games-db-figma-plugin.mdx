@@ -22,9 +22,9 @@ import {WorkflowDiagram} from "@/components/diagrams/games-db-figma/workflow";
 
 ## Overview
 
-At Backbone's first company offsite, a UX designer shared a frustrating workflow problem: designers were wasting hours manually searching for and importing game assets. I saw an opportunity and took initiative, building a Figma plugin during the offsite that directly connected our design tools to our games database.
+During Backbone's company offsite, one of our UX designers approached me about a painful workflow: they were spending hours manually searching and importing game assets. 
 
-What started as a quick solution became indispensable to the design team, saving them 5+ hours weekly. The success of this self-initiated project led to me founding Backbone's Labs team, where I continued developing internal tools that solved critical workflow challenges across the company.
+I built a Figma plugin that connected our design tools directly to our games database, turning a tedious multi-step process into a single click. The plugin quickly became a core part of the design team's workflow and led to the creation of Backbone's Labs team, where we focused on solving similar workflow bottlenecks.
 
 **Role:** Project Lead, Design Engineer<br/>
 **Technologies:** React, TypeScript, Figma Plugin API, Algolia<br/>
@@ -32,32 +32,29 @@ What started as a quick solution became indispensable to the design team, saving
 
 ## The Challenge
 
-At Backbone, designers faced a significant workflow bottleneck when working with game assets. With thousands of assets but no direct connection between their design environment and our production database, they were forced to:
+The design team was dealing with thousands of game assets spread across multiple sources. Without a direct connection between Figma and our database, designers had to:
 
 - Search for assets across multiple disconnected sources
 - Download and manually import each asset individually
 - Verify they were using current versions
 - Repeat this process multiple times daily
 
-This inefficiency consumed up to 25% of productive design time and created inconsistencies between design mockups and the final product.
+This manual process was taking up to 25% of their productive time.
 
 <WorkflowDiagram/>
 
 ## The Solution
 
-After identifying this pain point during a company offsite, I conceived and developed a custom Figma plugin that created a direct bridge to our Games Database. This solution provided three key capabilities:
+The plugin I built created a direct bridge between Figma and our Games Database, providing three key features:
 
 #### 1. Live Database Integration
-
-I implemented a real-time connection to production data sources, ensuring designers always had access to the most current assets without leaving their design environment.
+Direct connection to our production data sources, giving designers access to current assets without leaving Figma.
 
 #### 2. Intelligent Search
-
-The plugin featured Algolia-powered instant search with typo tolerance, making it remarkably fast to locate specific assets among thousands of options.
+Algolia-powered instant search that made finding assets quick and forgiving of typos.
 
 #### 3. One-Click Asset Importing
-
-By enabling seamless insertion of assets and metadata directly into designs, I eliminated the multi-step process that previously consumed significant time.
+Direct insertion of assets and metadata into designs, replacing the previous multi-step process.
 
 ## Implementation Approach
 
