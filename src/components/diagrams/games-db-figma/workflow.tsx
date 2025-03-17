@@ -38,7 +38,7 @@ export const WorkflowDiagram = () => {
       // Add step
       elements.push(
         <motion.div
-          className="border border-border bg-white rounded-lg p-4 w-36 h-16 flex items-center justify-center shadow-sm text-xs"
+          className="border border-border bg-white rounded-lg p-4 flex items-center justify-center shadow-sm text-xs"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
