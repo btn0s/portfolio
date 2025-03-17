@@ -42,15 +42,10 @@ const WorkCard = ({
           "rounded-sm shrink-0 bg-muted flex text-muted-foreground border",
           {
             "w-full": !horizontal,
-            "col-start-2": horizontal,
           }
         )}
       />
-      <div
-        className={cn("flex flex-col items-start justify-center gap-1", {
-          "col-start-1 row-start-1": horizontal,
-        })}
-      >
+      <div className={cn("flex flex-col items-start justify-center gap-1", {})}>
         <h3 className={cn("font-medium")}>{title}</h3>
         <p
           className={cn("text-muted-foreground text-sm max-w-[90%]", {

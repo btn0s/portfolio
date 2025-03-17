@@ -4,6 +4,7 @@ description: Transforming mobile gaming through premium controllers and seamless
 imagePath: "work/backbone/cover.png"
 ---
 
+import {Separator} from "@/components/ui/separator";
 import WorkList from "@/components/work-list";
 
 import coverImg from "@/assets/images/work/backbone/cover.png";
@@ -20,29 +21,23 @@ export const HIGHLIGHT_SOURCES = [
 
 # I led front-end development of a global-scale ecommerce store, and established the company's design engineering practice.
 
-<Image
-  src={coverImg}
-  alt="Backbone"
-  width={1600}
-  height={900}
-  className="rounded-sm shrink-0 bg-muted border shadow"
-/>
+<Image src={coverImg} alt="Backbone" width={1600} height={900} className="rounded-sm shrink-0 bg-muted border shadow" />
 
-## Overview
+Backbone is transforming mobile gaming through premium controllers and seamless software experiences. As an early member of the web team, I helped scale backbone.com from startup to global brand. Later, I founded Labs—the company's first design engineering team—to accelerate product innovation.
 
-Backbone is transforming mobile gaming through premium controllers and seamless software experiences. Our products reached #1 on the App Store during Christmas 2023 and are now sold globally.
+Today, Backbone's products are sold worldwide and reached #1 on the App Store in both 2023 and 2024.
 
-Over my time at backbone I played two distinct roles:<br/>
+**Roles** <br/>
+- **Senior Design Engineer, Labs** (current)
+- Previous: Senior Frontend Engineer, Web
 
-**Senior Design Engineer, Labs (current)** <br/>
+### Featured Project
 
-I founded and led Backbone Labs, a design engineering team focused on rapid validation, internal tooling, and independent project delivery.
+<WorkList slugs={FEATURED_WORK_SLUGS} showBorder />
 
-**Senior Frontend Engineer, Web/Ecommerce** <br/>
+<Separator className={'my-12'} />
 
-As the second engineer on the web team, I helped scale Backbone.com from DTC startup to global brand.
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
+<div className="grid grid-cols-1 gap-4 not-prose">
     {HIGHLIGHT_SOURCES.map(img => (
         <Image
             key={img.src}
