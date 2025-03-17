@@ -20,9 +20,9 @@ export default function Home({
         <p>
           I'm a <span className="font-medium text-foreground">designer</span>{" "}
           and <span className="font-medium text-foreground">programmer</span>{" "}
-          interested in games, tools, artifical intelligence, and driven by{" "}
+          interested in games, tools, artifical intelligence, and{" "}
           <span className="font-medium text-foreground">
-            the joy of discovery
+            driven by the joy of discovery
           </span>
         </p>
         {/*<p>*/}
