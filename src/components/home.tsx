@@ -42,13 +42,12 @@ export default function Home({
         {/*</p>*/}
         <p>
           This site is my digital workspace, I actively use it in my creative
-          process to bring my ideas to life outside my{" "}
-          <Link
-            className="underline hover:text-foreground font-medium"
-            href="/lab/sketchbook"
-          >
-            sketchbook
-          </Link>
+          process to bring my ideas to life outside my {/*<Link*/}
+          {/*  className="underline hover:text-foreground font-medium"*/}
+          {/*  href="/lab/sketchbook"*/}
+          {/*>*/}
+          sketchbook
+          {/*</Link>*/}
         </p>
       </motion.section>
       <motion.section
