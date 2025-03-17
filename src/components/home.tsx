@@ -52,7 +52,14 @@ export default function Home({
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <FlickeringGrid className={"w-full mb-12"} height={64} color={"#fff"} />
+        <FlickeringGrid
+          className={"w-full mb-12"}
+          height={64}
+          color={"white"}
+          hasGlow={true}
+          glowIntensity={10}
+          maxOpacity={0.75}
+        />
       </motion.section>
       <motion.section
         variants={VARIANTS_SECTION}
