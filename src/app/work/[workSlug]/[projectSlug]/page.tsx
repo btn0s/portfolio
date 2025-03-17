@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
-import * as fs from "node:fs";
+import { notFound } from "next/navigation";
 
 type Params = {
   workSlug: string;
@@ -28,9 +27,17 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { workSlug, projectSlug } = await params;
-  const { default: Post } = await import(
+  const { default: Post, frontmatter } = await import(
     `@/content/work/${workSlug}/${projectSlug}.mdx`
   );
+
+  console.log({
+    frontmatter,
+  });
+
+  if (frontmatter.published === false) {
+    return notFound();
+  }
 
   return <Post />;
 }
