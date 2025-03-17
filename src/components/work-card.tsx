@@ -26,10 +26,6 @@ const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
         <p className="text-muted-foreground text-sm max-w-sm mb-2">
           {description}
         </p>
-        <Button variant="outline" size="sm" className="group">
-          Learn more
-          <ArrowRightIcon className="size-4  group-hover:translate-x-1 transition-transform duration-300" />
-        </Button>
       </div>
     </Link>
   );
