@@ -1,8 +1,6 @@
 "use client";
 
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
-import WorkList from "@/components/work-list";
-import Link from "next/link";
 import { VARIANTS_SECTION, TRANSITION_SECTION } from "@/lib/variants";
 import { motion } from "motion/react";
 import WorkCard, { WorkCardProps } from "@/components/work-card";
