@@ -1,0 +1,152 @@
+---
+title: TimeMachine
+description: Modernizing a legacy application without disrupting service quality or business operations.
+imagePath: "work/amex/time-machine/cover.png"
+---
+
+import coverImg from "@/assets/images/work/amex/time-machine/cover.png";
+
+# I built a bridge system that allowed us to modernize with React while avoiding a legacy uplift
+
+<Image
+  src={coverImg}
+  alt="TimeMachine project visualization"
+  width={1600}
+  height={900}
+  className="rounded-sm shrink-0 bg-muted border shadow mt-12"
+/>
+
+**Role:** Technical Lead, Software Architect<br/>
+**Technologies:** Angular, React, TypeScript, JavaScript<br/>
+**Impact:** 99.9% platform reliability, enabled React adoption without full rewrite, 300+ agents onboarded<br/>
+
+## The Challenge
+
+American Express faced a critical modernization dilemma: how to upgrade their customer care platform—handling millions of daily interactions—without disrupting service quality or business operations. The existing Angular-based system was becoming increasingly difficult to maintain and enhance, but a complete rewrite posed unacceptable business risks.
+
+Key challenges included:
+- Modernizing without disrupting the customer experience
+- Enabling adoption of React without abandoning existing Angular code
+- Maintaining 99.9% uptime for a business-critical system
+- Empowering teams to deliver new features without waiting for full migration
+
+## The Solution
+
+I designed TimeMachine as a bidirectional bridge system enabling teams to build new features with modern React technology without rebuilding the existing Angular platform. This approach allowed for incremental modernization while maintaining system reliability.
+
+The solution had three core components:
+
+#### 1. DOM Integration Layer
+
+I created a portal system that enabled React components to be seamlessly mounted within Angular's DOM hierarchy. This allowed teams to develop independent React features that could be rendered within the existing application structure, providing a path for incremental adoption.
+
+```typescript
+// Angular directive for React components
+@Directive({
+  selector: '[reactPortal]'
+})
+export class ReactPortalDirective {
+  @Input() componentId: string;
+  @Input() props: any;
+
+  ngOnInit() {
+    // Register DOM element as a mount point
+    this.portalService.registerMountPoint(
+      this.componentId,
+      this.el.nativeElement,
+      this.props
+    );
+  }
+}
+```
+
+#### 2. Cross-Framework Communication
+
+A high-performance event system ensured reliable communication between React and Angular components. This bidirectional messaging infrastructure allowed new React features to integrate naturally with existing Angular functionality through a standardized API.
+
+```typescript
+// Simplified event bus implementation
+class EventBus {
+  private handlers = new Map();
+
+  publish(event, data) {
+    if (!this.handlers.has(event)) return;
+    this.handlers.get(event).forEach(handler => {
+      setTimeout(() => handler(data), 0);
+    });
+  }
+
+  subscribe(event, handler) {
+    if (!this.handlers.has(event)) {
+      this.handlers.set(event, []);
+    }
+    this.handlers.get(event).push(handler);
+    return () => this.unsubscribe(event, handler);
+  }
+}
+
+export const eventBus = new EventBus();
+```
+
+#### 3. State Synchronization
+
+The state management system maintained consistency across both frameworks, ensuring that data remained synchronized regardless of which technology initiated changes. This was crucial for complex customer interactions that spanned multiple features built with different technologies.
+
+```typescript
+// React hook for Angular state
+function useAngularState(stateKey) {
+  const [state, setState] = useState(null);
+
+  useEffect(() => {
+    // Get initial state
+    setState(window.angularApp.getState(stateKey));
+
+    // Subscribe to changes
+    const unsubscribe = eventBus.subscribe(
+      `state:${stateKey}:changed`,
+      newState => setState(newState)
+    );
+
+    return unsubscribe;
+  }, [stateKey]);
+
+  return [
+    state,
+    newState => window.angularApp.setState(stateKey, newState)
+  ];
+}
+```
+
+## Implementation Process
+
+The project evolved through several phases:
+
+1. **Proof of Concept**: Initial testing with non-critical features to validate the approach
+2. **Framework Adoption**: Creating documentation and tooling for teams to adopt the new system
+3. **Strategic Rollout**: Prioritizing high-value features for modernization while maintaining existing functionality
+4. **Scaled Implementation**: Expanding usage across multiple teams and business units
+
+## Results & Impact
+
+TimeMachine delivered significant business and technical value:
+
+- **Platform Reliability**: Maintained 99.9% uptime across millions of daily customer interactions throughout the modernization process
+- **Business Growth**: Enabled the successful launch of a new travel vertical, expanding operations to 300+ specialized agents
+- **Development Velocity**: Reduced feature development time by allowing teams to build with modern tools without waiting for full migration
+- **Technical Innovation**: Established a proven pattern for incremental modernization that was adopted across other legacy systems
+- **Team Empowerment**: Enabled engineers to learn and use modern technologies while continuing to support existing systems
+
+## Technical Architecture
+
+The system was designed to be lightweight yet robust, with careful attention to performance optimization for high-traffic scenarios. React components could be dynamically loaded and rendered within Angular views, with bidirectional data flow maintaining state consistency across frameworks.
+
+The modularity of the design allowed teams to incrementally adopt React where it made the most sense, while keeping critical, stable functionality in the existing Angular codebase until it was strategic to migrate it.
+
+## Lessons Learned
+
+This project highlighted several important principles for successful legacy modernization:
+
+1. Incremental approaches often succeed where "big bang" rewrites fail
+2. Creating bridges between technologies can be more practical than forcing complete migration
+3. Empowering teams to use the right tool for each task improves both delivery speed and quality
+4. Technical solutions must balance innovation with reliability, especially in business-critical systems

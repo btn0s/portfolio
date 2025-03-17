@@ -1,0 +1,123 @@
+---
+title: Games DB Figma Plugin
+description: A Figma plugin that connected designers directly to Backbone's game assets database.
+imagePath: "work/backbone/games-db-figma-plugin/cover.png"
+---
+
+import coverImg from "@/assets/images/work/backbone/games-db-figma-plugin/cover.png";
+import appCloseupImg from "@/assets/images/work/backbone/games-db-figma-plugin/app-closeup.png";
+import pluginCloseupImg from "@/assets/images/work/backbone/games-db-figma-plugin/plugin-closeup.png";
+import feedbackImg from "@/assets/images/work/backbone/games-db-figma-plugin/feedback.png";
+import {WorkflowDiagram} from "@/components/diagrams/games-db-figma/workflow";
+
+# I designed and developed a Figma plugin that reduced asset management time by 80% for designers
+
+<Image
+    src={coverImg}
+    alt="Games DB Figma Plugin"
+    width={1600}
+    height={900}
+    className="rounded-sm shrink-0 bg-muted border shadow"
+/>
+
+## Overview
+
+At Backbone's first company offsite, a UX designer shared a frustrating workflow problem: designers were wasting hours manually searching for and importing game assets. I saw an opportunity and took initiative, building a Figma plugin during the offsite that directly connected our design tools to our games database.
+
+What started as a quick solution became indispensable to the design team, saving them 5+ hours weekly. The success of this self-initiated project led to me founding Backbone's Labs team, where I continued developing internal tools that solved critical workflow challenges across the company.
+
+**Role:** Project Lead, Design Engineer<br/>
+**Technologies:** React, TypeScript, Figma Plugin API, Algolia<br/>
+**Impact:** 80% reduction in asset management time, 5+ hours saved weekly per designer
+
+## The Challenge
+
+At Backbone, designers faced a significant workflow bottleneck when working with game assets. With thousands of assets but no direct connection between their design environment and our production database, they were forced to:
+
+- Search for assets across multiple disconnected sources
+- Download and manually import each asset individually
+- Verify they were using current versions
+- Repeat this process multiple times daily
+
+This inefficiency consumed up to 25% of productive design time and created inconsistencies between design mockups and the final product.
+
+<WorkflowDiagram/>
+
+## The Solution
+
+After identifying this pain point during a company offsite, I conceived and developed a custom Figma plugin that created a direct bridge to our Games Database. This solution provided three key capabilities:
+
+#### 1. Live Database Integration
+
+I implemented a real-time connection to production data sources, ensuring designers always had access to the most current assets without leaving their design environment.
+
+#### 2. Intelligent Search
+
+The plugin featured Algolia-powered instant search with typo tolerance, making it remarkably fast to locate specific assets among thousands of options.
+
+#### 3. One-Click Asset Importing
+
+By enabling seamless insertion of assets and metadata directly into designs, I eliminated the multi-step process that previously consumed significant time.
+
+## Implementation Approach
+
+I engineered the plugin to seamlessly integrate with designers' workflow while maintaining perfect consistency with our existing systems. The interface mirrored Backbone's established patterns, creating a natural extension of our product ecosystem with zero learning curve.
+
+Using the standard stack for Figma plugin development (React, TypeScript with Figma Plugin API), I focused on creating a solution that felt native to both environments. The real technical challenge was in the seamless integration with our backend systems and optimizing performance for handling thousands of assets.
+
+<div className="grid grid-cols-2 gap-4">
+    <div className="flex flex-col items-center justify-center gap-2">
+        <Image
+            src={appCloseupImg}
+            alt="Games DB Figma Plugin UI showing search interface"
+            width={1600}
+            height={900}
+            className="rounded-sm shrink-0 bg-muted border shadow !m-0"
+        />
+        <span className="font-mono text-xs">Backbone app content pages</span>
+    </div>
+    <div className="flex flex-col items-center justify-center gap-2">
+        <Image
+            src={pluginCloseupImg}
+            alt="Games DB Figma Plugin showing asset preview"
+            width={1600}
+            height={900}
+            className="rounded-sm shrink-0 bg-muted border shadow !m-0"
+        />
+        <span className="font-mono text-xs">Figma plugin UI</span>
+    </div>
+</div>
+
+## Results & Impact
+
+The plugin transformed the design team's workflow with measurable impact:
+
+- 80% reduction in asset management time
+- 5+ hours reclaimed weekly per designer
+- 100% team adoption within the first week
+- Eliminated inconsistencies between design and production
+
+The solution became essential infrastructure for the design team's daily workflow, allowing them to focus on high-value creative work rather than manual asset management.
+
+<Image
+    src={feedbackImg}
+    alt="Testimonial from design team about the plugin's impact"
+    width={1600}
+    height={900}
+    className="rounded-sm shrink-0 bg-muted border shadow"
+/>
+
+## Continuous Development
+
+Since launch, I've maintained a rapid development cycle based on user feedback. Recent and upcoming enhancements include:
+
+- Batch import functionality for multiple assets
+- Context-aware layout templates
+- Asset version history tracking
+- Team favorites and usage analytics
+
+## Key Takeaways
+
+This project demonstrated how targeted engineering solutions can dramatically transform design workflows. By bridging the gap between our data and the design environment, we eliminated friction and enabled designers to focus on creative work.
+
+The success of this solution highlighted the impact of cross-functional understanding and solving specific, well-defined problems with purpose-built tools that deliver measurable business results.
