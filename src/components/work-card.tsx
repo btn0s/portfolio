@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,24 +9,59 @@ export interface WorkCardProps {
   title: string;
   description: string;
   slug: string;
+  horizontal?: boolean;
+  showButton?: boolean;
 }
 
-const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
+const WorkCard = ({
+  imagePath,
+  title,
+  description,
+  slug,
+  horizontal,
+  showButton,
+}: WorkCardProps) => {
   const imageSrc = JSON.parse(imagePath);
   return (
-    <Link href={slug} className="flex gap-4 flex-col not-prose w-full" prefetch>
+    <Link
+      href={slug}
+      className={cn("grid gap-4 not-prose w-full max-w-content", {
+        "grid-cols-2": horizontal,
+      })}
+      prefetch
+    >
       <Image
         src={imageSrc}
         alt={title}
         width={416}
         height={234}
-        className="rounded-sm shrink-0 bg-muted flex text-muted-foreground border w-full"
+        className={cn(
+          "rounded-sm shrink-0 bg-muted flex text-muted-foreground border",
+          {
+            "w-full": !horizontal,
+            "col-start-2": horizontal,
+          }
+        )}
       />
-      <div className="flex flex-col items-start gap-1">
-        <h3 className="font-medium">{title}</h3>
-        <p className="text-muted-foreground text-sm max-w-[90%]">
+      <div
+        className={cn("flex flex-col items-start gap-1", {
+          "col-start-1 row-start-1": horizontal,
+        })}
+      >
+        <h3 className={cn("font-medium")}>{title}</h3>
+        <p
+          className={cn("text-muted-foreground text-sm max-w-[90%]", {
+            "mb-4": showButton,
+          })}
+        >
           {description}
         </p>
+        {showButton && (
+          <Button variant="outline" size="sm" className="group">
+            Learn more
+            <ArrowRightIcon className="size-4  group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
+        )}
       </div>
     </Link>
   );

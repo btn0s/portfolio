@@ -2,6 +2,7 @@ import Home from "@/components/home";
 import { getFrontmatter } from "@/lib/utils";
 
 const FEATURED_WORK_SLUGS = [
+  "/work/backbone/",
   "/work/backbone/games-db-figma-plugin",
   "/work/amex/time-machine",
   "/lab/echelon",

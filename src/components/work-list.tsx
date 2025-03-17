@@ -21,6 +21,8 @@ const WorkList = async ({ slugs }: WorkListProps) => {
           title={work.title}
           description={work.description}
           slug={work.slug}
+          // horizontal
+          showButton
         />
       ))}
     </div>
