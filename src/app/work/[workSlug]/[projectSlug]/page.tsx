@@ -20,6 +20,13 @@ export async function generateMetadata({
   const metadata: Metadata = {
     title: `${projectFrontmatter.title} | bt norris, design engineer`,
     description: projectFrontmatter.description,
+    openGraph: {
+      images: [JSON.parse(projectFrontmatter.imagePath)],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [JSON.parse(projectFrontmatter.imagePath)],
+    },
   };
 
   return metadata;
