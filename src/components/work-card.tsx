@@ -23,7 +23,7 @@ const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
       />
       <div className="flex flex-col items-start gap-1">
         <h3 className="font-medium">{title}</h3>
-        <p className="text-muted-foreground text-sm max-w-sm mb-2">
+        <p className="text-muted-foreground text-sm max-w-[90%]">
           {description}
         </p>
       </div>

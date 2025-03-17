@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://btn0s.dev"),
   title: "bt norris, design engineer",
   description:
     "I'm a designer and programmer interested in games, tools, artifical intelligence, and driven by the joy of discovery.",
