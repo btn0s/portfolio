@@ -27,13 +27,10 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { workSlug, projectSlug } = await params;
+
   const { default: Post, frontmatter } = await import(
     `@/content/work/${workSlug}/${projectSlug}.mdx`
   );
-
-  console.log({
-    frontmatter,
-  });
 
   if (frontmatter.published === false) {
     return notFound();

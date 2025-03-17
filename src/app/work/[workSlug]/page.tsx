@@ -24,10 +24,6 @@ export async function generateMetadata({
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { workSlug } = await params;
 
-  console.log({
-    workSlug,
-  });
-
   const { default: Post, frontmatter } = await import(
     `@/content/work/${workSlug}/_main.mdx`
   );
