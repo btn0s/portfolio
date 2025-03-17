@@ -4,6 +4,7 @@ import { FlickeringGrid } from "@/components/ui/flickering-grid";
 import { VARIANTS_SECTION, TRANSITION_SECTION } from "@/lib/variants";
 import { motion } from "motion/react";
 import WorkCard, { WorkCardProps } from "@/components/work-card";
+import Link from "next/link";
 
 export default function Home({
   featuredWork,
@@ -25,27 +26,22 @@ export default function Home({
             driven by the joy of discovery
           </span>
         </p>
-        {/*<p>*/}
-        {/*  I'm currently{" "}*/}
-        {/*  <span className="font-medium text-foreground">*/}
-        {/*    senior design engineer*/}
-        {/*  </span>{" "}*/}
-        {/*  at{" "}*/}
-        {/*  <Link*/}
-        {/*    className="underline hover:text-foreground font-medium"*/}
-        {/*    href="/work/backbone"*/}
-        {/*  >*/}
-        {/*    Backbone*/}
-        {/*  </Link>*/}
-        {/*</p>*/}
+        <p>
+          I'm currently{" "}
+          <span className="font-medium text-foreground">
+            senior design engineer
+          </span>{" "}
+          at{" "}
+          <Link
+            className="underline hover:text-foreground"
+            href="/work/backbone"
+          >
+            Backbone
+          </Link>
+        </p>
         <p>
           This site is my digital workspace, I actively use it in my creative
-          process to bring my ideas to life outside my {/*<Link*/}
-          {/*  className="underline hover:text-foreground font-medium"*/}
-          {/*  href="/lab/sketchbook"*/}
-          {/*>*/}
-          sketchbook
-          {/*</Link>*/}
+          process to bring my ideas to life outside my sketchbook
         </p>
       </motion.section>
       <motion.section

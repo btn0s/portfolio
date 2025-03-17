@@ -11,6 +11,7 @@ export interface WorkCardProps {
   slug: string;
   horizontal?: boolean;
   showButton?: boolean;
+  showBorder?: boolean;
 }
 
 const WorkCard = ({
@@ -20,6 +21,7 @@ const WorkCard = ({
   slug,
   horizontal,
   showButton,
+  showBorder,
 }: WorkCardProps) => {
   const imageSrc = JSON.parse(imagePath);
   return (
@@ -27,6 +29,7 @@ const WorkCard = ({
       href={slug}
       className={cn("grid gap-4 not-prose w-full max-w-content", {
         "grid-cols-2": horizontal,
+        "border p-4 shadow-sm rounded-lg": showBorder,
       })}
       prefetch
     >
@@ -44,7 +47,7 @@ const WorkCard = ({
         )}
       />
       <div
-        className={cn("flex flex-col items-start gap-1", {
+        className={cn("flex flex-col items-start justify-center gap-1", {
           "col-start-1 row-start-1": horizontal,
         })}
       >
@@ -52,6 +55,7 @@ const WorkCard = ({
         <p
           className={cn("text-muted-foreground text-sm max-w-[90%]", {
             "mb-4": showButton,
+            "hidden md:block": horizontal,
           })}
         >
           {description}

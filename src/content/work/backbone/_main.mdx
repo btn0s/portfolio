@@ -13,6 +13,10 @@ import postmalone02Img from "@/assets/images/work/backbone/post-malone/postmalon
 export const FEATURED_WORK_SLUGS = [
   "/work/backbone/games-db-figma-plugin",
 ]
+export const HIGHLIGHT_SOURCES = [
+    postmalone01Img,
+    postmalone02Img,
+]
 
 # I led front-end development of a global-scale ecommerce store, and established the company's design engineering practice.
 
@@ -25,6 +29,7 @@ export const FEATURED_WORK_SLUGS = [
 />
 
 ## Overview
+
 Backbone is transforming mobile gaming through premium controllers and seamless software experiences. Our products reached #1 on the App Store during Christmas 2023 and are now sold globally.
 
 Over my time at backbone I played two distinct roles:<br/>
@@ -43,10 +48,15 @@ As the second engineer on the web team, I helped scale Backbone.com from DTC sta
 
 ### Other highlights
 
-<Image
-  src={postmalone01Img}
-  alt="Post Malone Full Page Ad"
-  className="rounded-sm shrink-0 bg-muted border shadow"
-/>
-
-<Image  src={postmalone02Img} alt="Post Malone Full Page Ad" className="rounded-sm shrink-0 bg-muted border shadow"/>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
+    {HIGHLIGHT_SOURCES.map(img => (
+        <Image
+            key={img.src}
+            src={img}
+            alt="highlight"
+            width={1600}
+            height={900}
+            className="rounded-sm shrink-0 bg-muted border shadow"
+        />
+    ))}
+</div>
