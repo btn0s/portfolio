@@ -13,7 +13,7 @@ export async function generateMetadata({
   const { frontmatter } = await import(`@/content/work/${workSlug}/_main.mdx`);
 
   const metadata: Metadata = {
-    title: frontmatter.title,
+    title: `${frontmatter.title} | bt norris, design engineer`,
     description: frontmatter.description,
   };
 

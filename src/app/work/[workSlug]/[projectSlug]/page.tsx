@@ -19,7 +19,7 @@ export async function generateMetadata({
   );
 
   const metadata: Metadata = {
-    title: `${projectFrontmatter.title}`,
+    title: `${projectFrontmatter.title} | bt norris, design engineer`,
     description: projectFrontmatter.description,
   };
 
