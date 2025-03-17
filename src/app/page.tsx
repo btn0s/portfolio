@@ -1,5 +1,5 @@
 import Home from "@/components/home";
-import { getWorkFrontmatter } from "@/lib/utils";
+import { getFrontmatter } from "@/lib/utils";
 
 const FEATURED_WORK_SLUGS = [
   "/work/backbone/games-db-figma-plugin",
@@ -10,7 +10,7 @@ const FEATURED_WORK_SLUGS = [
 export default async function Page() {
   const featuredWork = await Promise.all(
     FEATURED_WORK_SLUGS.map(async (slug) => {
-      return await getWorkFrontmatter(slug);
+      return await getFrontmatter(slug);
     })
   );
 

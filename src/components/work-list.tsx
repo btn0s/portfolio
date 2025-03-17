@@ -1,5 +1,5 @@
 import WorkCard from "./work-card";
-import { getWorkFrontmatter } from "@/lib/utils";
+import { getFrontmatter } from "@/lib/utils";
 
 // Mark as a server component
 // This component must be a server component because it uses dynamic imports and async/await
@@ -10,7 +10,7 @@ interface WorkListProps {
 
 const WorkList = async ({ slugs }: WorkListProps) => {
   // Get metadata for all slugs
-  const workItems = await Promise.all(slugs.map(getWorkFrontmatter));
+  const workItems = await Promise.all(slugs.map(getFrontmatter));
 
   return (
     <div className="flex flex-col gap-4">

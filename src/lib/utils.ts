@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Parse a work or project slug to get its frontmatter data
  */
-export async function getWorkFrontmatter(slug: string) {
+export async function getFrontmatter(slug: string) {
   try {
     // Ensure slug starts with a slash for consistent processing
     const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`;
