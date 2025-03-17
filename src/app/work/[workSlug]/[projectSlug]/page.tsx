@@ -16,16 +16,19 @@ export async function generateMetadata({
   const { frontmatter: projectFrontmatter } = await import(
     `@/content/work/${workSlug}/${projectSlug}.mdx`
   );
+  const { default: imageImport } = projectFrontmatter.imagePath
+    ? await import(`@/assets/images/${projectFrontmatter.imagePath}`)
+    : await import(`@/assets/images/placeholder.png`);
 
   const metadata: Metadata = {
     title: `${projectFrontmatter.title} | bt norris, design engineer`,
     description: projectFrontmatter.description,
     openGraph: {
-      images: [JSON.parse(projectFrontmatter.imagePath)],
+      images: imageImport.src,
     },
     twitter: {
       card: "summary_large_image",
-      images: [JSON.parse(projectFrontmatter.imagePath)],
+      images: imageImport.src,
     },
   };
 
