@@ -22,7 +22,7 @@ export const HIGHLIGHT_SOURCES = [
     figmaPluginImg,
     postmalone02Img,
     figmaPluginAppCloseupImg,
-    figmaPluginPluginCloseupImg,
+    figmaPluginPluginCloseupImg
 ]
 
 # I led front-end development of a global-scale ecommerce store, and established the company's design engineering practice.
@@ -45,6 +45,7 @@ Today, Backbone's products are sold worldwide and reached #1 on the App Store in
 
 <Separator className={'my-12'} />
 
+
 <div className="grid grid-cols-1 gap-4 not-prose mt-8">
     {HIGHLIGHT_SOURCES.map(img => (
         <Image
@@ -56,4 +57,7 @@ Today, Backbone's products are sold worldwide and reached #1 on the App Store in
             className="rounded-sm shrink-0 bg-muted border shadow"
         />
     ))}
+    <video autoPlay muted loop className="w-full rounded-sm shrink-0 bg-muted border shadow">
+        <source src={"/videos/backbone/nav-interaction.mp4"} type="video/mp4" />
+    </video>
 </div>
