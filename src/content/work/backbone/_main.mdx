@@ -10,13 +10,19 @@ import WorkList from "@/components/work-list";
 import coverImg from "@/assets/images/work/backbone/cover.png";
 import postmalone01Img from "@/assets/images/work/backbone/post-malone/postmalone-01.png";
 import postmalone02Img from "@/assets/images/work/backbone/post-malone/postmalone-02.png";
+import figmaPluginImg from "@/assets/images/work/backbone/games-db-figma-plugin/cover.png";
+import figmaPluginAppCloseupImg from "@/assets/images/work/backbone/games-db-figma-plugin/app-closeup.png";
+import figmaPluginPluginCloseupImg from "@/assets/images/work/backbone/games-db-figma-plugin/plugin-closeup.png";
 
 export const FEATURED_WORK_SLUGS = [
   "/work/backbone/games-db-figma-plugin",
 ]
 export const HIGHLIGHT_SOURCES = [
     postmalone01Img,
+    figmaPluginImg,
     postmalone02Img,
+    figmaPluginAppCloseupImg,
+    figmaPluginPluginCloseupImg,
 ]
 
 # I led front-end development of a global-scale ecommerce store, and established the company's design engineering practice.
@@ -33,11 +39,13 @@ Today, Backbone's products are sold worldwide and reached #1 on the App Store in
 
 ### Featured Project
 
-<WorkList slugs={FEATURED_WORK_SLUGS} showBorder />
+<div className={'mt-8 mb-12'}>
+    <WorkList slugs={FEATURED_WORK_SLUGS} showBorder />
+</div>
 
 <Separator className={'my-12'} />
 
-<div className="grid grid-cols-1 gap-4 not-prose">
+<div className="grid grid-cols-1 gap-4 not-prose mt-8">
     {HIGHLIGHT_SOURCES.map(img => (
         <Image
             key={img.src}
