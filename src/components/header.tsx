@@ -6,11 +6,41 @@ import Link from "next/link";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
-
+import RemoveBaseLayout from "@/components/remove-base-layout";
+import { ArrowLeftIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 const DURATION = 300;
 const BLUR_CLASSNAME = "blur-xs";
 const SCALE_CLASSNAME = "scale-99";
 const THEME_SWITCH_EFFECTS = [BLUR_CLASSNAME, SCALE_CLASSNAME];
+
+export const ExperimentHeader = () => {
+  const pathname = usePathname();
+  return (
+    <>
+      <RemoveBaseLayout />
+      <div className="fixed top-0 inset-x-0 p-4 flex justify-between items-center">
+        <Button variant="ghost" size="sm" asChild>
+          <Link
+            href="/lab"
+            className="text-xs font-mono flex items-center gap-2 text-muted-foreground"
+          >
+            <ArrowLeftIcon className="size-3" />
+            lab
+          </Link>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled
+          className="text-xs font-mono"
+        >
+          {pathname}
+        </Button>
+      </div>
+    </>
+  );
+};
 
 const Header = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -118,6 +148,7 @@ const Header = () => {
 
   return (
     <motion.header
+      id="header"
       className="px-6 pt-6 flex justify-between items-center max-w-content mx-auto w-full"
       variants={VARIANTS_HEADER}
       transition={TRANSITION_HEADER}

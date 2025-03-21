@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 const Main = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.main
+      id="main"
       variants={VARIANTS_CONTAINER}
       initial="hidden"
       animate="visible"
