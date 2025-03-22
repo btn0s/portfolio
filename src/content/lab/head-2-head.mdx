@@ -1,0 +1,46 @@
+---
+title: Head 2 Head
+description: A multiplayer stealth game concept I designed and prototyped in Unreal Engine Blueprints
+published: false
+---
+
+export const GALLERY = [
+  {
+    type: "video",
+    src: "https://pub-627932c2845d4a40839460d52d8a0d2d.r2.dev/Streamable%20Dashboard%20(1).mp4",
+    alt: "Game Dev Prototypes",
+  },
+  {
+    type: "video",
+    src: "https://pub-627932c2845d4a40839460d52d8a0d2d.r2.dev/Streamable%20Dashboard%20Video%20(10).mp4",
+    alt: "Game Dev Prototypes",
+  },
+];
+
+# Head 2 Head
+
+Head 2 head is a multiplayer FPS game concept I designed and prototyped in Unreal Engine Blueprints. This game is inspired by the "Arena" from the popular S.T.A.L.K.E.R. series, as well as the 1v1 "Gulag" or 2v2 "Gunfight" from recent Call of Duty games.
+
+<div className="grid grid-cols-1 gap-4 not-prose mt-8">
+    {GALLERY.map(item => {
+        if (item.type === "image") {
+            return (
+                <Image
+                    key={item.src.src}
+                    src={item.src}
+                    alt={item.alt}
+                    width={1600}
+                    height={900}
+                    className="rounded-sm shrink-0 bg-muted border shadow"
+                />
+            )
+        }
+
+        return (
+            <video key={item.src} autoPlay muted loop playsInline controls className="w-full rounded-sm shrink-0 bg-muted border shadow">
+                <source src={item.src} type="video/mp4"/>
+            </video>
+        )
+    })}
+
+</div>

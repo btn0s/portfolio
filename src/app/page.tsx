@@ -6,6 +6,7 @@ const FEATURED_WORK_SLUGS = [
   "/work/backbone/games-db-figma-plugin",
   "/work/amex/time-machine",
   "/lab/echelon",
+  "/lab/game-dev-prototypes",
 ];
 
 export default async function Page() {
