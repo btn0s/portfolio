@@ -1,0 +1,66 @@
+---
+description: Understanding the portfolio goals and career objectives
+globs: 
+alwaysApply: false
+---
+# Portfolio Goals & Career Objectives
+
+## Primary Purpose
+
+This portfolio is designed to showcase my unique hybrid skillset as a design engineer with strong prototyping abilities. The primary goal is to demonstrate the intersection of design thinking and technical implementation capabilities that make me valuable for product-focused engineering roles.
+
+## Target Roles & Companies
+
+I'm specifically targeting roles at:
+
+1. **Design/Engineering Tool Companies**:
+   - Linear
+   - Paper
+   - Play
+   - Similar product-focused tool startups
+
+2. **AI Startups**:
+   - Companies building innovative AI interfaces
+   - Startups leveraging AI for creative or productivity tools
+
+3. **Prototyping Roles**:
+   - Meta and similar companies with dedicated prototyping teams
+   - Roles that bridge design systems and engineering implementation
+
+## Content Strategy
+
+The portfolio is structured to highlight:
+
+1. **Professional Work**: `/work/` directory showcasing polished, shipped projects
+   - Demonstrates ability to execute at a professional level
+   - Shows range across different companies and problem spaces
+
+2. **Experimental Lab**: `/lab/` directory as an active collection of explorations
+   - Maintains a backlog of creative experiments
+   - Shows technical versatility and passion for exploration
+   - Includes projects across diverse technologies:
+     - WebGL shaders
+     - AI interfaces and integrations
+     - Game development prototypes
+     - Interaction design experiments
+     - Creative coding
+
+## Unique Value Proposition
+
+The portfolio aims to communicate my ability to:
+
+1. **Bridge Disciplines**: Work effectively across design and engineering
+2. **Prototype Rapidly**: Turn concepts into functional implementations quickly
+3. **Execute with Quality**: Deliver polished, production-ready solutions
+4. **Explore Emerging Tech**: Stay ahead of technology trends through hands-on exploration
+
+## Lab Section Strategy
+
+The `/lab/` section will be continuously expanded with:
+
+- Regular new experiments that showcase technical versatility
+- Documentation of process and technical approaches
+- A mix of complete projects and work-in-progress explorations
+- Content that demonstrates both visual design skills and technical depth
+
+This strategy positions me as someone who not only ships professional work but also continuously explores, learns, and pushes boundaries through self-directed experiments. 

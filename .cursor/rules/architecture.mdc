@@ -1,0 +1,111 @@
+---
+description: Any time we need to understand the codebase
+globs: 
+alwaysApply: false
+---
+# Portfolio Website Architecture
+
+## Overview
+
+This portfolio website is built using a modern web development stack centered around Next.js 15, React 19, and TypeScript. It employs the App Router architecture pattern introduced in Next.js 13+ for routing and page organization, with MDX for content management.
+
+## Tech Stack
+
+- **Framework**: Next.js 15.2.2
+- **UI Library**: React 19.0.0
+- **Language**: TypeScript 5
+- **Styling**: TailwindCSS 4 with tailwind-merge for conditional class composition
+- **Content**: MDX with remark/rehype plugins for enhanced markdown
+- **Components**: shadcn/ui components (wrapping Radix UI primitives) with custom styling
+- **Animations**: Motion library for animations
+
+## Directory Structure
+
+```
+/
+├── public/               # Static assets served directly
+├── src/
+│   ├── app/              # Next.js App Router pages and layouts
+│   ├── assets/           # Project assets (fonts, images)
+│   ├── components/       # React components
+│   │   ├── ui/           # shadcn/ui components (pre-styled Radix UI primitives)
+│   │   └── motion-primitives/ # Animation components
+│   ├── content/          # MDX content files
+│   │   ├── lab/          # Lab (experiments) content
+│   │   └── work/         # Work/portfolio content
+│   ├── hooks/            # Custom React hooks
+│   └── lib/              # Utility functions and shared code
+└── next.config.mjs       # Next.js configuration
+```
+
+## Key Architecture Patterns
+
+### 1. Content Management
+
+Content is managed through MDX files organized in the `src/content` directory. The content is structured as:
+
+- **Work**: Portfolio items in `/work/<company>/_main.mdx` for company overviews and `/work/<company>/<project>.mdx` for specific projects.
+- **Lab**: Experiments and side projects in `/lab/<project-name>.mdx`.
+
+Frontmatter is used for metadata such as title, description, date, and image paths.
+
+### 2. Component Architecture
+
+Components follow a hierarchical structure:
+
+- **Layout Components**: Define the overall structure (e.g., `layout.tsx`, `Main`, `Header`, `Footer`)
+- **Page Components**: Specific to routes, importing and composing other components
+- **UI Components**: shadcn/ui components (pre-styled, accessible components built on top of Radix UI primitives)
+- **Content-Specific Components**: Components like `WorkCard` and `ProseLayout` for specific content types
+
+### 3. Data Fetching
+
+Data is primarily sourced from local MDX files. The `getFrontmatter` utility function in `src/lib/utils.ts` handles retrieving and parsing frontmatter from MDX files based on their slug.
+
+### 4. Styling System
+
+Styling uses TailwindCSS with:
+- Custom fonts (Oracle variable font and Geist Mono)
+- A utility function `cn()` that combines `clsx` and `tailwind-merge` for conditional class composition
+- Component-specific variants defined in `src/lib/variants.ts`
+
+### 5. Routing
+
+Routing follows the Next.js App Router pattern:
+- Page routes are defined by directories and `page.tsx` files in the `src/app` directory
+- Layouts are defined in `layout.tsx` files and apply to all child routes
+- Dynamic routes use the `[param]` directory naming convention
+
+### 6. MDX Integration
+
+MDX is integrated with:
+- Custom components specified in `mdx-components.tsx`
+- Remark plugins for frontmatter parsing
+- Rehype plugins for code highlighting (rehype-pretty-code)
+- Support for diagrams through mermaid integration
+
+## Build & Deployment
+
+The site is configured for:
+- Development using `next dev`
+- Production builds via `next build`
+- Linting with ESLint
+- Possible deployment to Vercel (based on the `.vercel` directory)
+
+## Key Utilities
+
+The `utils.ts` file contains important utilities:
+- `cn()`: For composing TailwindCSS classes
+- `getFrontmatter()`: For retrieving and parsing frontmatter data from MDX files
+
+## UI Component Library
+
+The site uses shadcn/ui, which provides:
+- Pre-styled versions of Radix UI primitives
+- Accessible components with consistent design patterns
+- Customization through Tailwind classes
+- Configuration through components.json in the project root
+
+## Conclusion
+
+This portfolio site follows modern React and Next.js patterns, with a clear separation of concerns between content, presentation, and application logic. The use of MDX provides a developer-friendly way to manage content with rich formatting capabilities, while the shadcn/ui component architecture enables reuse and maintainability. 
