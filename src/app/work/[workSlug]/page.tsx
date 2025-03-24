@@ -34,13 +34,18 @@ export async function generateMetadata({
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { workSlug } = await params;
 
-  const { default: Post, frontmatter } = await import(
-    `@/content/work/${workSlug}/_main.mdx`
-  );
+  try {
+    const { default: Post, frontmatter } = await import(
+      `@/content/work/${workSlug}/_main.mdx`
+    );
 
-  if (frontmatter.published === false) {
+    if (frontmatter.published === false) {
+      return notFound();
+    }
+
+    return <Post />;
+  } catch (error) {
+    console.error(error);
     return notFound();
   }
-
-  return <Post />;
 }
