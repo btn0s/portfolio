@@ -27,8 +27,9 @@ const WorkCard = ({
   return (
     <Link
       href={slug}
-      className={cn("grid gap-4 not-prose w-full max-w-content", {
-        "grid-cols-2": horizontal,
+      className={cn("flex gap-4 not-prose w-full max-w-content", {
+        "flex-row": horizontal,
+        "flex-col": !horizontal,
         "border p-4 shadow-sm rounded-lg": showBorder,
       })}
       prefetch
@@ -45,7 +46,7 @@ const WorkCard = ({
           }
         )}
       />
-      <div className={cn("flex flex-col items-start justify-center gap-1", {})}>
+      <div className={cn("flex flex-col items-start justify-start gap-1", {})}>
         <h3 className={cn("font-medium")}>{title}</h3>
         <p
           className={cn("text-muted-foreground text-sm max-w-[90%]", {
