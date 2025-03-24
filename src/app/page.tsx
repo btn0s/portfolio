@@ -7,6 +7,7 @@ const FEATURED_WORK_SLUGS = [
   "/work/amex/time-machine",
   "/lab/echelon",
   "/lab/game-dev-prototypes",
+  "/lab/strella",
 ];
 
 export default async function Page() {
