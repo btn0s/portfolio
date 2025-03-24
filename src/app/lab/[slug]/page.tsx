@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 type Params = {
   slug: string;
@@ -33,7 +34,11 @@ export async function generateMetadata({
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
 
-  const { default: Post } = await import(`@/content/lab/${slug}.mdx`);
-
-  return <Post />;
+  try {
+    const { default: Post } = await import(`@/content/lab/${slug}.mdx`);
+    return <Post />;
+  } catch (error) {
+    console.error(error);
+    return notFound();
+  }
 }

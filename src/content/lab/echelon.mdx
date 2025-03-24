@@ -13,19 +13,51 @@ import damageMercImg from "@/assets/images/lab/echelon/damage-merc.png";
 import eliminatedImg from "@/assets/images/lab/echelon/eliminated.png";
 import repeatImg from "@/assets/images/lab/echelon/repeat.png";
 
+export const GALLERY = [
+    {
+        type: "image",
+        src: coverImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: mainMenuImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: menuWireframeImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: prematchImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: matchStartSpiesImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: damageMercImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: eliminatedImg,
+        alt: "Echelon UX board",
+    },
+    {
+        type: "image",
+        src: repeatImg,
+        alt: "Echelon UX board",
+    },
+];
+
 # Echelon
 
 Inspired by Splinter Cell's multiplayer, Echelon is a game concept I designed and prototyped in Unreal Engine Blueprints. The game pits agile spies (third-person) against well-armed mercenaries (first-person) in an asymmetrical multiplayer stealth game. Spies use stealth and gadgets while mercenaries rely on firepower to control the map in classic modes like bomb defusal.
 
-<div className="grid grid-cols-1 gap-4 not-prose">
-    {[coverImg, mainMenuImg, menuWireframeImg, prematchImg, matchStartSpiesImg, damageMercImg, eliminatedImg, repeatImg].map(img => (
-        <Image
-            key={img.src}
-            src={img}
-            alt="Echelon UX board"
-            width={1600}
-            height={900}
-            className="rounded-sm shrink-0 bg-muted border shadow aspect-video"
-        />
-    ))}
-</div>
+<Gallery items={GALLERY} />
