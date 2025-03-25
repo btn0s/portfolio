@@ -178,25 +178,16 @@ const Header = () => {
         </div>
       </Link>
       <div className="flex gap-2 items-center">
-        {/*<Button variant="outline" size="sm" asChild>*/}
-        {/*  <Link href="/lab" className="text-muted-foreground">*/}
-        {/*    lab*/}
-        {/*  </Link>*/}
-        {/*</Button>*/}
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/pov" className="text-muted-foreground">
+            pov
+          </Link>
+        </Button>
         <Button variant="outline" size="sm" asChild>
           <Link href="/resume" className="text-muted-foreground">
             resume
           </Link>
         </Button>
-        {/*<Button*/}
-        {/*  variant="outline"*/}
-        {/*  size="sm"*/}
-        {/*  onClick={switchTheme}*/}
-        {/*  className="text-muted-foreground"*/}
-        {/*  disabled={isChangingTheme.current}*/}
-        {/*>*/}
-        {/*  {theme === "dark" ? "☀️" : "🌙"}*/}
-        {/*</Button>*/}
       </div>
     </motion.header>
   );

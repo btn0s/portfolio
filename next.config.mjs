@@ -17,6 +17,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.glsl/,
+      type: "asset/source",
+    });
+    return config;
+  },
 };
 
 /** @type {import('rehype-pretty-code').Options} */

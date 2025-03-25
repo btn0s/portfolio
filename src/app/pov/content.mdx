@@ -1,36 +1,65 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import toolcraft from "@/lib/shaders/toolcraft.glsl";
+import iteration from "@/lib/shaders/iteration.glsl";
+import intention from "@/lib/shaders/intention.glsl";
 
-# This I Believe
+# To build tools is to empower entire generations to go further, faster, and better.
+**A personal philosophy on building, prototyping, and designing for momentum**
 
-<Flicker />
+Toolcraft is humanity’s oldest tradition. Our ancestors built great civilizations on the backs of the tools they made. Design engineers are today’s toolmakers — carrying forward this torch.
 
-I believe the best design engineers don't just build for users — they build for everyone around them. They create momentum. They reduce friction. They lay foundations that help their teams move faster, with more clarity and less noise. They're not just problem solvers — they're multipliers.
+{/* <Shader fs={toolcraft} /> */}
 
-I'm a prototyper at heart. I work fast and loose to find signal in the noise. I believe iteration speed solves almost everything — not by brute force, but by making the invisible visible. Show it, don't tell it. Try it, don't assume it. But speed isn't the goal. Insight is. And insight comes from focus, intention, and having the right tools in your hands.
+> "Man is a tool-using animal. Without tools he is nothing, with tools he is all."  
+> <span className="text-muted-foreground font-normal text-sm">- Thomas Carlyle</span>
 
-This is where the joy of discovery lives — in that moment when experimentation meets insight. When the right tool unlocks a new way of thinking. When rapid iteration reveals not just what works, but why it matters.
+The best design engineers don’t just build for users — they build for their teams. They create momentum. They reduce friction. They lay foundations that help others move faster, with more clarity and less noise. They’re not just problem solvers — they’re multipliers.
 
-Tools matter. A lot. The best tools don't just get out of your way — they work with you. They respond to your thinking. They shape how you explore, how you design, and how you build. Expressive tools aren't luxuries — they're accelerants. They close the gap between idea and execution.
+I'm a prototyper at heart. I work fast and loose, using iteration to find signal in the noise — not by brute force, but by making the invisible visible. Show it, don’t say it. Try it, don’t assume it. Build to understand.
 
-I believe in systems that empower. In workflows that flex. In code as a medium for expression — not just instruction. Declarative paradigms, visual languages, real-time feedback: these aren't just nice-to-haves. They're how we unlock new ways of thinking.
+This is where the joy of discovery lives: In that moment when experimentation meets clarity. When the right tool unlocks a new way of thinking. When iteration reveals not just what works — but why it matters.
 
-And I believe in raising the floor for everyone.
-In sharing knowledge, not hoarding it.
-In designing not just for the end user — but for the teammate, the future contributor, the person inheriting your work six months from now.
+{/* <Shader fs={iteration} /> */}
 
-The future of software is being rewritten. AI is reshaping how we work, who gets to build, and what building even means. That future should be more accessible, more expressive, more playful — and more human.
+> “A prototype is worth a thousand meetings.”  
+> <span className="text-muted-foreground font-normal text-sm">- IDEO</span>
 
-Let's make things that move fast and feel right.
-Let's build tools that help ideas grow.
-Let's design the future we actually want to work in.
+Tools matter — more than we admit. The best ones don’t just get out of your way; they work with you. They shape how you think. How you explore. How you design. How you build.
 
-<div className="flex justify-between not-prose">
-  <Button variant="secondary" size="sm" asChild>
-    <Link href="/" className="text-muted-foreground">
-      <ArrowLeftIcon className="size-3" />
-      Back to home
-    </Link>
-  </Button>
+Expressive tools aren’t luxuries. They’re accelerants. They close the gap between idea and execution. They don’t just support flow — they create it.
+
+I believe in systems that empower. In workflows that flex. In code as a medium for expression — not just instruction. Declarative paradigms, visual languages, real-time feedback: these aren’t just features. They’re how we unlock new ways of thinking.
+
+{/* <Shader fs={intention} /> */}
+
+> “Speed isn’t the goal. Insight is.”  
+> <span className="text-muted-foreground font-normal text-sm">- Personal principle</span>
+
+And I believe in raising the floor for everyone. In sharing knowledge, not hoarding it. In designing not just for the end user — but for the teammate, the contributor, the person inheriting your work six months from now.
+
+If I leave anything behind, I want to have helped you move faster, with more clarity and less noise.
+
+Let’s make things that move fast and feel right. Let’s build tools that help ideas grow. Let’s design the tools that build the future we want to see.
+
+> “The tools we use have a profound (and devious!) influence on our thinking habits, and therefore on our thinking abilities.”  
+> <span className="text-muted-foreground font-normal text-sm">- Edsger W. Dijkstra</span>
+
+<div className="flex flex-col not-prose gap-4">
+  <Flicker />
+  <div className="flex justify-between">
+    <Button variant="secondary" size="sm" asChild>
+      <Link href="/" className="text-muted-foreground">
+        <ArrowLeftIcon className="size-3" />
+        Back to home
+      </Link>
+    </Button>
+    <Button variant="secondary" size="sm" asChild>
+      <Link href="/lab" className="text-muted-foreground">
+        Check out the Lab
+        <ArrowRightIcon className="size-3" />
+      </Link>
+    </Button>
+  </div>
 </div>
