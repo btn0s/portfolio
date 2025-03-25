@@ -5,12 +5,13 @@ import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
 import { z } from "zod";
 import { forwardRef } from "react";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
+import { ScrollArea } from "../ui/scroll-area";
+
 const shaderSchema = z.object({
   code: z.string().describe("GLSL fragment shader code"),
 });
@@ -78,30 +79,32 @@ const ShaderBuddy = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4 border bg-muted rounded-lg not-prose">
-      <div className="relative flex flex-col gap-2 aspect-video overflow-hidden isolate">
-        <pre className="absolute top-2 left-2 text-xs font-mono opacity-20 mix-blend-difference z-10">
-          {object?.code}
-        </pre>
-
-        <div className="w-full aspect-video bg-background rounded-lg border border-white/20 overflow-hidden">
-          {isLoading && (
-            <TextShimmer
-              duration={2}
-              className="text-xs font-mono absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-            >
-              {input}
-            </TextShimmer>
-          )}
-          <Canvas>
-            {!isLoading && object?.code ? (
-              <ShaderEffect code={object.code} />
-            ) : null}
-          </Canvas>
-        </div>
-
-        {error && (
-          <div className="text-sm text-red-500 font-mono">Error: {error}</div>
+      <div className="w-full relative aspect-video bg-background rounded-lg border border-white/20 overflow-hidden">
+        {isLoading && (
+          <TextShimmer
+            duration={2}
+            className="text-xs font-mono absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+          >
+            {input}
+          </TextShimmer>
         )}
+        <Canvas className="absolute inset-0">
+          {!isLoading && object?.code ? (
+            <ShaderEffect code={object.code} />
+          ) : null}
+        </Canvas>
+        <div className="absolute bottom-2 left-2 right-2 ">
+          <ScrollArea className="h-[100px] bg-background/70 backdrop-blur-xl rounded-lg border text-xs font-mono p-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="absolute top-2 right-2 text-xs"
+            >
+              Copy code
+            </Button>
+            <pre>{object?.code}</pre>
+          </ScrollArea>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">

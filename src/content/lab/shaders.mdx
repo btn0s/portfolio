@@ -5,72 +5,167 @@ description: A tool for creating custom GLSL fragment shaders using AI
 
 import ShaderBuddy from "@/components/lab/shader-buddy";
 
-# Generating Shaders with Claude 3.7
+# Shader Generation with AI
 
-An experiment in generating GLSL shaders with AI.
 <div className="not-prose">
   <ShaderBuddy />
 </div>
 
 ## How It Works
 
-1. Describe the shader effect you want to create
-2. The AI analyzes your prompt and creates a technical specification
-3. Using this spec, it generates valid GLSL code for Three.js
-4. The shader renders instantly in your browser
+Fragment shaders are programs that run on every pixel of your screen, determining their final color based on various inputs. This experiment uses Claude 3.7 to generate complex shader effects using advanced techniques like raymarching, noise functions, and signed distance fields (SDFs).
 
-## Core Concepts
+The system uses a single specialized prompt that guides the AI to generate complete GLSL shaders. Each shader has access to:
 
-Fragment shaders are programs that run on every pixel of your screen, determining their final color based on various inputs.
+- `vUv`: Normalized (0-1) coordinates for pixel position
+- `uTime`: Animation time value
+- `uResolution`: Screen dimensions for proper scaling
 
-The generated shaders work with three key inputs:
+## Implementation Details
 
-- `vUv`: Normalized (0-1) texture coordinates for each pixel
-- `uTime`: Continuous time value for animations
-- `uResolution`: Screen dimensions for aspect ratio correction
-
-These building blocks allow for creation of:
-- Geometric patterns through coordinate manipulation
-- Smooth animations using time-based functions
-- Color transitions and gradients
-- Responsive layouts that adapt to screen size
-
-
-## Implementation
-
-Using the Vercel AI SDK, we chain two steps together with carefully crafted prompts:
+The shader generation uses the Vercel AI SDK with a carefully crafted system prompt:
 
 ```ts
-// Step 1: Technical description
-const descriptionResult = streamObject({
-  model: anthropic("claude-3-7-sonnet-20250219"),
-  schema: z.object({
-    description: z.string().describe("Technical description of the shader effect"),
-  }),
-  prompt: `${descriptionPrompt}\n\nUser prompt: ${context}`,
-  temperature: 0.7,
-}).toTextStreamResponse();
-
-const description = await new Response(descriptionResult.body).text();
-
-// Step 2: Generate GLSL
 const result = streamObject({
   model: anthropic("claude-3-7-sonnet-20250219"),
   schema: shaderSchema,
-  prompt: codePrompt.replace("{description}", description),
+  prompt: shaderPrompt,
   temperature: 0.7,
 });
-
-return result.toTextStreamResponse();
 ```
 
-The system uses detailed prompts that:
-1. First analyze the request and create a technical spec (with controlled randomness via temperature)
-2. Provide context about shader programming concepts and best practices
-3. Guide the model to generate optimized, well-structured GLSL code
+### System Prompt
 
-The generated shaders are validated to ensure they:
+The complete prompt that guides the AI:
+
+```glsl
+You are a skilled GLSL fragment shader artist specializing in creating generative art 
+using techniques like SDF raymarching and various noise functions (e.g., simplex, fbm, voronoise, etc.).
+
+Available uniforms and variables:
+- varying vec2 vUv: Normalized texture coordinates (0-1)
+- uniform float uTime: Continuous time value for animation
+- uniform vec2 uResolution: Screen resolution for aspect ratio correction
+
+Common helper functions to consider:
+// Signed Distance Functions
+float sdSphere(vec3 p, float r) { return length(p) - r; }
+float sdBox(vec3 p, vec3 b) { return length(max(abs(p) - b, 0.0)); }
+float sdTorus(vec3 p, vec2 t) { return length(vec2(length(p.xz) - t.x, p.y)) - t.y; }
+
+// Noise functions
+float hash21(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float noise(vec2 p) { /* Implement gradient noise */ }
+float fbm(vec2 p) { /* Implement fractal brownian motion */ }
+```
+
+### Available Techniques
+
+The AI can utilize several advanced shader techniques:
+
+1. **Signed Distance Functions (SDF)**
+   - Geometric primitives (sphere, box, torus)
+   - Boolean operations for complex shapes
+   - Domain warping and deformation
+   - Soft shadows and ambient occlusion
+
+2. **Noise and Patterns**
+   - Fractal Brownian Motion (fBm)
+   - Domain warping with noise
+   - Voronoi cellular patterns
+   - Simplex/Perlin noise
+
+3. **Materials and Lighting**
+   - PBR-style materials
+   - Normal mapping
+   - Emission and glow
+   - Dynamic lighting
+
+### Shader Structure
+
+Each generated shader follows this basic structure:
+
+```glsl
+varying vec2 vUv;
+uniform float uTime;
+uniform vec2 uResolution;
+
+float map(vec3 p) {
+    // Distance field definition
+    return 0.0;
+}
+
+vec3 calcNormal(vec3 p) {
+    vec2 e = vec2(0.001, 0.0);
+    return normalize(vec3(
+        map(p + e.xyy) - map(p - e.xyy),
+        map(p + e.yxy) - map(p - e.yxy),
+        map(p + e.yyx) - map(p - e.yyx)
+    ));
+}
+
+void main() {
+    vec2 uv = (vUv - 0.5) * 2.0;
+    uv.x *= uResolution.x/uResolution.y;
+    
+    // Ray setup
+    vec3 ro = vec3(0.0, 0.0, -3.0);
+    vec3 rd = normalize(vec3(uv, 1.0));
+    
+    // Raymarching
+    float d = 0.0;
+    vec3 p;
+    
+    for(int i = 0; i < 64; i++) {
+        p = ro + rd * d;
+        float dist = map(p);
+        if(dist < 0.001 || d > 100.0) break;
+        d += dist;
+    }
+    
+    // Shading
+    vec3 color = vec3(0.0);
+    if(d < 100.0) {
+        vec3 n = calcNormal(p);
+        // Materials and lighting
+    }
+    
+    gl_FragColor = vec4(color, 1.0);
+}
+```
+
+### Validation
+
+Generated shaders are validated to ensure they:
 - Contain required uniform declarations
 - Follow GLSL best practices
 - Handle edge cases and performance considerations
 - Include proper documentation
+
+The validation is handled by a Zod schema:
+
+```ts
+const shaderSchema = z.object({
+  code: z.string()
+    .describe("Valid GLSL fragment shader code for Three.js")
+    .refine(
+      (code) => code.includes("void main()"),
+      "Shader must contain a main function"
+    )
+    .refine(
+      (code) => code.includes("gl_FragColor"),
+      "Shader must set gl_FragColor"
+    )
+    .refine(
+      (code) => /uniform\s+float\s+uTime/.test(code),
+      "Shader must declare uTime uniform"
+    )
+    .refine(
+      (code) => /uniform\s+vec2\s+uResolution/.test(code),
+      "Shader must declare uResolution uniform"
+    )
+    .refine(
+      (code) => /varying\s+vec2\s+vUv/.test(code),
+      "Shader must declare vUv varying"
+    ),
+});
