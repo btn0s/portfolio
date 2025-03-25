@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-
+import { createMetaTitle } from "@/lib/utils";
 type Params = {
   workSlug: string;
 };
@@ -17,7 +17,7 @@ export async function generateMetadata({
     : await import(`@/assets/images/placeholder.png`);
 
   const metadata: Metadata = {
-    title: `${frontmatter.title} ✦ bt norris`,
+    title: createMetaTitle(frontmatter.title),
     description: frontmatter.description,
     openGraph: {
       images: imageImport.src,

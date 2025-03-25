@@ -8,6 +8,9 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import type { MDXComponents } from "mdx/types";
 import Image from "next/image";
 import { useId } from "react";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 type GalleryItem = {
   type: "image" | "video" | "youtube";
   src: string;
@@ -70,6 +73,9 @@ const Gallery = ({ items }: { items: GalleryItem[] }) => {
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
+    Flicker: () => (
+      <FlickeringGrid className={"w-full mb-12"} height={64} color={"#fff"} />
+    ),
     Gallery,
     Image: (props) => (
       <Dialog>
@@ -90,5 +96,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </DialogContent>
       </Dialog>
     ),
+    Button: (props) => <Button {...props} />,
+    Separator: (props) => <Separator {...props} />,
   };
 }

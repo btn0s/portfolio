@@ -1,8 +1,9 @@
 import ProseLayout from "@/components/prose-layout";
 import { Metadata } from "next";
+import { createMetaTitle } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "My point of view",
+  title: createMetaTitle("My point of view"),
   description:
     "Building tools that empower, systems that scale, and a future that feels more human.",
 };

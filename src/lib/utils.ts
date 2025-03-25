@@ -6,6 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const createMetaTitle = (title: string) => {
+  return `${title} • bt norris, design engineer`;
+};
+
 /**
  * Parse a work or project slug to get its frontmatter data
  */

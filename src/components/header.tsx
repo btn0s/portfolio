@@ -9,6 +9,9 @@ import { motion } from "motion/react";
 import RemoveBaseLayout from "@/components/remove-base-layout";
 import { ArrowLeftIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import logo from "@/assets/images/logo.svg";
+
 const DURATION = 300;
 const BLUR_CLASSNAME = "blur-xs";
 const SCALE_CLASSNAME = "scale-99";
@@ -157,9 +160,7 @@ const Header = () => {
     >
       <Link href="/" className="font-medium leading-none">
         <div className="flex items-center gap-2">
-          <TextEffect as="span" preset="blur" per="char">
-            ✦
-          </TextEffect>
+          <Image src={logo} alt="bt norris" width={18} />
           <div className="flex flex-col gap-0 justify-center text-sm">
             <TextEffect as="span" preset="blur" per="char">
               bt norris

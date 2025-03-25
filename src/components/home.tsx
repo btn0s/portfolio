@@ -22,9 +22,12 @@ export default function Home({
           I'm a <span className="font-medium text-foreground">designer</span>{" "}
           and <span className="font-medium text-foreground">programmer</span>{" "}
           interested in games, tools, artifical intelligence, and{" "}
-          <span className="font-medium text-foreground">
+          <Link
+            href="/pov"
+            className="font-medium text-foreground hover:underline"
+          >
             driven by the joy of discovery
-          </span>
+          </Link>
         </p>
         <p>
           I'm currently{" "}
@@ -33,7 +36,7 @@ export default function Home({
           </span>{" "}
           at{" "}
           <Link
-            className="underline hover:text-foreground"
+            className="hover:underline hover:text-foreground"
             href="/work/backbone"
           >
             Backbone
