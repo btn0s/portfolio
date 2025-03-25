@@ -78,8 +78,8 @@ const ShaderBuddy = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4 border bg-muted rounded-lg not-prose">
-      <div className="relative flex flex-col gap-2 aspect-video overflow-hidden">
-        <pre className="absolute top-2 left-2 text-xs font-mono opacity-20 mix-blend-difference">
+      <div className="relative flex flex-col gap-2 aspect-video overflow-hidden isolate">
+        <pre className="absolute top-2 left-2 text-xs font-mono opacity-20 mix-blend-difference z-10">
           {object?.code}
         </pre>
 

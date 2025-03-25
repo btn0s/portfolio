@@ -8,7 +8,6 @@ import ShaderBuddy from "@/components/lab/shader-buddy";
 # Generating Shaders with Claude 3.7
 
 An experiment in generating GLSL shaders with AI.
-
 <div className="not-prose">
   <ShaderBuddy />
 </div>
@@ -20,11 +19,26 @@ An experiment in generating GLSL shaders with AI.
 3. Using this spec, it generates valid GLSL code for Three.js
 4. The shader renders instantly in your browser
 
-The generated shaders use standard uniforms (`uTime`, `uResolution`).
+## Core Concepts
+
+Fragment shaders are programs that run on every pixel of your screen, determining their final color based on various inputs.
+
+The generated shaders work with three key inputs:
+
+- `vUv`: Normalized (0-1) texture coordinates for each pixel
+- `uTime`: Continuous time value for animations
+- `uResolution`: Screen dimensions for aspect ratio correction
+
+These building blocks allow for creation of:
+- Geometric patterns through coordinate manipulation
+- Smooth animations using time-based functions
+- Color transitions and gradients
+- Responsive layouts that adapt to screen size
+
 
 ## Implementation
 
-Using the Vercel AI SDK, we chain two steps together:
+Using the Vercel AI SDK, we chain two steps together with carefully crafted prompts:
 
 ```ts
 // Step 1: Technical description
@@ -50,6 +64,13 @@ const result = streamObject({
 return result.toTextStreamResponse();
 ```
 
-The prompts guide Claude to:
+The system uses detailed prompts that:
 1. First analyze the request and create a technical spec (with controlled randomness via temperature)
-2. Then use that spec to generate valid GLSL code
+2. Provide context about shader programming concepts and best practices
+3. Guide the model to generate optimized, well-structured GLSL code
+
+The generated shaders are validated to ensure they:
+- Contain required uniform declarations
+- Follow GLSL best practices
+- Handle edge cases and performance considerations
+- Include proper documentation
