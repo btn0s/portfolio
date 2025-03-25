@@ -28,7 +28,7 @@ const WorkCard = ({
     <Link
       href={slug}
       className={cn("flex gap-4 not-prose w-full max-w-content", {
-        "flex-row": horizontal,
+        "flex-row items-center": horizontal,
         "flex-col": !horizontal,
         "border p-4 shadow-sm rounded-lg": showBorder,
       })}
@@ -43,6 +43,7 @@ const WorkCard = ({
           "rounded-sm shrink-0 bg-muted flex text-muted-foreground border",
           {
             "w-full": !horizontal,
+            "w-1/2": horizontal,
           }
         )}
       />
