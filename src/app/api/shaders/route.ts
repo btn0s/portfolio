@@ -1,67 +1,75 @@
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { streamObject } from "ai";
+import { streamObject, streamText } from "ai";
 import { z } from "zod";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-const prompt = `
+const descriptionPrompt = `
 You are a skilled graphics shader programmer.
 
-You answer the user's prompts with only valid webgl glsl code.
+Describe in clear technical terms what shader effect should be created based on the prompt:
+- What visual effects and patterns?
+- What color schemes and transitions?
+- What animation and movement?
+- What mathematical functions are needed?
 
-The user might either want you to fix or in some other way alter some provided shader code or
-they might ask you to write a shader from scratch.
+Keep the description technical and specific.
+`;
 
-Every answer should be a valid glsl shader program in the following format. You may define additional
-functions as needed.
+const codePrompt = `
+You are a skilled graphics shader programmer.
 
-\`\`\`glsl
-#version 300 es
-precision highp float;
+Generate a valid GLSL fragment shader for Three.js that implements this technical description:
 
-uniform vec2 u_resolution;
-uniform float u_time;
+{description}
 
-out vec4 out_color;
+The shader must start with these exact declarations:
+varying vec2 vUv;
+uniform float uTime;
+uniform vec2 uResolution;
+
+Example of valid shader structure:
+varying vec2 vUv;
+uniform float uTime;
+uniform vec2 uResolution;
 
 void main() {
-    // Implement the shader here.
-    out_color = vec4(1.0, 1.0, 1.0, 1.0);
+    vec2 uv = vUv;
+    vec3 color = vec3(uv.x, uv.y, 0.5);
+    gl_FragColor = vec4(color, 1.0);
 }
-\`\`\`
 `;
 
 const shaderSchema = z.object({
-  code: z.string().describe(`The WGSL shader code that should:
-    - Be valid WGSL (WebGPU Shading Language) code
-    - Include vertex and fragment entry points (@vertex and @fragment)
-    - Use the standard uniforms:
-      - @group(0) @binding(0) var<uniform> resolution: vec2f;
-      - @group(0) @binding(1) var<uniform> time: f32;
-    - Keep the code as stremalined and performant as possible, do not optimize for readability.
-    - Avoid deep loops and other performance pitfalls, prefer to use vectorized operations.
-    - Do not include any comments in the code.
-    - Do not include any explanations in the code.
-    - Do not include any other text in the code.
-    - Only include the shader code.
-  `),
+  code: z.string().describe("Valid GLSL fragment shader code for Three.js"),
 });
 
 export async function POST(req: Request) {
   const context = await req.json();
 
-  console.log("Prompt:", prompt);
+  // Step 1: Get technical description
+  const descriptionResult = streamObject({
+    model: anthropic("claude-3-7-sonnet-20250219"),
+    schema: z.object({
+      description: z
+        .string()
+        .describe("Technical description of the shader effect"),
+    }),
+    prompt: `${descriptionPrompt}\n\nUser prompt: ${context}`,
+    temperature: 0.7,
+  }).toTextStreamResponse();
 
+  const description = await new Response(descriptionResult.body).text();
+
+  console.log(description);
+
+  // Step 2: Generate shader code based on description
   const result = streamObject({
     model: anthropic("claude-3-7-sonnet-20250219"),
     schema: shaderSchema,
-    prompt: `
-    ${prompt}
-
-    User prompt: ${context.prompt}
-    `,
+    prompt: codePrompt.replace("{description}", description),
     temperature: 0.7,
   });
 

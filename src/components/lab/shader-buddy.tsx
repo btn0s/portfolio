@@ -15,7 +15,6 @@ const shaderSchema = z.object({
   code: z.string().describe("GLSL fragment shader code"),
 });
 
-// Custom shader effect component
 const ShaderEffect = forwardRef<any, { code: string }>(({ code }, ref) => {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
@@ -86,7 +85,9 @@ const ShaderBuddy = () => {
 
         <div className="w-full aspect-video bg-background rounded-lg border border-white/20 overflow-hidden">
           <Canvas>
-            {object?.code ? <ShaderEffect code={object.code} /> : null}
+            {!isLoading && object?.code ? (
+              <ShaderEffect code={object.code} />
+            ) : null}
           </Canvas>
         </div>
 
