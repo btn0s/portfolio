@@ -34,13 +34,19 @@ void main() {
 `;
 
 const shaderSchema = z.object({
-  code: z.string().describe(`The GLSL shader code that should:
-    - Be valid GLSL ES 3.0 code
-    - Start with "#version 300 es"
-    - Include precision highp float
-    - Use the standard uniforms: u_resolution and u_time
-    - Output to out_color
-    - Include brief comments for key parts`),
+  code: z.string().describe(`The WGSL shader code that should:
+    - Be valid WGSL (WebGPU Shading Language) code
+    - Include vertex and fragment entry points (@vertex and @fragment)
+    - Use the standard uniforms:
+      - @group(0) @binding(0) var<uniform> resolution: vec2f;
+      - @group(0) @binding(1) var<uniform> time: f32;
+    - Keep the code as stremalined and performant as possible, do not optimize for readability.
+    - Avoid deep loops and other performance pitfalls, prefer to use vectorized operations.
+    - Do not include any comments in the code.
+    - Do not include any explanations in the code.
+    - Do not include any other text in the code.
+    - Only include the shader code.
+  `),
 });
 
 export async function POST(req: Request) {
