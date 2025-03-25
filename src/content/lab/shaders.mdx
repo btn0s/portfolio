@@ -5,8 +5,51 @@ description: A tool for creating custom GLSL fragment shaders using AI
 
 import ShaderBuddy from "@/components/lab/shader-buddy";
 
-# Shader Buddy
+# Generating Shaders with Claude 3.7
 
-Shader Buddy is a tool for creating custom GLSL fragment shaders using AI. It's a fun and interactive way to experiment with shader effects and learn about the underlying principles.
+An experiment in generating GLSL shaders with AI.
 
-<ShaderBuddy />
+<div className="not-prose">
+  <ShaderBuddy />
+</div>
+
+## How It Works
+
+1. Describe the shader effect you want to create
+2. The AI analyzes your prompt and creates a technical specification
+3. Using this spec, it generates valid GLSL code for Three.js
+4. The shader renders instantly in your browser
+
+The generated shaders use standard uniforms (`uTime`, `uResolution`).
+
+## Implementation
+
+Using the Vercel AI SDK, we chain two steps together:
+
+```ts
+// Step 1: Technical description
+const descriptionResult = streamObject({
+  model: anthropic("claude-3-7-sonnet-20250219"),
+  schema: z.object({
+    description: z.string().describe("Technical description of the shader effect"),
+  }),
+  prompt: `${descriptionPrompt}\n\nUser prompt: ${context}`,
+  temperature: 0.7,
+}).toTextStreamResponse();
+
+const description = await new Response(descriptionResult.body).text();
+
+// Step 2: Generate GLSL
+const result = streamObject({
+  model: anthropic("claude-3-7-sonnet-20250219"),
+  schema: shaderSchema,
+  prompt: codePrompt.replace("{description}", description),
+  temperature: 0.7,
+});
+
+return result.toTextStreamResponse();
+```
+
+The prompts guide Claude to:
+1. First analyze the request and create a technical spec (with controlled randomness via temperature)
+2. Then use that spec to generate valid GLSL code

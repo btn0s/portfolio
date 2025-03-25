@@ -10,7 +10,7 @@ import { z } from "zod";
 import { forwardRef } from "react";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-
+import { TextShimmer } from "@/components/motion-primitives/text-shimmer";
 const shaderSchema = z.object({
   code: z.string().describe("GLSL fragment shader code"),
 });
@@ -77,13 +77,21 @@ const ShaderBuddy = () => {
   });
 
   return (
-    <div className="flex flex-col gap-4 p-4 border bg-muted rounded-lg">
+    <div className="flex flex-col gap-4 p-4 border bg-muted rounded-lg not-prose">
       <div className="relative flex flex-col gap-2 aspect-video overflow-hidden">
         <pre className="absolute top-2 left-2 text-xs font-mono opacity-20 mix-blend-difference">
           {object?.code}
         </pre>
 
         <div className="w-full aspect-video bg-background rounded-lg border border-white/20 overflow-hidden">
+          {isLoading && (
+            <TextShimmer
+              duration={2}
+              className="text-xs font-mono absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            >
+              {input}
+            </TextShimmer>
+          )}
           <Canvas>
             {!isLoading && object?.code ? (
               <ShaderEffect code={object.code} />
@@ -102,6 +110,7 @@ const ShaderBuddy = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Describe the shader you want to create..."
           rows={4}
+          disabled={isLoading}
         />
         <Button
           onClick={() => submit(input)}
