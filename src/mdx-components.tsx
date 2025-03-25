@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import FadeLoader from "@/components/fade-loader";
 import Shader from "@/components/shader";
+import { cn } from "@/lib/utils";
 
 type GalleryItem = {
   type: "image" | "video" | "youtube";
@@ -87,7 +88,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Image: (props) => (
       <Dialog>
         <DialogTrigger>
-          <Image {...props} />
+          <Image
+            {...props}
+            className={cn(
+              props.className,
+              "rounded-sm shrink-0 bg-muted border shadow"
+            )}
+          />
         </DialogTrigger>
         <DialogContent className={"p-0 max-w-6xl border-0 bg-transparent"}>
           <VisuallyHidden>
