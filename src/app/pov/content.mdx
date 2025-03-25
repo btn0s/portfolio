@@ -1,61 +1,50 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import toolcraft from "@/lib/shaders/toolcraft.glsl";
-import iteration from "@/lib/shaders/iteration.glsl";
-import intention from "@/lib/shaders/intention.glsl";
 
-# To build tools is to empower entire generations to go further, faster, and better.
-**A personal philosophy on building, prototyping, and designing for momentum**
+# Some of Us Still Feel the Call  
+**Why I build fast, share often, and design tools that outlast me.**
 
-Toolcraft is humanity’s oldest tradition. Our ancestors built great civilizations on the backs of the tools they made. Design engineers are today’s toolmakers — carrying forward this torch.
+I’ve always moved fast. Prototyping has been my way of thinking — not because I want to ship recklessly, but because building is how I understand. The more I built, the more I noticed: I wasn’t just solving problems. I was repeating patterns. Patching friction. Filling gaps for the people around me.
 
-{/* <Shader fs={toolcraft} /> */}
+Toolcraft is an ancient tradition — older than design, older than engineering. Before we built cities, we built the tools to build them. Today, those tools are more abstract: code, protocols, systems. Invisible structures that shape how people think, work, and collaborate.
 
-> "Man is a tool-using animal. Without tools he is nothing, with tools he is all."  
-> <span className="text-muted-foreground font-normal text-sm">- Thomas Carlyle</span>
+Most people never think about them.  
+But some of us do.  
+Some of us still feel the call.
 
-The best design engineers don’t just build for users — they build for their teams. They create momentum. They reduce friction. They lay foundations that help others move faster, with more clarity and less noise. They’re not just problem solvers — they’re multipliers.
+> “Man is a tool-using animal. Without tools he is nothing, with tools he is all.”  
+> <span className="text-muted-foreground text-xs font-mono">- Thomas Carlyle</span>
 
-I'm a prototyper at heart. I work fast and loose, using iteration to find signal in the noise — not by brute force, but by making the invisible visible. Show it, don’t say it. Try it, don’t assume it. Build to understand.
+I believe in fast feedback. In intuition as a compass. In showing over telling. In code as a medium for thought — not just execution. I believe speed isn’t the goal — clarity is. And clarity, when done right, unlocks velocity for everyone around you.
 
-This is where the joy of discovery lives: In that moment when experimentation meets clarity. When the right tool unlocks a new way of thinking. When iteration reveals not just what works — but why it matters.
+I don’t build tools because I love abstractions. I build them because they clear the path. Because they help teams move faster, with less confusion and more confidence. Because they shape how we think, not just what we do.
 
-{/* <Shader fs={iteration} /> */}
+> “Speed isn’t the goal. I build toward clarity — guided by intuition, grounded in intention.”  
+> <span className="text-muted-foreground text-xs font-mono">- Personal principle</span>
 
-> “A prototype is worth a thousand meetings.”  
-> <span className="text-muted-foreground font-normal text-sm">- IDEO</span>
+Most of what I know, I learned by accident — through broken libraries, source code comments, and the systems someone else left behind. I was lucky enough to pick up the trail, to learn by tracing the edges of someone else's thinking.
 
-Tools matter — more than we admit. The best ones don’t just get out of your way; they work with you. They shape how you think. How you explore. How you design. How you build.
+That’s why I believe in leaving the door open. In designing not just for users, but for contributors. In building not just for now, but for the person inheriting your work six months from now — someone you may never meet, but who will feel every decision you made.
 
-Expressive tools aren’t luxuries. They’re accelerants. They close the gap between idea and execution. They don’t just support flow — they create it.
+I don’t want credit. I want clarity.  
+And if I leave anything behind, I hope it helps someone move faster — not because they rushed, but because they could see.
 
-I believe in systems that empower. In workflows that flex. In code as a medium for expression — not just instruction. Declarative paradigms, visual languages, real-time feedback: these aren’t just features. They’re how we unlock new ways of thinking.
-
-{/* <Shader fs={intention} /> */}
-
-> “Speed isn’t the goal. Insight is.”  
-> <span className="text-muted-foreground font-normal text-sm">- Personal principle</span>
-
-And I believe in raising the floor for everyone. In sharing knowledge, not hoarding it. In designing not just for the end user — but for the teammate, the contributor, the person inheriting your work six months from now.
-
-If I leave anything behind, I want to have helped you move faster, with more clarity and less noise.
-
-Let’s make things that move fast and feel right. Let’s build tools that help ideas grow. Let’s design the tools that build the future we want to see.
+Let’s build tools that make the future easier to build.
 
 > “The tools we use have a profound (and devious!) influence on our thinking habits, and therefore on our thinking abilities.”  
-> <span className="text-muted-foreground font-normal text-sm">- Edsger W. Dijkstra</span>
+> <span className="text-muted-foreground text-xs font-mono">- Edsger W. Dijkstra</span>
 
 <div className="flex flex-col not-prose gap-4">
   <Flicker />
   <div className="flex justify-between">
-    <Button variant="secondary" size="sm" asChild>
+    <Button variant="outline" size="sm" asChild>
       <Link href="/" className="text-muted-foreground">
         <ArrowLeftIcon className="size-3" />
         Back to home
       </Link>
     </Button>
-    <Button variant="secondary" size="sm" asChild>
+    <Button variant="outline" size="sm" asChild>
       <Link href="/lab" className="text-muted-foreground">
         Check out the Lab
         <ArrowRightIcon className="size-3" />
