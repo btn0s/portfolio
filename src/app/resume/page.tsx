@@ -4,12 +4,6 @@ import { Button } from "@/components/ui/button";
 import { pdf } from "@react-pdf/renderer";
 import { ResumePDF } from "@/components/resume-pdf";
 import { resumeData } from "@/content/resume";
-import { createMetaTitle } from "@/lib/utils";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: createMetaTitle("Resume • bt norris, design engineer"),
-};
 
 const Page = () => {
   const handleDownload = async () => {
