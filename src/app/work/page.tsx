@@ -22,12 +22,15 @@ const AMEX_WORK_LIST_SLUGS = [
   "/work/amex/time-machine",
 ];
 
-const OTHER_WORK_LIST_SLUGS = ["/work/consensys", "/work/hownd"];
+const OTHER_WORK_LIST_SLUGS = [
+  "/work/sobol",
+  //  "/work/hownd"
+];
 
 const ALL_WORK_LIST_SLUGS = [
   BACKBONE_WORK_LIST_SLUGS,
   AMEX_WORK_LIST_SLUGS,
-  // OTHER_WORK_LIST_SLUGS,
+  OTHER_WORK_LIST_SLUGS,
 ];
 
 export default async function Layout() {
