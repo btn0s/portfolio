@@ -4,10 +4,14 @@ import { getFrontmatter } from "@/lib/utils";
 const FEATURED_WORK_SLUGS = [
   "/work/backbone/",
   "/work/backbone/games-db-figma-plugin",
+  "/work/amex",
   "/work/amex/time-machine",
+];
+
+const FEATURED_LAB_SLUGS = [
+  "/lab/strella",
   "/lab/echelon",
   "/lab/game-dev-prototypes",
-  "/lab/strella",
 ];
 
 export default async function Page() {
@@ -17,5 +21,11 @@ export default async function Page() {
     })
   );
 
-  return <Home featuredWork={featuredWork} />;
+  const featuredLab = await Promise.all(
+    FEATURED_LAB_SLUGS.map(async (slug) => {
+      return await getFrontmatter(slug);
+    })
+  );
+
+  return <Home featuredWork={featuredWork} featuredLab={featuredLab} />;
 }

@@ -1,34 +1,34 @@
 ---
 title: American Express
 description: Leading transformation of legacy systems into modern customer care platforms
+imagePath: "work/amex/cover.png"
 ---
 
-import placeholder from "@/assets/images/placeholder.png";
+import WorkList from "@/components/work-list";
+import { Separator } from "@/components/ui/separator";
 
-# I led engineering initiatives that transformed American Express's customer care platform delivery and experience.
+import coverImg from "@/assets/images/work/amex/cover.png";
+import timeMachineImg from "@/assets/images/work/amex/time-machine/cover.png";
+
+export const FEATURED_WORK_SLUGS = ["/work/amex/time-machine"];
+
+# I transformed American Express's customer care platform by bridging legacy systems with modern technology.
 
 <Image
-  src={placeholder}
+  src={coverImg}
   alt="American Express"
   width={1600}
   height={900}
-  className="rounded-sm shrink-0 bg-muted border shadow mt-12"
+  className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-## Overview
+American Express serves over 100 million cardmembers globally as a premier Fortune 100 financial services company. As Technical Lead in the AskAmex organization, I directed the modernization of their customer care infrastructure while maintaining 99.9% platform reliability. By creating innovative bridge systems between legacy and modern technologies, we enabled rapid feature development without compromising stability.
 
-American Express serves over 100 million cardmembers globally as a premier Fortune 100 financial services company. Their customer care infrastructure handles millions of daily interactions across mobile, web, and voice channels.
+**Roles** <br/>
+Software Engineer II, AskAmex
 
-I joined the AskAmex organization during a pivotal transformation period, where I led a diverse team of engineers to modernize their customer service ecosystem. Working in close collaboration with product and design teams, we successfully balanced feature delivery with foundational improvements to development practices.
+### Featured Project
 
-My most significant contribution was TimeMachine — an innovative bridge system I designed that became the cornerstone of our modernization strategy. What began as an experimental solution evolved into mission-critical infrastructure, enabling teams throughout the organization to confidently build and deploy features while maintaining stability.
-
-## Key Achievements
-
-- **Leadership Excellence**: Directed a multidisciplinary team of full-time engineers and contractors, implementing robust processes that enhanced code quality and deployment confidence.
-
-- **Product Innovation**: Collaborated with product and design teams to create intuitive UI patterns for complex customer interactions, successfully launching the travel vertical to over 300 specialized agents.
-
-- **Technical Innovation**: Led initiatives that transformed development practices, creating TimeMachine—a bi-directional bridge system that enabled teams to build new features with modern React technology without rebuilding the existing Angular platform, maintaining 99.9% reliability while modernizing critical customer-facing systems.
-
-- **Process Transformation**: Established streamlined validation workflows with specialized agents, significantly reducing post-deployment issues and elevating overall feature quality.
+<div className={"mt-8 mb-12"}>
+  <WorkList slugs={FEATURED_WORK_SLUGS} />
+</div>
