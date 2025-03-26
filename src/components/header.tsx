@@ -69,11 +69,11 @@ const Header = () => {
         </div>
       </Link>
       <div className="flex gap-2 items-center">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/workshop" className="text-muted-foreground text-xs">
+        {/* <Button variant="ghost" size="sm" asChild>
+          <Link href="/work" className="text-muted-foreground text-xs">
             /work
           </Link>
-        </Button>
+        </Button> */}
         <Button variant="ghost" size="sm" asChild>
           <Link href="/lab" className="text-muted-foreground text-xs">
             /lab

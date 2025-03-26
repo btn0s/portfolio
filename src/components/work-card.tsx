@@ -9,29 +9,14 @@ export interface WorkCardProps {
   title: string;
   description: string;
   slug: string;
-  horizontal?: boolean;
-  showButton?: boolean;
-  showBorder?: boolean;
 }
 
-const WorkCard = ({
-  imagePath,
-  title,
-  description,
-  slug,
-  horizontal,
-  showButton,
-  showBorder,
-}: WorkCardProps) => {
+const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
   const imageSrc = JSON.parse(imagePath);
   return (
     <Link
       href={slug}
-      className={cn("flex gap-4 not-prose w-full max-w-content", {
-        "flex-row items-center": horizontal,
-        "flex-col": !horizontal,
-        "border p-4 shadow-sm rounded-lg": showBorder,
-      })}
+      className={cn("flex gap-4 not-prose w-full max-w-content flex-col")}
       prefetch
     >
       <Image
@@ -40,29 +25,18 @@ const WorkCard = ({
         width={416}
         height={234}
         className={cn(
-          "rounded-sm shrink-0 bg-muted flex text-muted-foreground border",
-          {
-            "w-full": !horizontal,
-            "w-1/2": horizontal,
-          }
+          "rounded-sm shrink-0 bg-muted flex text-muted-foreground border w-full"
         )}
       />
-      <div className={cn("flex flex-col items-start justify-start gap-1", {})}>
-        <h3 className={cn("font-medium")}>{title}</h3>
-        <p
-          className={cn("text-muted-foreground text-sm max-w-[90%]", {
-            "mb-4": showButton,
-            "hidden md:block": horizontal,
-          })}
+      <div className="flex flex-col md:flex-row items-start justify-between">
+        <div
+          className={cn("flex flex-col items-start justify-start gap-1", {})}
         >
-          {description}
-        </p>
-        {showButton && (
-          <Button variant="outline" size="sm" className="group">
-            Learn more
-            <ArrowRightIcon className="size-4  group-hover:translate-x-1 transition-transform duration-300" />
-          </Button>
-        )}
+          <h3 className={cn("font-medium text-foreground text-sm")}>{title}</h3>
+          <p className={cn("text-muted-foreground text-sm max-w-[90%]", {})}>
+            {description}
+          </p>
+        </div>
       </div>
     </Link>
   );

@@ -13,7 +13,7 @@ const WorkList = async ({ slugs }: WorkListProps) => {
   const workItems = await Promise.all(slugs.map(getFrontmatter));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       {workItems.map((work, index) => (
         <WorkCard
           key={`${work.slug}-${index}`}
@@ -21,8 +21,6 @@ const WorkList = async ({ slugs }: WorkListProps) => {
           title={work.title}
           description={work.description}
           slug={work.slug}
-          horizontal
-          showButton
         />
       ))}
     </div>
