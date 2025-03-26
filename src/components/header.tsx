@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { TRANSITION_HEADER, VARIANTS_HEADER } from "@/lib/variants";
 import Link from "next/link";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
-import { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
 import RemoveBaseLayout from "@/components/remove-base-layout";
 import { ArrowLeftIcon } from "lucide-react";
@@ -44,7 +43,7 @@ const Header = () => {
   return (
     <motion.header
       id="header"
-      className="px-6 pt-6 flex justify-between items-center max-w-content mx-auto w-full"
+      className="px-6 pt-6 flex justify-between max-w-content items-center mx-auto w-full"
       variants={VARIANTS_HEADER}
       transition={TRANSITION_HEADER}
       initial="hidden"
@@ -71,15 +70,25 @@ const Header = () => {
       </Link>
       <div className="flex gap-2 items-center">
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/pov" className="text-muted-foreground">
-            pov
+          <Link href="/workshop" className="text-muted-foreground text-xs">
+            /work
           </Link>
         </Button>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/lab" className="text-muted-foreground text-xs">
+            /lab
+          </Link>
+        </Button>
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/pov" className="text-muted-foreground text-xs">
+            /pov
+          </Link>
+        </Button>
+        {/* <Button variant="outline" size="sm" asChild>
           <Link href="/resume" className="text-muted-foreground">
             resume
           </Link>
-        </Button>
+        </Button> */}
       </div>
     </motion.header>
   );
