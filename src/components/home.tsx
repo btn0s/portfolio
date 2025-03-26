@@ -21,16 +21,17 @@ export default function Home({
         <p>
           I'm a <span className="font-medium text-foreground">designer</span>{" "}
           and <span className="font-medium text-foreground">programmer</span>{" "}
-          interested in games, tools, artifical intelligence, and{" "}
+          exploring games, tools, artificial intelligence, and{" "}
           <Link
             href="/pov"
             className="font-medium text-foreground hover:underline"
           >
             driven by the joy of discovery
           </Link>
+          .
         </p>
         <p>
-          I'm currently{" "}
+          I'm currently a{" "}
           <span className="font-medium text-foreground">
             senior design engineer
           </span>{" "}
@@ -41,10 +42,18 @@ export default function Home({
           >
             Backbone
           </Link>
+          .
         </p>
         <p>
-          This site is my digital workspace, I actively use it in my creative
-          process to bring my ideas to life outside my sketchbook
+          This site is my digital workspace — I use it to explore ideas, test
+          prototypes, and share{" "}
+          <Link
+            href="/lab"
+            className="font-medium text-foreground hover:underline"
+          >
+            experiments in progress
+          </Link>
+          outside of my sketchbook.
         </p>
       </motion.section>
       <motion.section
