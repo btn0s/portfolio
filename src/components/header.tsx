@@ -12,11 +12,6 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
 
-const DURATION = 300;
-const BLUR_CLASSNAME = "blur-xs";
-const SCALE_CLASSNAME = "scale-99";
-const THEME_SWITCH_EFFECTS = [BLUR_CLASSNAME, SCALE_CLASSNAME];
-
 export const ExperimentHeader = () => {
   const pathname = usePathname();
   return (
@@ -46,109 +41,6 @@ export const ExperimentHeader = () => {
 };
 
 const Header = () => {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const isChangingTheme = useRef(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Initialize theme on first load
-  useEffect(() => {
-    try {
-      // Safety check for browser environment
-      if (typeof window === "undefined") return;
-
-      // Get theme from localStorage or default to dark
-      const savedTheme = localStorage.getItem("theme") as
-        | "dark"
-        | "light"
-        | null;
-      const initialTheme = savedTheme || "dark";
-
-      // Apply theme to body first (clear any existing theme classes)
-      const body = document.querySelector("body");
-      if (body) {
-        body.classList.remove("dark", "light");
-        body.classList.add(initialTheme);
-      }
-
-      // Update state last (after DOM is updated)
-      setTheme(initialTheme);
-    } catch (error) {
-      // Fallback to dark theme if something goes wrong
-      console.error("Error initializing theme:", error);
-      setTheme("dark");
-
-      const body = document.querySelector("body");
-      if (body) {
-        body.classList.remove("dark", "light");
-        body.classList.add("dark");
-      }
-    }
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Clear any pending timeouts if component unmounts
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  const switchTheme = () => {
-    // Prevent multiple rapid theme changes
-    if (isChangingTheme.current) return;
-
-    try {
-      isChangingTheme.current = true;
-
-      const body = document.querySelector("body");
-      if (!body) {
-        isChangingTheme.current = false;
-        return;
-      }
-
-      // Calculate new theme first to ensure consistency
-      const newTheme = theme === "dark" ? "light" : "dark";
-
-      // Add transition effects
-      for (const effect of THEME_SWITCH_EFFECTS) {
-        body.classList.add(effect);
-      }
-
-      // Schedule cleanup of transition effects
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        // Only remove effects if body still exists
-        const bodyElement = document.querySelector("body");
-        if (bodyElement) {
-          for (const effect of THEME_SWITCH_EFFECTS) {
-            bodyElement.classList.remove(effect);
-          }
-        }
-        isChangingTheme.current = false;
-        timeoutRef.current = null;
-      }, DURATION);
-
-      // Update DOM (synchronously, before state)
-      body.classList.remove(theme);
-      body.classList.add(newTheme);
-
-      // Update localStorage (synchronously, before state)
-      localStorage.setItem("theme", newTheme);
-
-      // Update state last
-      setTheme(newTheme);
-      isChangingTheme.current = false;
-    } catch (error) {
-      console.error("Error switching theme:", error);
-      isChangingTheme.current = false;
-    }
-  };
-
   return (
     <motion.header
       id="header"
