@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import FadeLoader from "@/components/fade-loader";
 
 export const metadata: Metadata = {
   title: createMetaTitle("Work • bt norris, design engineer"),
@@ -36,7 +37,7 @@ const ALL_WORK_LIST_SLUGS = [
 
 export default async function Layout() {
   return (
-    <div>
+    <FadeLoader>
       <div className="pb-24">
         <h1 className="text-xl font-semibold md:text-2xl md:font-bold mb-1">
           Work
@@ -59,6 +60,6 @@ export default async function Layout() {
           <Separator className={"my-6"} />
         </Fragment>
       ))}
-    </div>
+    </FadeLoader>
   );
 }

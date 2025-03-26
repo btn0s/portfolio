@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { createMetaTitle } from "@/lib/utils";
 import WorkList from "@/components/work-list";
+import FadeLoader from "@/components/fade-loader";
 
 export const metadata: Metadata = {
   title: createMetaTitle("Lab • bt norris, design engineer"),
@@ -18,7 +19,7 @@ const LAB_WORK_LIST_SLUGS = [
 
 export default async function Layout() {
   return (
-    <div>
+    <FadeLoader>
       <div className="pb-24">
         <h1 className="text-xl font-semibold md:text-2xl md:font-bold mb-1">
           The Lab
@@ -28,6 +29,6 @@ export default async function Layout() {
         </p>
       </div>
       <WorkList slugs={LAB_WORK_LIST_SLUGS} />
-    </div>
+    </FadeLoader>
   );
 }

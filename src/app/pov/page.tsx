@@ -2,6 +2,7 @@ import ProseLayout from "@/components/prose-layout";
 import { Metadata } from "next";
 import { createMetaTitle } from "@/lib/utils";
 import furtherImage from "@/assets/images/pov/further.png";
+import FadeLoader from "@/components/fade-loader";
 
 export const metadata: Metadata = {
   title: createMetaTitle("Point of view"),
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 export default async function Layout() {
   const { default: Post } = await import("./content.mdx");
   return (
-    <div>
+    <FadeLoader>
       <div className="pb-24">
         <h1 className="text-xl font-medium md:text-2xl md:font-bold mb-1">
           To Help Others Go Further
@@ -39,6 +40,6 @@ export default async function Layout() {
       <ProseLayout>
         <Post />
       </ProseLayout>
-    </div>
+    </FadeLoader>
   );
 }
