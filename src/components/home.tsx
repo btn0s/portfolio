@@ -16,7 +16,7 @@ export default function Home({
   featuredLab: WorkCardProps[];
 }) {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-8 md:gap-12">
       <motion.section
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
@@ -73,7 +73,7 @@ export default function Home({
       >
         <div className="flex justify-between items-center">
           <div className="text-muted-foreground text-sm font-mono uppercase">
-            Featured work
+            Recent work
           </div>
           <Button
             variant={"link"}
@@ -83,7 +83,7 @@ export default function Home({
           >
             <Link href="/work">
               View all
-              <ArrowRight className="size-4 absolute left-full scale-95 group-hover:scale-100 -translate-x-5 group-hover:-translate-x-1 opacity-0 group-hover:opacity-500 transition-all" />
+              <ArrowRight className="size-3" />
             </Link>
           </Button>
         </div>
@@ -100,7 +100,7 @@ export default function Home({
       >
         <div className="flex justify-between items-center">
           <div className="text-muted-foreground text-sm font-mono uppercase">
-            Featured experiments
+            From the lab
           </div>
           <Button
             variant={"link"}
@@ -110,7 +110,7 @@ export default function Home({
           >
             <Link href="/lab">
               View all
-              <ArrowRight className="size-4 absolute left-full scale-95 group-hover:scale-100 -translate-x-5 group-hover:-translate-x-1 opacity-0 group-hover:opacity-500 transition-all" />
+              <ArrowRight className="size-3" />
             </Link>
           </Button>
         </div>
