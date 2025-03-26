@@ -1,10 +1,21 @@
 import { Separator } from "@/components/ui/separator";
-import WorkListLoader from "@/components/work-list-loader";
+import WorkList from "@/components/work-list";
 
-# My Lab
+export const LAB_WORK_LIST_SLUGS = [
+    "/lab/strella",
+    // "/lab/pod",
+    // "/lab/sketchbook",
+    "/lab/game-dev-prototypes",
+    "/lab/echelon",
+    "/lab/head-2-head"
+];
 
-This is where I prototype, explore, and push boundaries. Each experiment here is a step toward more expressive tools and more intuitive interfaces. Some are rough around the edges, others more polished – but all embody my belief that the best way to predict the future is to build it, one iteration at a time.
+# My Lab  
 
-<Separator className={"my-6"} />
+**Where I explore ideas, build momentum, and follow curiosity into form.**
+  
+Some projects are rough, others more refined. But all of them share the same intent: to learn by building, and to make the invisible visible.
 
-<WorkListLoader contentPath="lab" />
+<div className="mb-12" />
+
+<WorkList slugs={LAB_WORK_LIST_SLUGS} />
