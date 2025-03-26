@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
-import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Main from "@/components/main";
+
+import "./globals.css";
 
 const oracle = localFont({
   src: "../assets/fonts/ABCOracleVariable-Trial.woff2",
@@ -44,6 +46,7 @@ export default function RootLayout({
         <Header />
         <Main>{children}</Main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
