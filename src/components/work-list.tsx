@@ -13,7 +13,7 @@ const WorkList = async ({ slugs }: WorkListProps) => {
   const workItems = await Promise.all(slugs.map(getFrontmatter));
 
   return (
-    <div className="flex flex-col gap-12">
+    <div className="grid md:grid-cols-2 gap-8 md:gap-4 md:gap-y-12">
       {workItems.map((work, index) => (
         <WorkCard
           key={`${work.slug}-${index}`}
