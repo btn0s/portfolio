@@ -11,18 +11,18 @@ export const metadata: Metadata = {
   description: "Projects I've worked on professionally",
 };
 
-export const BACKBONE_WORK_LIST_SLUGS = [
+const BACKBONE_WORK_LIST_SLUGS = [
   "/work/backbone",
   //   "/work/backbone/post-malone",
   "/work/backbone/games-db-figma-plugin",
 ];
 
-export const AMEX_WORK_LIST_SLUGS = [
+const AMEX_WORK_LIST_SLUGS = [
   //   "/work/amex",
   "/work/amex/time-machine",
 ];
 
-export const OTHER_WORK_LIST_SLUGS = ["/work/consensys", "/work/hownd"];
+const OTHER_WORK_LIST_SLUGS = ["/work/consensys", "/work/hownd"];
 
 const ALL_WORK_LIST_SLUGS = [
   BACKBONE_WORK_LIST_SLUGS,

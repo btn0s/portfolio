@@ -1,4 +1,3 @@
-import ProseLayout from "@/components/prose-layout";
 import { Metadata } from "next";
 import { createMetaTitle } from "@/lib/utils";
 import WorkList from "@/components/work-list";
@@ -8,7 +7,7 @@ export const metadata: Metadata = {
   description: "Where ideas take shape and possibilities unfold",
 };
 
-export const LAB_WORK_LIST_SLUGS = [
+const LAB_WORK_LIST_SLUGS = [
   "/lab/strella",
   // "/lab/pod",
   // "/lab/sketchbook",
