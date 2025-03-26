@@ -10,7 +10,7 @@ import { ArrowLeftIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
-
+import { cn } from "@/lib/utils";
 export const ExperimentHeader = () => {
   const pathname = usePathname();
   return (
@@ -39,7 +39,10 @@ export const ExperimentHeader = () => {
   );
 };
 
+const HEADER_LINKS = ["/work", "/lab", "/pov"];
+
 const Header = () => {
+  const pathname = usePathname();
   return (
     <motion.header
       id="header"
@@ -69,26 +72,18 @@ const Header = () => {
         </div>
       </Link>
       <div className="flex gap-2 items-center">
-        {/* <Button variant="ghost" size="sm" asChild>
-          <Link href="/work" className="text-muted-foreground text-xs">
-            /work
-          </Link>
-        </Button> */}
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/lab" className="text-muted-foreground text-xs">
-            /lab
-          </Link>
-        </Button>
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/pov" className="text-muted-foreground text-xs">
-            /pov
-          </Link>
-        </Button>
-        {/* <Button variant="outline" size="sm" asChild>
-          <Link href="/resume" className="text-muted-foreground">
-            resume
-          </Link>
-        </Button> */}
+        {HEADER_LINKS.map((link) => (
+          <Button variant="ghost" size="sm" asChild key={link}>
+            <Link
+              href={link}
+              className={cn("text-muted-foreground text-xs", {
+                "text-primary bg-primary/10": pathname === link,
+              })}
+            >
+              {link}
+            </Link>
+          </Button>
+        ))}
       </div>
     </motion.header>
   );

@@ -6,6 +6,7 @@ import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import FadeLoader from "@/components/fade-loader";
+import { ArrowUpRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: createMetaTitle("Work • bt norris, design engineer"),
@@ -15,14 +16,11 @@ export const metadata: Metadata = {
 const BACKBONE_WORK_LIST_SLUGS = [
   "/work/backbone",
   "/work/backbone/games-db-figma-plugin",
-  "/work/backbone/post-malone",
-  "/work/backbone/ecommerce",
+  // "/work/backbone/post-malone",
+  // "/work/backbone/ecommerce",
 ];
 
-const AMEX_WORK_LIST_SLUGS = [
-  //   "/work/amex",
-  "/work/amex/time-machine",
-];
+const AMEX_WORK_LIST_SLUGS = ["/work/amex", "/work/amex/time-machine"];
 
 const OTHER_WORK_LIST_SLUGS = [
   "/work/sobol",
@@ -51,7 +49,9 @@ export default async function Layout() {
           className="text-xs text-muted-foreground"
           asChild
         >
-          <Link href="/resume">Download my resume</Link>
+          <Link href="/resume">
+            resume <ArrowUpRight className="size-3" />
+          </Link>
         </Button>
       </div>
       {ALL_WORK_LIST_SLUGS.map((slugs) => (
