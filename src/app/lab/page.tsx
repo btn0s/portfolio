@@ -20,9 +20,11 @@ export default async function Layout() {
   return (
     <div>
       <div className="pb-24">
-        <h1 className="text-2xl font-bold">The Lab</h1>
+        <h1 className="text-xl font-semibold md:text-2xl md:font-bold mb-1">
+          The Lab
+        </h1>
         <p className="text-muted-foreground">
-          A collection of experiments, notes, and prototypes.
+          A collection of experiments, notes, dreams, and prototypes.
         </p>
       </div>
       <WorkList slugs={LAB_WORK_LIST_SLUGS} />

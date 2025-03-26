@@ -13,8 +13,9 @@ export const metadata: Metadata = {
 
 const BACKBONE_WORK_LIST_SLUGS = [
   "/work/backbone",
-  //   "/work/backbone/post-malone",
   "/work/backbone/games-db-figma-plugin",
+  "/work/backbone/post-malone",
+  "/work/backbone/ecommerce",
 ];
 
 const AMEX_WORK_LIST_SLUGS = [
@@ -37,7 +38,9 @@ export default async function Layout() {
   return (
     <div>
       <div className="pb-24">
-        <h1 className="text-2xl font-bold">Work</h1>
+        <h1 className="text-xl font-semibold md:text-2xl md:font-bold mb-1">
+          Work
+        </h1>
         <p className="text-muted-foreground mb-4">
           Projects I've worked on professionally
         </p>

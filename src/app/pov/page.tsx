@@ -26,8 +26,19 @@ export const metadata: Metadata = {
 export default async function Layout() {
   const { default: Post } = await import("./content.mdx");
   return (
-    <ProseLayout>
-      <Post />
-    </ProseLayout>
+    <div>
+      <div className="pb-24">
+        <h1 className="text-xl font-medium md:text-2xl md:font-bold mb-1">
+          To Help Others Go Further
+        </h1>
+        <p className="text-muted-foreground">
+          Why I build for clarity, design for the future, and leave tools
+          behind.
+        </p>
+      </div>
+      <ProseLayout>
+        <Post />
+      </ProseLayout>
+    </div>
   );
 }
