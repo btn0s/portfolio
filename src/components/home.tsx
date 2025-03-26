@@ -49,15 +49,15 @@ export default function Home({
           .
         </p>
         <p>
-          This site is my digital workspace — I use it to explore ideas, test
-          prototypes, and{" "}
+          I use this site to explore, test, prototype, and bring ideas to life —
+          from my sketchbook to my{" "}
           <Link
             href="/lab"
             className="font-medium text-foreground hover:underline"
           >
-            share experiments
-          </Link>{" "}
-          outside of my sketchbook.
+            digital lab
+          </Link>
+          .
         </p>
       </motion.section>
       <motion.section
