@@ -12,8 +12,8 @@ const LAB_WORK_LIST_SLUGS = [
   "/lab/strella",
   // "/lab/pod",
   // "/lab/sketchbook",
-  "/lab/game-dev-prototypes",
   "/lab/echelon",
+  "/lab/game-dev-prototypes",
   // "/lab/head-2-head"
 ];
 
