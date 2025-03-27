@@ -4,6 +4,10 @@ description: "Reimagining the IDE for design engineers"
 imagePath: "lab/strella/cover.png"
 ---
 
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ExternalLinkIcon } from "lucide-react";
+
 import projectViewDesign from "@/assets/images/lab/strella/project-view-design.png";
 import pageViewDesign from "@/assets/images/lab/strella/page-view-design.png";
 import pageViewGraph from "@/assets/images/lab/strella/page-view-graph.png";
@@ -11,6 +15,14 @@ import pageViewGraphWPreview from "@/assets/images/lab/strella/page-view-graph-w
 import blueprintsCover from "@/assets/images/lab/game-dev-prototypes/cover.png";
 
 # Chasing the Magic of Visual Programming
+
+Strella is my dream project—a node-based IDE where designers and engineers speak the same language. Inspired by Unreal Engine's [Blueprints](https://en.wikipedia.org/wiki/Blueprints_(Unreal_Engine)), it replaces the fragmented workflow of Figma-to-code with a unified canvas where visual components connect directly to functional logic, eliminating the translation gap.
+
+<Button asChild variant={"secondary"} className="not-prose" size={"sm"}>
+  <Link href="https://strella.dev" target="_blank" rel="noopener noreferrer">Live <ExternalLinkIcon className="size-3" /></Link>
+</Button>
+
+<div className="mb-8" />
 
 <Image
   src={pageViewGraphWPreview}
