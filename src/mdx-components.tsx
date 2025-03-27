@@ -12,7 +12,6 @@ import { FlickeringGrid } from "@/components/ui/flickering-grid";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import FadeLoader from "@/components/fade-loader";
-import Shader from "@/components/shader";
 import { cn } from "@/lib/utils";
 
 type GalleryItem = {
@@ -77,9 +76,6 @@ const Gallery = ({ items }: { items: GalleryItem[] }) => {
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
-    Shader: (props) => (
-      <Shader className="w-full border rounded-md overflow-hidden" {...props} />
-    ),
     FadeLoader: (props) => <FadeLoader {...props} />,
     Flicker: () => (
       <FlickeringGrid className={"w-full"} height={64} color={"#fff"} />
