@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 const BACKBONE_WORK_LIST_SLUGS = [
   "/work/backbone",
   "/work/backbone/games-db-figma-plugin",
-  // "/work/backbone/post-malone",
-  // "/work/backbone/ecommerce",
+  "/work/backbone/post-malone",
+  "/work/backbone/web",
 ];
 
 const AMEX_WORK_LIST_SLUGS = ["/work/amex", "/work/amex/time-machine"];

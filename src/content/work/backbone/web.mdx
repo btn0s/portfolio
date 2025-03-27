@@ -1,0 +1,61 @@
+---
+title: Backbone.com
+description: Leading front-end development on the global Backbone.com ecommerce site
+imagePath: "work/backbone/web/cover.png"
+---
+
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ExternalLinkIcon } from "lucide-react";
+
+import coverImg from "@/assets/images/work/backbone/web/cover.png";
+import appImg from "@/assets/images/work/backbone/web/backbone-web-app.png";
+import gdpImg from "@/assets/images/work/backbone/web/backbone-web-gdp.png";
+import pdpImg from "@/assets/images/work/backbone/web/backbone-web-pdp.png";
+import pdpCartImg from "@/assets/images/work/backbone/web/backbone-web-pdp-cart.png";
+
+export const GALLERY = [
+  {
+    type: "image",
+    src: coverImg,
+    alt: "Backbone.com",
+  },
+  {
+    type: "image",
+    src: appImg,
+    alt: "Backbone.com",
+  },
+  {
+    type: "image",
+    src: gdpImg,
+    alt: "Backbone.com",
+  },
+  {
+    type: "image",
+    src: pdpImg,
+    alt: "Backbone.com",
+  },
+  {
+    type: "image",
+    src: pdpCartImg,
+    alt: "Backbone.com",
+  },
+];
+
+# I led front-end development on the global Backbone.com ecommerce site.
+
+I joined Backbone in 2021 as the second engineer on the web team. I ran multiple projects across the site over the course of 3 years before moving on to found the company's design engineering practice.
+
+<Button asChild variant={"secondary"} className="not-prose" size={"sm"}>
+  <Link href="https://www.backbone.com">Live <ExternalLinkIcon className="size-3" /></Link>
+</Button>
+
+### My Impact
+
+- Built a Game Detail page template system that connected to our Games DB and allowed us to expand the SEO surface of our site by roughly 10,000 pages
+- Built a new PDP template system using NextJS and headless Shopify that allowed us to launch new products 2x faster
+- Led development of multiple high-profile brand collaborations, including PlayStation, Post Malone, Death Stranding, and Call of Duty: Warzone Mobile
+- Built a custom cart system on top of Shopify's cart API
+- Built a custom upsell system that allowed us to show relevant products to users based on their cart
+
+<Gallery items={GALLERY} />

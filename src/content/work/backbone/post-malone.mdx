@@ -1,0 +1,50 @@
+---
+title: Post Malone Partnership Page
+description: Leading the development of a global brand collaboration with Post Malone
+imagePath: "work/backbone/post-malone/cover.png"
+---
+
+import coverImg from "@/assets/images/work/backbone/post-malone/cover.png";
+import postmaloneLightsOffImg from "@/assets/images/work/backbone/post-malone/post-malone-lights-off.png";
+import { ExternalLinkIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+export const GALLERY = [
+  {
+    type: "image",
+    src: coverImg,
+    alt: "Post Malone Edition Controller",
+  },
+  {
+    type: "video",
+    src: "https://files.backbon3.com/contentful/2ly2S31xTkQUbJEbkmyfLu.mp4",
+    alt: "Post Malone Promotional Video",
+  },
+  {
+    type: "image",
+    src: postmaloneLightsOffImg,
+    alt: "Post Malone Edition Controller",
+  },
+  {
+    type: "image",
+    src: {
+      src: "https://files.backbon3.com/contentful/Backbone-PostMalone-reveal-16x9-01.jpg",
+      width: 1000,
+      height: 1000,
+    },
+    alt: "Post Malone Collaboration Reveal",
+  },
+];
+
+# I led the development of a global brand collaboration with Post Malone.
+
+Backbone collaborated with Post Malone to create a limited-edition controller. I worked on design and led development of the partnership page on our NextJS and headless Shopify site. This was a high-profile project that required close collaboration with the brand and design teams, and in the end sold out in less than 2 minutes.
+
+<Button asChild variant={"secondary"} className="not-prose" size={"sm"}>
+  <Link href="https://www.backbone.com/post-malone">Live <ExternalLinkIcon className="size-3" /></Link>
+</Button>
+
+
+<Gallery items={GALLERY} />
+
