@@ -12,6 +12,9 @@ const nextConfig = {
       {
         hostname: "placehold.co",
       },
+      {
+        hostname: "files.backbon3.com",
+      },
     ],
   },
   eslint: {
