@@ -12,6 +12,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { Pause, Play } from "lucide-react";
 // Pod is a personal curiosity bot. I want to be able to take any subject, and generate a short episode "audio overview" like NotebookLM.
 // Then I'd like to be able to ask follow-up questions or generate the next episode for progressive learning and depth.
 // Eventually I'd add some "style/depth" params so I can get ELI5 or more technical, save these as defaults but be able to override.
@@ -103,10 +104,57 @@ const POD_STEPS = [
   },
 ];
 
-const AudioPlayer = ({ audioUrl }: { audioUrl: string }) => {
+const AudioPlayer = ({
+  audioUrl,
+  metadata,
+}: {
+  audioUrl: string;
+  metadata?: { title: string };
+}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   return (
-    <div className="w-full">
-      <audio src={audioUrl} controls className="w-full" />
+    <div className="flex flex-col gap-2 w-full bg-muted/50 p-4 rounded-lg">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              if (audioRef.current) {
+                if (isPlaying) {
+                  audioRef.current.pause();
+                } else {
+                  audioRef.current.play();
+                }
+                setIsPlaying(!isPlaying);
+              }
+            }}
+            disabled={!audioUrl}
+            className="h-8 w-8"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
+          </Button>
+          {metadata?.title && (
+            <span className="text-sm font-medium truncate">
+              {metadata.title}
+            </span>
+          )}
+        </div>
+      </div>
+      <audio
+        ref={audioRef}
+        src={audioUrl}
+        controls
+        className="w-full h-8"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
     </div>
   );
 };
@@ -125,6 +173,16 @@ const PodWidget = () => {
     };
   }, []);
 
+  // Define the step paths
+  const MAIN_PATH = [
+    "search",
+    "generate_script",
+    "generate_audio",
+    "generate_questions",
+    "generate_next_episode",
+  ];
+  const METADATA_PATH = ["generate_metadata", "generate_cover_image"];
+
   // Create separate completion hooks for each step with body parameter
   const generateMetadata = useCompletion({
     api: "/api/pod",
@@ -137,22 +195,10 @@ const PodWidget = () => {
         length: completion.length,
       });
       setResults((prev) => ({ ...prev, generate_metadata: completion }));
-      runNextStep("search");
+      runNextStep("generate_cover_image");
     },
     onError: (error) => {
-      clientLogger.error(
-        "generateMetadata",
-        "onError",
-        "Error during completion",
-        error
-      );
-    },
-    onResponse: (response) => {
-      clientLogger.log(
-        "generateMetadata",
-        "onResponse",
-        `Response status: ${response.status}`
-      );
+      clientLogger.error("generateMetadata", "onError", error.toString());
     },
   });
 
@@ -170,12 +216,7 @@ const PodWidget = () => {
       runNextStep("generate_script");
     },
     onError: (error) => {
-      clientLogger.error(
-        "searchInfo",
-        "onError",
-        "Error during completion",
-        error
-      );
+      clientLogger.error("searchInfo", "onError", error.toString());
     },
   });
 
@@ -190,15 +231,10 @@ const PodWidget = () => {
         length: completion.length,
       });
       setResults((prev) => ({ ...prev, generate_script: completion }));
-      runNextStep("generate_cover_image");
+      runNextStep("generate_audio");
     },
     onError: (error) => {
-      clientLogger.error(
-        "generateScript",
-        "onError",
-        "Error during completion",
-        error
-      );
+      clientLogger.error("generateScript", "onError", error.toString());
     },
   });
 
@@ -207,24 +243,16 @@ const PodWidget = () => {
     body: {
       action: "generate_cover_image",
     },
-    streamProtocol: "text",
-    onFinish: (_, completion) => {
-      clientLogger.log(
-        "generateCoverImage",
-        "onFinish",
-        "Completion received",
-        { length: completion.length }
-      );
-      setResults((prev) => ({ ...prev, generate_cover_image: completion }));
-      runNextStep("generate_audio");
+    onFinish: () => {
+      // Use a placeholder image URL
+      setResults((prev) => ({
+        ...prev,
+        generate_cover_image:
+          "https://placehold.co/1024x1024/4F46E5/ffffff?text=Pod+Cover",
+      }));
     },
     onError: (error) => {
-      clientLogger.error(
-        "generateCoverImage",
-        "onError",
-        "Error during completion",
-        error
-      );
+      clientLogger.error("generateCoverImage", "onError", error.toString());
     },
   });
 
@@ -242,9 +270,9 @@ const PodWidget = () => {
         ...prev,
         generate_audio: url,
       }));
-    },
-    onFinish: () => {
+      // Start both final steps in parallel
       runNextStep("generate_questions");
+      runNextStep("generate_next_episode");
     },
     onError: (error) => {
       clientLogger.error("generateAudio", "onError", error.toString());
@@ -262,7 +290,6 @@ const PodWidget = () => {
         length: completion.length,
       });
       setResults((prev) => ({ ...prev, generate_questions: completion }));
-      runNextStep("generate_next_episode");
     },
     onError: (error) => {
       clientLogger.error(
@@ -315,57 +342,43 @@ const PodWidget = () => {
   const startPodGeneration = () => {
     if (!topic) return;
 
-    clientLogger.log(
-      "PodWidget",
-      "startPodGeneration",
-      `Starting generation with topic: ${topic}`
-    );
-
-    // Reset previous results
-    setResults({});
-
-    // Start with the first step
-    runNextStep("generate_metadata");
-
-    // Expand the first accordion item
-    setExpandedItems(["generate_metadata"]);
+    // Start both paths simultaneously
+    runNextStep("search"); // Start main path
+    runNextStep("generate_metadata"); // Start metadata path
   };
 
   // Run a specific step in the process
-  const runNextStep = (stepId: string) => {
-    if (!topic || !stepId) return;
+  const runNextStep = (currentStep: string) => {
+    if (!topic) return;
 
-    clientLogger.log("PodWidget", "runNextStep", `Starting step: ${stepId}`, {
-      topic,
-    });
+    clientLogger.log(
+      "PodWidget",
+      "runNextStep",
+      `Starting step: ${currentStep}`,
+      {
+        topic,
+      }
+    );
 
-    setActiveStep(stepId);
-    setExpandedItems([stepId]);
+    setActiveStep(currentStep);
 
-    const handler = stepHandlers[stepId as keyof typeof stepHandlers];
+    const handler = stepHandlers[currentStep as keyof typeof stepHandlers];
     if (handler) {
       clientLogger.log(
         "PodWidget",
         "runNextStep",
-        `Calling complete method for step: ${stepId}`
+        `Calling complete method for step: ${currentStep}`
       );
       try {
-        // We don't need to reset the completion here
         handler.complete(topic);
       } catch (error) {
         clientLogger.error(
           "PodWidget",
           "runNextStep",
-          `Error calling complete for step: ${stepId}`,
+          `Error calling complete for step: ${currentStep}`,
           error
         );
       }
-    } else {
-      clientLogger.warn(
-        "PodWidget",
-        "runNextStep",
-        `No handler found for step: ${stepId}`
-      );
     }
   };
 
@@ -415,7 +428,15 @@ const PodWidget = () => {
         </Button>
       </form>
 
-      <AudioPlayer audioUrl={results.generate_audio} />
+      {results.generate_audio && (
+        <AudioPlayer
+          audioUrl={results.generate_audio}
+          metadata={{
+            title:
+              JSON.parse(results.generate_metadata)?.title || "Audio Overview",
+          }}
+        />
+      )}
 
       <Separator />
 
@@ -434,19 +455,31 @@ const PodWidget = () => {
         className="w-full"
       >
         {POD_STEPS.map((step) => (
-          <AccordionItem
-            key={step.id}
-            value={step.id}
-            disabled={isStepLoading(step.id) || !getStepCompletion(step.id)}
-          >
+          <AccordionItem key={step.id} value={step.id}>
             <AccordionTrigger>{step.name}</AccordionTrigger>
             <AccordionContent>
               <div className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded">
-                {getStepCompletion(step.id) ||
+                {step.id === "generate_cover_image" ? (
+                  <div className="flex flex-col items-center gap-4">
+                    <img
+                      src={
+                        results[step.id] ||
+                        "https://placehold.co/1024x1024/4F46E5/ffffff?text=Pod+Cover"
+                      }
+                      alt="Podcast Cover"
+                      className="w-64 h-64 rounded-lg object-cover"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Placeholder cover image
+                    </p>
+                  </div>
+                ) : (
+                  getStepCompletion(step.id) ||
                   (expandedItems.includes(step.id) &&
                   !getStepCompletion(step.id)
                     ? "Waiting to generate..."
-                    : "Not generated yet")}
+                    : "Not generated yet")
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>

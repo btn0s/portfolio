@@ -1,5 +1,10 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText, streamObject, generateText } from "ai";
+import {
+  streamText,
+  streamObject,
+  generateText,
+  experimental_generateImage,
+} from "ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { OpenAI } from "orate/openai";
@@ -289,57 +294,36 @@ const generatePodOverviewScript = async (prompt: string) => {
 };
 
 /**
- * Generates a cover image prompt for the pod
+ * Generates a cover image for the pod
  * @param prompt - User prompt or pod title/description
- * @returns String with detailed image generation prompt
- *  - Will later connect to image generation API (DALL-E, etc.)
+ * @returns String with the URL of the generated cover image
  */
 const generatePodCoverImage = async (prompt: string) => {
   const timer = logger.startTimer(
     "generate_cover_image",
-    `Generating cover image prompt for "${prompt}"`
+    `Generating cover image for "${prompt}"`
   );
 
   try {
-    logger.info(
-      "generate_cover_image",
-      "Starting cover image prompt generation",
-      { prompt }
-    );
-
-    const result = streamText({
-      model: gpt4o,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert at creating detailed prompts for AI image generation. Create visually compelling, unique cover art prompts for podcasts.",
-        },
-        {
-          role: "user",
-          content: `Create a detailed image generation prompt for a podcast cover about: ${prompt}.
-          The prompt should describe:
-          - Visual style and mood
-          - Key elements to include
-          - Color palette
-          - Composition and focus
-          - Any specific artistic influences
-          Make it visually interesting and representative of the topic.`,
-        },
-      ],
+    logger.info("generate_cover_image", "Starting cover image generation", {
+      prompt,
     });
 
-    logger.info(
-      "generate_cover_image",
-      "Cover image prompt generation initialized successfully"
-    );
-    return result;
+    const imageResponse = await experimental_generateImage({
+      model: openai.image("dall-e-3"),
+      prompt: `an image inspired by but not copyright infringed on ${prompt}`,
+    });
+
+    logger.info("generate_cover_image", "Image generation successful");
+
+    // Return the image URL
+    return new Response(JSON.stringify({ imageUrl: imageResponse }), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
-    logger.error(
-      "generate_cover_image",
-      "Error generating cover image prompt",
-      error
-    );
+    logger.error("generate_cover_image", "Error generating cover image", error);
     throw error;
   } finally {
     logger.endTimer(timer);
@@ -581,7 +565,7 @@ export async function POST(req: Request) {
         logger.info("api_request", "Returning cover image stream response", {
           requestId,
         });
-        return coverImageResult.toTextStreamResponse();
+        return coverImageResult;
 
       case "generate_audio":
         const audioResult = await generatePodOverviewAudio(prompt);
