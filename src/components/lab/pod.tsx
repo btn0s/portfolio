@@ -68,11 +68,6 @@ const clientLogger = {
 // Define the steps in the pod generation process
 const POD_STEPS = [
   {
-    id: "generate_metadata",
-    name: "Generate Metadata",
-    description: "Create podcast metadata",
-  },
-  {
     id: "search",
     name: "Research",
     description: "Search for relevant information",
@@ -83,24 +78,9 @@ const POD_STEPS = [
     description: "Create podcast script",
   },
   {
-    id: "generate_cover_image",
-    name: "Cover Image",
-    description: "Generate cover image prompt",
-  },
-  {
     id: "generate_audio",
-    name: "Audio Overview",
-    description: "Generate audio metadata",
-  },
-  {
-    id: "generate_questions",
-    name: "Follow-up Questions",
-    description: "Create follow-up questions",
-  },
-  {
-    id: "generate_next_episode",
-    name: "Next Episode",
-    description: "Suggest the next episode",
+    name: "Generate Audio",
+    description: "Convert script to audio",
   },
 ];
 
@@ -173,39 +153,11 @@ const PodWidget = () => {
     };
   }, []);
 
-  // Define the step paths
-  const MAIN_PATH = [
-    "search",
-    "generate_script",
-    "generate_audio",
-    "generate_questions",
-    "generate_next_episode",
-  ];
-  const METADATA_PATH = ["generate_metadata", "generate_cover_image"];
-
   // Create separate completion hooks for each step with body parameter
-  const generateMetadata = useCompletion({
-    api: "/api/pod",
-    body: {
-      action: "generate_metadata",
-    },
-    streamProtocol: "text",
-    onFinish: (_, completion) => {
-      clientLogger.log("generateMetadata", "onFinish", "Completion received", {
-        length: completion.length,
-      });
-      setResults((prev) => ({ ...prev, generate_metadata: completion }));
-      runNextStep("generate_cover_image");
-    },
-    onError: (error) => {
-      clientLogger.error("generateMetadata", "onError", error.toString());
-    },
-  });
-
   const searchInfo = useCompletion({
-    api: "/api/pod",
+    api: "/api/pod/research",
     body: {
-      action: "search",
+      prompt: "",
     },
     streamProtocol: "text",
     onFinish: (_, completion) => {
@@ -217,134 +169,108 @@ const PodWidget = () => {
     },
     onError: (error) => {
       clientLogger.error("searchInfo", "onError", error.toString());
+      setActiveStep("");
     },
   });
 
   const generateScript = useCompletion({
-    api: "/api/pod",
+    api: "/api/pod/script",
     body: {
-      action: "generate_script",
+      prompt: "",
     },
     streamProtocol: "text",
     onFinish: (_, completion) => {
       clientLogger.log("generateScript", "onFinish", "Completion received", {
         length: completion.length,
       });
+      // First save the script result
       setResults((prev) => ({ ...prev, generate_script: completion }));
-      runNextStep("generate_audio");
+
+      // Then use setTimeout to ensure state is updated before moving to audio
+      setTimeout(() => {
+        clientLogger.log(
+          "generateScript",
+          "onFinish",
+          "Starting audio generation after script saved"
+        );
+        runNextStep("generate_audio");
+      }, 100);
     },
     onError: (error) => {
       clientLogger.error("generateScript", "onError", error.toString());
-    },
-  });
-
-  const generateCoverImage = useCompletion({
-    api: "/api/pod",
-    body: {
-      action: "generate_cover_image",
-    },
-    onFinish: () => {
-      // Use a placeholder image URL
-      setResults((prev) => ({
-        ...prev,
-        generate_cover_image:
-          "https://placehold.co/1024x1024/4F46E5/ffffff?text=Pod+Cover",
-      }));
-    },
-    onError: (error) => {
-      clientLogger.error("generateCoverImage", "onError", error.toString());
+      setActiveStep("");
     },
   });
 
   const generateAudio = useCompletion({
-    api: "/api/pod",
+    api: "/api/pod/audio",
     body: {
-      action: "generate_audio",
-      prompt: results.generate_script,
+      prompt: "",
     },
     onResponse: async (response) => {
-      if (!response.ok) return;
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setResults((prev) => ({
-        ...prev,
-        generate_audio: url,
-      }));
-      // Start both final steps in parallel
-      runNextStep("generate_questions");
-      runNextStep("generate_next_episode");
+      if (!response.ok) {
+        clientLogger.error("generateAudio", "onResponse", "Error response", {
+          status: response.status,
+        });
+        return;
+      }
+
+      try {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        clientLogger.log("generateAudio", "onResponse", "Audio blob created", {
+          size: blob.size,
+          type: blob.type,
+        });
+
+        setResults((prev) => ({
+          ...prev,
+          generate_audio: url,
+        }));
+
+        setActiveStep("");
+      } catch (error) {
+        clientLogger.error(
+          "generateAudio",
+          "onError",
+          "Error processing audio",
+          error
+        );
+        setActiveStep("");
+      }
     },
     onError: (error) => {
       clientLogger.error("generateAudio", "onError", error.toString());
-    },
-  });
-
-  const generateQuestions = useCompletion({
-    api: "/api/pod",
-    body: {
-      action: "generate_questions",
-    },
-    streamProtocol: "text",
-    onFinish: (_, completion) => {
-      clientLogger.log("generateQuestions", "onFinish", "Completion received", {
-        length: completion.length,
-      });
-      setResults((prev) => ({ ...prev, generate_questions: completion }));
-    },
-    onError: (error) => {
-      clientLogger.error(
-        "generateQuestions",
-        "onError",
-        "Error during completion",
-        error
-      );
-    },
-  });
-
-  const generateNextEpisode = useCompletion({
-    api: "/api/pod",
-    body: {
-      action: "generate_next_episode",
-    },
-    streamProtocol: "text",
-    onFinish: (_, completion) => {
-      clientLogger.log(
-        "generateNextEpisode",
-        "onFinish",
-        "Completion received",
-        { length: completion.length }
-      );
-      setResults((prev) => ({ ...prev, generate_next_episode: completion }));
       setActiveStep("");
-    },
-    onError: (error) => {
-      clientLogger.error(
-        "generateNextEpisode",
-        "onError",
-        "Error during completion",
-        error
-      );
     },
   });
 
   // Map step IDs to their respective completion hooks
   const stepHandlers = {
-    generate_metadata: generateMetadata,
     search: searchInfo,
     generate_script: generateScript,
-    generate_cover_image: generateCoverImage,
     generate_audio: generateAudio,
-    generate_questions: generateQuestions,
-    generate_next_episode: generateNextEpisode,
   };
 
   // Starts the pod generation process
   const startPodGeneration = () => {
     if (!topic) return;
 
-    // Start both paths simultaneously
-    runNextStep("search"); // Start main path
-    runNextStep("generate_metadata"); // Start metadata path
+    clientLogger.log(
+      "PodWidget",
+      "startPodGeneration",
+      `Starting generation with topic: ${topic}`
+    );
+
+    // Reset previous results
+    setResults({});
+
+    // Reset expanded items
+    setExpandedItems(["search"]);
+
+    // Start with search
+    runNextStep("search");
   };
 
   // Run a specific step in the process
@@ -357,10 +283,17 @@ const PodWidget = () => {
       `Starting step: ${currentStep}`,
       {
         topic,
+        currentResults: Object.keys(results),
       }
     );
 
     setActiveStep(currentStep);
+    setExpandedItems((prev) => {
+      if (!prev.includes(currentStep)) {
+        return [...prev, currentStep];
+      }
+      return prev;
+    });
 
     const handler = stepHandlers[currentStep as keyof typeof stepHandlers];
     if (handler) {
@@ -369,8 +302,52 @@ const PodWidget = () => {
         "runNextStep",
         `Calling complete method for step: ${currentStep}`
       );
+
       try {
-        handler.complete(topic);
+        // Handle script parameter for audio generation
+        if (currentStep === "generate_audio") {
+          if (!results.generate_script) {
+            clientLogger.error(
+              "PodWidget",
+              "runNextStep",
+              "Cannot generate audio without a script",
+              { availableResults: Object.keys(results) }
+            );
+            setActiveStep("");
+            return;
+          }
+
+          const audioPrompt = results.generate_script;
+          clientLogger.log(
+            "PodWidget",
+            "runNextStep",
+            "Generating audio with script",
+            { scriptLength: audioPrompt.length }
+          );
+
+          // The complete method expects the prompt as the first parameter
+          generateAudio.complete(audioPrompt, {
+            body: {
+              prompt: audioPrompt,
+            },
+          });
+          return;
+        }
+
+        // For search and script steps - pass the topic as the prompt
+        if (currentStep === "search") {
+          searchInfo.complete(topic, {
+            body: {
+              prompt: topic,
+            },
+          });
+        } else if (currentStep === "generate_script") {
+          generateScript.complete(topic, {
+            body: {
+              prompt: topic,
+            },
+          });
+        }
       } catch (error) {
         clientLogger.error(
           "PodWidget",
@@ -378,6 +355,7 @@ const PodWidget = () => {
           `Error calling complete for step: ${currentStep}`,
           error
         );
+        setActiveStep("");
       }
     }
   };
@@ -432,8 +410,7 @@ const PodWidget = () => {
         <AudioPlayer
           audioUrl={results.generate_audio}
           metadata={{
-            title:
-              JSON.parse(results.generate_metadata)?.title || "Audio Overview",
+            title: topic || "Audio Overview",
           }}
         />
       )}
@@ -456,21 +433,22 @@ const PodWidget = () => {
       >
         {POD_STEPS.map((step) => (
           <AccordionItem key={step.id} value={step.id}>
-            <AccordionTrigger>{step.name}</AccordionTrigger>
+            <AccordionTrigger>
+              <div className="flex items-center gap-2">
+                <span>{step.name}</span>
+                {isStepLoading(step.id) && (
+                  <span className="text-xs text-muted-foreground animate-pulse">
+                    Generating...
+                  </span>
+                )}
+              </div>
+            </AccordionTrigger>
             <AccordionContent>
               <div className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded">
-                {step.id === "generate_cover_image" ? (
+                {step.id === "generate_audio" && results[step.id] ? (
                   <div className="flex flex-col items-center gap-4">
-                    <img
-                      src={
-                        results[step.id] ||
-                        "https://placehold.co/1024x1024/4F46E5/ffffff?text=Pod+Cover"
-                      }
-                      alt="Podcast Cover"
-                      className="w-64 h-64 rounded-lg object-cover"
-                    />
                     <p className="text-xs text-muted-foreground">
-                      Placeholder cover image
+                      Audio generated successfully
                     </p>
                   </div>
                 ) : (
