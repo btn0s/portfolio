@@ -6,34 +6,40 @@ import Link from "next/link";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { motion } from "motion/react";
 import RemoveBaseLayout from "@/components/remove-base-layout";
-import { ArrowLeftIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
 import { cn } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Fragment } from "react";
 export const ExperimentHeader = () => {
   const pathname = usePathname();
+  const pathNameParts = pathname.split("/").slice(1).slice(0, 2); // max 2
   return (
     <>
       <RemoveBaseLayout />
-      <div className="fixed top-0 inset-x-0 p-4 flex justify-between items-center">
-        <Button variant="ghost" size="sm" asChild>
-          <Link
-            href="/lab"
-            className="text-xs font-mono flex items-center gap-2 text-muted-foreground"
-          >
-            <ArrowLeftIcon className="size-3" />
-            lab
-          </Link>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled
-          className="text-xs font-mono"
-        >
-          {pathname}
-        </Button>
+      <div className="fixed top-0 inset-x-0 p-4 flex justify-between items-center not-prose">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">btn0s.dev</BreadcrumbLink>
+            </BreadcrumbItem>
+            {pathNameParts.map((part, index) => (
+              <Fragment key={index}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={`/${part}`}>{part}</BreadcrumbLink>
+                </BreadcrumbItem>
+              </Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
     </>
   );
