@@ -3,16 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import { ExperimentHeader } from "@/components/header";
 import { useCompletion } from "@ai-sdk/react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Bug, RefreshCcw } from "lucide-react";
+import { TextEffect } from "../motion-primitives/text-effect";
+import { TextLoop } from "../motion-primitives/text-loop";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { TextShimmer } from "../motion-primitives/text-shimmer";
 // Pod is a personal curiosity bot. I want to be able to take any subject, and generate a short episode "audio overview" like NotebookLM.
 // Then I'd like to be able to ask follow-up questions or generate the next episode for progressive learning and depth.
 // Eventually I'd add some "style/depth" params so I can get ELI5 or more technical, save these as defaults but be able to override.
@@ -139,19 +144,29 @@ const AudioPlayer = ({
   );
 };
 
-const PodWidget = () => {
-  const [topic, setTopic] = useState("");
+type PodInstanceProps = {
+  topic: string;
+  index: number;
+  onComplete?: () => void;
+};
+
+const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
   const [activeStep, setActiveStep] = useState("");
   const [results, setResults] = useState<Record<string, string>>({});
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [statusMessage, setStatusMessage] = useState("Researching topic...");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const instanceId = useRef(`pod-${index}-${Date.now()}`);
 
-  // Log component initialization
-  useEffect(() => {
-    clientLogger.log("PodWidget", "initialize", "Component initialized");
-    return () => {
-      clientLogger.log("PodWidget", "cleanup", "Component unmounted");
-    };
-  }, []);
+  // Map step IDs to TextLoop indices
+  const stepToLoopIndex = {
+    search: 0,
+    generate_script: 1,
+    generate_audio: 2,
+  };
+
+  // Audio player state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Create separate completion hooks for each step with body parameter
   const searchInfo = useCompletion({
@@ -161,17 +176,27 @@ const PodWidget = () => {
     },
     streamProtocol: "text",
     onFinish: (_, completion) => {
-      clientLogger.log("searchInfo", "onFinish", "Completion received", {
-        length: completion.length,
-      });
+      clientLogger.log(
+        `Pod-${instanceId.current}`,
+        "searchInfo",
+        "Completion received",
+        {
+          length: completion.length,
+        }
+      );
       setResults((prev) => ({ ...prev, search: completion }));
+      setStatusMessage("Research complete. Generating script...");
       // Move to the next step
       runNextStep("generate_script");
     },
     onError: (error) => {
-      clientLogger.error("searchInfo", "onError", error.toString());
+      clientLogger.error(
+        `Pod-${instanceId.current}`,
+        "searchInfo",
+        error.toString()
+      );
       setActiveStep("");
-      setExpandedItems([]);
+      setStatusMessage("Error during research. Please try again.");
     },
   });
 
@@ -182,26 +207,45 @@ const PodWidget = () => {
     },
     streamProtocol: "text",
     onFinish: (_, completion) => {
-      clientLogger.log("generateScript", "onFinish", "Completion received", {
-        length: completion.length,
-      });
-      // First save the script result
-      setResults((prev) => ({ ...prev, generate_script: completion }));
+      clientLogger.log(
+        `Pod-${instanceId.current}`,
+        "generateScript",
+        "Completion received",
+        {
+          length: completion.length,
+        }
+      );
 
-      // Then use setTimeout to ensure state is updated before moving to audio
+      // First save the script result
+      const scriptContent = completion;
+      setResults((prev) => ({ ...prev, generate_script: scriptContent }));
+      setStatusMessage("Script complete. Generating audio...");
+
+      // Use a more reliable approach to ensure the script is available for audio
       setTimeout(() => {
         clientLogger.log(
+          `Pod-${instanceId.current}`,
           "generateScript",
-          "onFinish",
-          "Starting audio generation after script saved"
+          "Starting audio generation with script",
+          { scriptLength: scriptContent.length }
         );
-        runNextStep("generate_audio");
+
+        // Pass the script directly to the audio generation step
+        generateAudio.complete(scriptContent, {
+          body: {
+            prompt: scriptContent,
+          },
+        });
       }, 100);
     },
     onError: (error) => {
-      clientLogger.error("generateScript", "onError", error.toString());
+      clientLogger.error(
+        `Pod-${instanceId.current}`,
+        "generateScript",
+        error.toString()
+      );
       setActiveStep("");
-      setExpandedItems([]);
+      setStatusMessage("Error generating script. Please try again.");
     },
   });
 
@@ -212,11 +256,16 @@ const PodWidget = () => {
     },
     onResponse: async (response) => {
       if (!response.ok) {
-        clientLogger.error("generateAudio", "onResponse", "Error response", {
-          status: response.status,
-        });
+        clientLogger.error(
+          `Pod-${instanceId.current}`,
+          "generateAudio",
+          "Error response",
+          {
+            status: response.status,
+          }
+        );
         setActiveStep("");
-        setExpandedItems([]);
+        setStatusMessage("Error generating audio. Please try again.");
         return;
       }
 
@@ -224,34 +273,48 @@ const PodWidget = () => {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
 
-        clientLogger.log("generateAudio", "onResponse", "Audio blob created", {
-          size: blob.size,
-          type: blob.type,
-        });
+        clientLogger.log(
+          `Pod-${instanceId.current}`,
+          "generateAudio",
+          "Audio blob created",
+          {
+            size: blob.size,
+            type: blob.type,
+          }
+        );
 
         setResults((prev) => ({
           ...prev,
           generate_audio: url,
         }));
 
-        // Clear active step and close all accordions when finished
+        // Clear active step and update status when finished
         setActiveStep("");
-        setExpandedItems([]);
+        setStatusMessage("Audio generated successfully!");
+
+        // Notify parent component that generation is complete
+        if (onComplete) {
+          onComplete();
+        }
       } catch (error) {
         clientLogger.error(
+          `Pod-${instanceId.current}`,
           "generateAudio",
-          "onError",
           "Error processing audio",
           error
         );
         setActiveStep("");
-        setExpandedItems([]);
+        setStatusMessage("Error processing audio. Please try again.");
       }
     },
     onError: (error) => {
-      clientLogger.error("generateAudio", "onError", error.toString());
+      clientLogger.error(
+        `Pod-${instanceId.current}`,
+        "generateAudio",
+        error.toString()
+      );
       setActiveStep("");
-      setExpandedItems([]);
+      setStatusMessage("Error generating audio. Please try again.");
     },
   });
 
@@ -262,29 +325,10 @@ const PodWidget = () => {
     generate_audio: generateAudio,
   };
 
-  // Starts the pod generation process
-  const startPodGeneration = () => {
-    if (!topic) return;
-
-    clientLogger.log(
-      "PodWidget",
-      "startPodGeneration",
-      `Starting generation with topic: ${topic}`
-    );
-
-    // Reset previous results
-    setResults({});
-
-    // Start with search
-    runNextStep("search");
-  };
-
   // Run a specific step in the process
   const runNextStep = (currentStep: string) => {
-    if (!topic) return;
-
     clientLogger.log(
-      "PodWidget",
+      `Pod-${instanceId.current}`,
       "runNextStep",
       `Starting step: ${currentStep}`,
       {
@@ -295,13 +339,10 @@ const PodWidget = () => {
 
     setActiveStep(currentStep);
 
-    // Only show the current accordion
-    setExpandedItems([currentStep]);
-
     const handler = stepHandlers[currentStep as keyof typeof stepHandlers];
     if (handler) {
       clientLogger.log(
-        "PodWidget",
+        `Pod-${instanceId.current}`,
         "runNextStep",
         `Calling complete method for step: ${currentStep}`
       );
@@ -311,19 +352,21 @@ const PodWidget = () => {
         if (currentStep === "generate_audio") {
           if (!results.generate_script) {
             clientLogger.error(
-              "PodWidget",
+              `Pod-${instanceId.current}`,
               "runNextStep",
               "Cannot generate audio without a script",
               { availableResults: Object.keys(results) }
             );
             setActiveStep("");
-            setExpandedItems([]);
+            setStatusMessage(
+              "Error: No script available for audio generation."
+            );
             return;
           }
 
           const audioPrompt = results.generate_script;
           clientLogger.log(
-            "PodWidget",
+            `Pod-${instanceId.current}`,
             "runNextStep",
             "Generating audio with script",
             { scriptLength: audioPrompt.length }
@@ -354,51 +397,160 @@ const PodWidget = () => {
         }
       } catch (error) {
         clientLogger.error(
-          "PodWidget",
+          `Pod-${instanceId.current}`,
           "runNextStep",
           `Error calling complete for step: ${currentStep}`,
           error
         );
         setActiveStep("");
-        setExpandedItems([]);
+        setStatusMessage(`Error during ${currentStep}. Please try again.`);
       }
     }
   };
 
-  // Check if a step is currently loading
-  const isStepLoading = (stepId: string) => {
-    const handler = stepHandlers[stepId as keyof typeof stepHandlers];
-    const isLoading = activeStep === stepId && handler?.isLoading;
-    return isLoading;
+  // Start the generation process automatically when the component mounts
+  useEffect(() => {
+    clientLogger.log(
+      `Pod-${instanceId.current}`,
+      "initialize",
+      `Starting generation for topic: ${topic}`
+    );
+    runNextStep("search");
+  }, [topic]);
+
+  const isComplete = results.generate_audio;
+
+  return (
+    <div className="flex flex-col bg-muted/50 p-4 rounded-lg w-full max-w-3xl gap-4 mb-4">
+      <div className="flex items-center justify-between gap-12">
+        <div className="flex flex-col">
+          <h2 className="font-medium truncate">{topic}</h2>
+          {!results.generate_audio && activeStep && (
+            <TextLoop
+              className="text-xs text-muted-foreground"
+              interval={99999} // Very long interval so it doesn't auto-change
+              trigger={false} // Disable automatic animation
+              currentIndex={
+                stepToLoopIndex[activeStep as keyof typeof stepToLoopIndex] || 0
+              }
+            >
+              <span>Starting up...</span>
+              <TextShimmer>Researching topic...</TextShimmer>
+              <TextShimmer>Generating script...</TextShimmer>
+              <TextShimmer>Converting to audio...</TextShimmer>
+            </TextLoop>
+          )}
+          {!activeStep && isComplete && (
+            <span className="text-xs text-muted-foreground">Complete</span>
+          )}
+        </div>
+
+        <div className="flex gap-2 items-center">
+          {results.generate_audio && (
+            <audio
+              ref={audioRef}
+              src={results.generate_audio}
+              controls
+              className="shrink-0 h-8"
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+            />
+          )}
+          {isComplete && (
+            <Button variant="outline" size="icon" className="h-8 w-8 shrink-0">
+              <RefreshCcw className="h-4 w-4" />
+              <span className="sr-only">Regenerate</span>
+            </Button>
+          )}
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+              >
+                <Bug className="h-4 w-4" />
+                <span className="sr-only">Debug</span>
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>
+                  Debug: Generated Content for "{topic}"
+                </DrawerTitle>
+                <DrawerDescription>
+                  View the raw generated content for each step
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Research</h3>
+                  <div className="whitespace-pre-wrap font-mono text-xs bg-muted p-4 rounded max-h-[200px] overflow-auto">
+                    {results.search || "Not generated yet"}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Script</h3>
+                  <div className="whitespace-pre-wrap font-mono text-xs bg-muted p-4 rounded max-h-[200px] overflow-auto">
+                    {results.generate_script || "Not generated yet"}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Audio</h3>
+                  <div className="bg-muted p-4 rounded">
+                    {results.generate_audio
+                      ? "Audio generated successfully"
+                      : "Not generated yet"}
+                  </div>
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PodWidget = () => {
+  const [topic, setTopic] = useState("");
+  const [pods, setPods] = useState<{ id: number; topic: string }[]>([]);
+  const [nextPodId, setNextPodId] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Starts the pod generation process
+  const startPodGeneration = () => {
+    if (!topic || isGenerating) return;
+
+    clientLogger.log(
+      "PodWidget",
+      "startPodGeneration",
+      `Creating new pod for topic: ${topic}`
+    );
+
+    // Add a new pod with the current topic
+    setPods((prev) => [{ id: nextPodId, topic }, ...prev]);
+    setNextPodId((prev) => prev + 1);
+    setIsGenerating(true);
+
+    // Clear the topic for next input
+    setTopic("");
   };
 
-  // Get the completion for a specific step
-  const getStepCompletion = (stepId: string) => {
-    // First check if we have a saved result for this step
-    if (results[stepId]) {
-      return results[stepId];
-    }
-
-    // If this is the active step, return its current streaming completion
-    if (activeStep === stepId) {
-      const handler = stepHandlers[stepId as keyof typeof stepHandlers];
-      if (handler?.completion) {
-        return handler.completion;
-      }
-    }
-
-    // Otherwise return empty string
-    return "";
+  const handlePodComplete = () => {
+    setIsGenerating(false);
   };
 
   return (
-    <div className="flex flex-col border p-6 w-full max-w-3xl gap-4">
+    <div className="flex flex-col w-full max-w-3xl gap-4">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           startPodGeneration();
         }}
-        className="flex gap-2"
+        className="flex gap-2 sticky top-0 bg-background p-4 rounded-lg border shadow-sm z-10"
       >
         <Input
           value={topic}
@@ -406,68 +558,21 @@ const PodWidget = () => {
           placeholder="Enter a topic for your pod..."
           autoFocus
         />
-        <Button type="submit" disabled={!topic || activeStep !== ""}>
-          {activeStep ? "Generating..." : "Generate Pod"}
+        <Button type="submit" disabled={!topic || isGenerating}>
+          {isGenerating ? "Generating..." : "Generate Pod"}
         </Button>
       </form>
 
-      {results.generate_audio && (
-        <AudioPlayer
-          audioUrl={results.generate_audio}
-          metadata={{
-            title: topic || "Audio Overview",
-          }}
-        />
-      )}
-
-      <Separator />
-
-      <Accordion
-        type="multiple"
-        value={expandedItems}
-        onValueChange={(values) => {
-          clientLogger.log(
-            "Accordion",
-            "onValueChange",
-            `Accordion values changed`,
-            values
-          );
-          setExpandedItems(values);
-        }}
-        className="w-full"
-      >
-        {POD_STEPS.map((step) => (
-          <AccordionItem key={step.id} value={step.id}>
-            <AccordionTrigger>
-              <div className="flex items-center gap-2">
-                <span>{step.name}</span>
-                {isStepLoading(step.id) && (
-                  <span className="text-xs text-muted-foreground animate-pulse">
-                    Generating...
-                  </span>
-                )}
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded">
-                {step.id === "generate_audio" && results[step.id] ? (
-                  <div className="flex flex-col items-center gap-4">
-                    <p className="text-xs text-muted-foreground">
-                      Audio generated successfully
-                    </p>
-                  </div>
-                ) : (
-                  getStepCompletion(step.id) ||
-                  (expandedItems.includes(step.id) &&
-                  !getStepCompletion(step.id)
-                    ? "Waiting to generate..."
-                    : "Not generated yet")
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+      <div className="space-y-0">
+        {pods.map((pod, index) => (
+          <PodInstance
+            key={pod.id}
+            topic={pod.topic}
+            index={pod.id}
+            onComplete={index === 0 ? handlePodComplete : undefined}
+          />
         ))}
-      </Accordion>
+      </div>
     </div>
   );
 };
