@@ -147,15 +147,24 @@ const AudioPlayer = ({
 type PodInstanceProps = {
   topic: string;
   index: number;
-  onComplete?: () => void;
+  savedResults?: Record<string, string>;
+  onComplete?: (results: Record<string, string>) => void;
 };
 
-const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
+const PodInstance = ({
+  topic,
+  index,
+  savedResults,
+  onComplete,
+}: PodInstanceProps) => {
   const [activeStep, setActiveStep] = useState("");
-  const [results, setResults] = useState<Record<string, string>>({});
+  const [results, setResults] = useState<Record<string, string>>(
+    savedResults || {}
+  );
   const [statusMessage, setStatusMessage] = useState("Researching topic...");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const instanceId = useRef(`pod-${index}-${Date.now()}`);
+  const blobUrlsRef = useRef<string[]>([]);
 
   // Map step IDs to TextLoop indices
   const stepToLoopIndex = {
@@ -167,6 +176,71 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
   // Audio player state
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Cleanup function to revoke object URLs
+  useEffect(() => {
+    return () => {
+      // Cleanup blob URLs when component unmounts
+      blobUrlsRef.current.forEach((url) => {
+        try {
+          URL.revokeObjectURL(url);
+          clientLogger.log(
+            `Pod-${instanceId.current}`,
+            "cleanup",
+            `Revoked blob URL: ${url.substring(0, 30)}...`
+          );
+        } catch (error) {
+          clientLogger.error(
+            `Pod-${instanceId.current}`,
+            "cleanup",
+            `Failed to revoke URL: ${url.substring(0, 30)}...`,
+            error
+          );
+        }
+      });
+    };
+  }, []);
+
+  // Reset instance and start generation
+  const handleRegenerate = () => {
+    clientLogger.log(
+      `Pod-${instanceId.current}`,
+      "regenerate",
+      "Regenerating pod for topic",
+      { topic }
+    );
+
+    // Reset results and start over
+    setResults({});
+    setActiveStep("");
+
+    // Start the generation process
+    setTimeout(() => {
+      runNextStep("search");
+    }, 100);
+  };
+
+  // Skip generation if we already have saved results
+  useEffect(() => {
+    if (savedResults?.generate_audio) {
+      clientLogger.log(
+        `Pod-${instanceId.current}`,
+        "initialize",
+        "Using saved results, skipping generation",
+        { topic }
+      );
+      // No need to run steps, we already have the results
+      setActiveStep("");
+      setStatusMessage("Loaded from storage");
+    } else {
+      clientLogger.log(
+        `Pod-${instanceId.current}`,
+        "initialize",
+        `Starting generation for topic: ${topic}`
+      );
+      runNextStep("search");
+    }
+  }, [topic, savedResults]);
 
   // Create separate completion hooks for each step with body parameter
   const searchInfo = useCompletion({
@@ -273,6 +347,9 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
 
+        // Store URL for cleanup
+        blobUrlsRef.current.push(url);
+
         clientLogger.log(
           `Pod-${instanceId.current}`,
           "generateAudio",
@@ -283,18 +360,21 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
           }
         );
 
-        setResults((prev) => ({
-          ...prev,
+        // Update results with the new audio URL
+        const updatedResults = {
+          ...results,
           generate_audio: url,
-        }));
+        };
+
+        setResults(updatedResults);
 
         // Clear active step and update status when finished
         setActiveStep("");
         setStatusMessage("Audio generated successfully!");
 
-        // Notify parent component that generation is complete
+        // Notify parent component that generation is complete with all results
         if (onComplete) {
-          onComplete();
+          onComplete(updatedResults);
         }
       } catch (error) {
         clientLogger.error(
@@ -408,16 +488,6 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
     }
   };
 
-  // Start the generation process automatically when the component mounts
-  useEffect(() => {
-    clientLogger.log(
-      `Pod-${instanceId.current}`,
-      "initialize",
-      `Starting generation for topic: ${topic}`
-    );
-    runNextStep("search");
-  }, [topic]);
-
   const isComplete = results.generate_audio;
 
   return (
@@ -457,7 +527,12 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
             />
           )}
           {isComplete && (
-            <Button variant="outline" size="icon" className="h-8 w-8 shrink-0">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={handleRegenerate}
+            >
               <RefreshCcw className="h-4 w-4" />
               <span className="sr-only">Regenerate</span>
             </Button>
@@ -516,9 +591,78 @@ const PodInstance = ({ topic, index, onComplete }: PodInstanceProps) => {
 
 const PodWidget = () => {
   const [topic, setTopic] = useState("");
-  const [pods, setPods] = useState<{ id: number; topic: string }[]>([]);
+  const [pods, setPods] = useState<
+    { id: number; topic: string; results?: Record<string, string> }[]
+  >([]);
   const [nextPodId, setNextPodId] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Load pods from localStorage on mount
+  useEffect(() => {
+    const savedPods = localStorage.getItem("saved-pods");
+    const savedNextId = localStorage.getItem("saved-next-pod-id");
+
+    if (savedPods) {
+      try {
+        const parsedPods = JSON.parse(savedPods);
+        setPods(parsedPods);
+        clientLogger.log(
+          "PodWidget",
+          "loadFromStorage",
+          `Loaded ${parsedPods.length} pods from localStorage`
+        );
+      } catch (error) {
+        clientLogger.error(
+          "PodWidget",
+          "loadFromStorage",
+          "Failed to parse pods from localStorage",
+          error
+        );
+      }
+    }
+
+    if (savedNextId) {
+      try {
+        setNextPodId(parseInt(savedNextId, 10));
+      } catch (error) {
+        clientLogger.error(
+          "PodWidget",
+          "loadFromStorage",
+          "Failed to parse next pod ID from localStorage",
+          error
+        );
+      }
+    }
+  }, []);
+
+  // Save a pod's results to localStorage
+  const savePodToStorage = (
+    podId: number,
+    podResults: Record<string, string>
+  ) => {
+    const updatedPods = pods.map((pod) =>
+      pod.id === podId ? { ...pod, results: podResults } : pod
+    );
+
+    setPods(updatedPods);
+
+    try {
+      localStorage.setItem("saved-pods", JSON.stringify(updatedPods));
+      localStorage.setItem("saved-next-pod-id", nextPodId.toString());
+      clientLogger.log(
+        "PodWidget",
+        "saveToStorage",
+        `Saved ${updatedPods.length} pods to localStorage`
+      );
+    } catch (error) {
+      clientLogger.error(
+        "PodWidget",
+        "saveToStorage",
+        "Failed to save pods to localStorage",
+        error
+      );
+    }
+  };
 
   // Starts the pod generation process
   const startPodGeneration = () => {
@@ -539,8 +683,12 @@ const PodWidget = () => {
     setTopic("");
   };
 
-  const handlePodComplete = () => {
+  const handlePodComplete = (
+    podId: number,
+    results: Record<string, string>
+  ) => {
     setIsGenerating(false);
+    savePodToStorage(podId, results);
   };
 
   return (
@@ -569,7 +717,10 @@ const PodWidget = () => {
             key={pod.id}
             topic={pod.topic}
             index={pod.id}
-            onComplete={index === 0 ? handlePodComplete : undefined}
+            savedResults={pod.results}
+            onComplete={(results) =>
+              index === 0 ? handlePodComplete(pod.id, results) : undefined
+            }
           />
         ))}
       </div>
