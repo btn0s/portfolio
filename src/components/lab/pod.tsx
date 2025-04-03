@@ -124,7 +124,7 @@ const PodWidget = () => {
       action: "generate_metadata",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log("generateMetadata", "onFinish", "Completion received", {
         length: completion.length,
       });
@@ -154,7 +154,7 @@ const PodWidget = () => {
       action: "search",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log("searchInfo", "onFinish", "Completion received", {
         length: completion.length,
       });
@@ -177,7 +177,7 @@ const PodWidget = () => {
       action: "generate_script",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log("generateScript", "onFinish", "Completion received", {
         length: completion.length,
       });
@@ -200,7 +200,7 @@ const PodWidget = () => {
       action: "generate_cover_image",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log(
         "generateCoverImage",
         "onFinish",
@@ -226,7 +226,7 @@ const PodWidget = () => {
       action: "generate_audio",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log("generateAudio", "onFinish", "Completion received", {
         length: completion.length,
       });
@@ -249,7 +249,7 @@ const PodWidget = () => {
       action: "generate_questions",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log("generateQuestions", "onFinish", "Completion received", {
         length: completion.length,
       });
@@ -272,7 +272,7 @@ const PodWidget = () => {
       action: "generate_next_episode",
     },
     streamProtocol: "text",
-    onFinish: (completion) => {
+    onFinish: (_, completion) => {
       clientLogger.log(
         "generateNextEpisode",
         "onFinish",
@@ -351,7 +351,7 @@ const PodWidget = () => {
         `Calling complete method for step: ${stepId}`
       );
       try {
-        // Pass only the prompt string which contains the topic
+        // We don't need to reset the completion here
         handler.complete(topic);
       } catch (error) {
         clientLogger.error(
@@ -386,12 +386,21 @@ const PodWidget = () => {
 
   // Get the completion for a specific step
   const getStepCompletion = (stepId: string) => {
+    // First check if we have a saved result for this step
     if (results[stepId]) {
       return results[stepId];
     }
 
-    const handler = stepHandlers[stepId as keyof typeof stepHandlers];
-    return handler?.completion || "";
+    // If this is the active step, return its current streaming completion
+    if (activeStep === stepId) {
+      const handler = stepHandlers[stepId as keyof typeof stepHandlers];
+      if (handler?.completion) {
+        return handler.completion;
+      }
+    }
+
+    // Otherwise return empty string
+    return "";
   };
 
   return (
