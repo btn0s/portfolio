@@ -357,26 +357,33 @@ const generatePodCoverImage = async (prompt: string) => {
 const generatePodOverviewAudio = async (prompt: string) => {
   const timer = logger.startTimer(
     "generate_audio",
-    `Generating audio metadata for "${prompt}"`
+    `Generating audio for "${prompt}"`
   );
 
   try {
-    logger.info("generate_audio", "Starting audio metadata generation", {
+    logger.info("generate_audio", "Starting audio generation", {
       prompt,
     });
 
-    const result = await speak({
+    const audioFile = await speak({
       model: new OpenAI().tts(),
       prompt: prompt,
     });
 
-    logger.info(
-      "generate_audio",
-      "Audio metadata generation initialized successfully"
-    );
-    return result;
+    // Convert File to ArrayBuffer
+    const arrayBuffer = await audioFile.arrayBuffer();
+
+    logger.info("generate_audio", "Audio generation successful");
+
+    // Return as Response with proper headers
+    return new Response(arrayBuffer, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+        "Content-Length": arrayBuffer.byteLength.toString(),
+      },
+    });
   } catch (error) {
-    logger.error("generate_audio", "Error generating audio metadata", error);
+    logger.error("generate_audio", "Error generating audio", error);
     throw error;
   } finally {
     logger.endTimer(timer);
@@ -580,8 +587,9 @@ export async function POST(req: Request) {
         const audioResult = await generatePodOverviewAudio(prompt);
         logger.info("api_request", "Returning audio stream response", {
           requestId,
+          audioResult,
         });
-        return new Response(audioResult);
+        return audioResult;
 
       case "generate_questions":
         const questionsResult = await generatePodFollowUpQuestions(prompt);

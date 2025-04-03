@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ExperimentHeader } from "@/components/header";
 import { useCompletion } from "@ai-sdk/react";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
+import { Separator } from "../ui/separator";
 // Pod is a personal curiosity bot. I want to be able to take any subject, and generate a short episode "audio overview" like NotebookLM.
 // Then I'd like to be able to ask follow-up questions or generate the next episode for progressive learning and depth.
 // Eventually I'd add some "style/depth" params so I can get ELI5 or more technical, save these as defaults but be able to override.
@@ -102,6 +102,14 @@ const POD_STEPS = [
     description: "Suggest the next episode",
   },
 ];
+
+const AudioPlayer = ({ audioUrl }: { audioUrl: string }) => {
+  return (
+    <div className="w-full">
+      <audio src={audioUrl} controls className="w-full" />
+    </div>
+  );
+};
 
 const PodWidget = () => {
   const [topic, setTopic] = useState("");
@@ -225,21 +233,20 @@ const PodWidget = () => {
     body: {
       action: "generate_audio",
     },
-    streamProtocol: "text",
-    onFinish: (_, completion) => {
-      clientLogger.log("generateAudio", "onFinish", "Completion received", {
-        length: completion.length,
-      });
-      setResults((prev) => ({ ...prev, generate_audio: completion }));
+    onResponse: async (response) => {
+      if (!response.ok) return;
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setResults((prev) => ({
+        ...prev,
+        generate_audio: url,
+      }));
+    },
+    onFinish: () => {
       runNextStep("generate_questions");
     },
     onError: (error) => {
-      clientLogger.error(
-        "generateAudio",
-        "onError",
-        "Error during completion",
-        error
-      );
+      clientLogger.error("generateAudio", "onError", error);
     },
   });
 
@@ -388,13 +395,13 @@ const PodWidget = () => {
   };
 
   return (
-    <div className="flex flex-col border p-6 w-full max-w-3xl">
+    <div className="flex flex-col border p-6 w-full max-w-3xl gap-4">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           startPodGeneration();
         }}
-        className="flex gap-2 mb-6"
+        className="flex gap-2"
       >
         <Input
           value={topic}
@@ -406,6 +413,10 @@ const PodWidget = () => {
           {activeStep ? "Generating..." : "Generate Pod"}
         </Button>
       </form>
+
+      <AudioPlayer audioUrl={results.generate_audio} />
+
+      <Separator />
 
       <Accordion
         type="multiple"
