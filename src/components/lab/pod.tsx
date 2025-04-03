@@ -332,16 +332,7 @@ const PodWidget = () => {
     });
 
     setActiveStep(stepId);
-    setExpandedItems((prev) => {
-      const newItems = prev.includes(stepId) ? prev : [...prev, stepId];
-      clientLogger.log(
-        "PodWidget",
-        "expandedItems",
-        `Expanded items updated`,
-        newItems
-      );
-      return newItems;
-    });
+    setExpandedItems([stepId]);
 
     const handler = stepHandlers[stepId as keyof typeof stepHandlers];
     if (handler) {
@@ -374,13 +365,6 @@ const PodWidget = () => {
   const isStepLoading = (stepId: string) => {
     const handler = stepHandlers[stepId as keyof typeof stepHandlers];
     const isLoading = activeStep === stepId && handler?.isLoading;
-    if (isLoading) {
-      clientLogger.log(
-        "PodWidget",
-        "isStepLoading",
-        `Step ${stepId} is loading`
-      );
-    }
     return isLoading;
   };
 

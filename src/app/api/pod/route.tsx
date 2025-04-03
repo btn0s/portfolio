@@ -2,6 +2,8 @@ import { openai } from "@ai-sdk/openai";
 import { streamText, streamObject, generateText } from "ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { OpenAI } from "orate/openai";
+import { speak } from "orate";
 
 // Define the pod action types
 type PodAction =
@@ -363,14 +365,9 @@ const generatePodOverviewAudio = async (prompt: string) => {
       prompt,
     });
 
-    // For now, we'll generate metadata about what the audio would be
-    // In a future implementation, this would connect to a TTS service
-    const result = streamObject({
-      model: gpt4o,
-      schema: audioMetadataSchema,
-      prompt: `Generate metadata for an audio narration of: "${prompt}".
-      For now, this is a placeholder that would connect to a text-to-speech service in the future.
-      Estimate a reasonable duration based on the content length and complexity.`,
+    const result = await speak({
+      model: new OpenAI().tts(),
+      prompt: prompt,
     });
 
     logger.info(
@@ -584,7 +581,7 @@ export async function POST(req: Request) {
         logger.info("api_request", "Returning audio stream response", {
           requestId,
         });
-        return audioResult.toTextStreamResponse();
+        return new Response(audioResult);
 
       case "generate_questions":
         const questionsResult = await generatePodFollowUpQuestions(prompt);
