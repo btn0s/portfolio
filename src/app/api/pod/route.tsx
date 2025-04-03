@@ -244,7 +244,7 @@ const performPodSearch = async (prompt: string) => {
 const generatePodOverviewScript = async (prompt: string) => {
   const timer = logger.startTimer(
     "generate_script",
-    `Generating podcast script for "${prompt}"`
+    `Generating knowledge bot script for "${prompt}"`
   );
 
   try {
@@ -256,16 +256,19 @@ const generatePodOverviewScript = async (prompt: string) => {
         {
           role: "system",
           content:
-            "You are an expert podcast scriptwriter. Create engaging, well-structured scripts with a captivating introduction, logical content flow, and clear conclusion.",
+            "You are an expert knowledge bot that explains topics clearly and concisely. Your responses are conversational but focused, with no fluff or filler content. You speak directly to the user in a helpful, straightforward manner.",
         },
         {
           role: "user",
-          content: `Write a podcast script for a topic about: ${prompt}.
-          Structure it with:
-          1. A hook/introduction to capture interest
-          2. Main content with logical flow and key points
-          3. A conclusion with summary and calls to action
-          The script should be conversational, engaging, and educational.`,
+          content: `Create a clear, educational explanation about: ${prompt}.
+          Structure it as:
+          1. A brief introduction that states what the topic is and why it matters
+          2. 3-5 key points about the topic, explained in simple but precise language
+          3. A concise conclusion that summarizes the most important takeaway
+          
+          Use a direct, single-speaker format as if you're explaining to someone one-on-one.
+          Avoid any podcast-specific language (like "welcome to the show" or "see you next time").
+          Focus on delivering accurate, useful information in a conversational tone.`,
         },
       ],
     });
