@@ -165,11 +165,13 @@ const PodWidget = () => {
         length: completion.length,
       });
       setResults((prev) => ({ ...prev, search: completion }));
+      // Move to the next step
       runNextStep("generate_script");
     },
     onError: (error) => {
       clientLogger.error("searchInfo", "onError", error.toString());
       setActiveStep("");
+      setExpandedItems([]);
     },
   });
 
@@ -199,6 +201,7 @@ const PodWidget = () => {
     onError: (error) => {
       clientLogger.error("generateScript", "onError", error.toString());
       setActiveStep("");
+      setExpandedItems([]);
     },
   });
 
@@ -212,6 +215,8 @@ const PodWidget = () => {
         clientLogger.error("generateAudio", "onResponse", "Error response", {
           status: response.status,
         });
+        setActiveStep("");
+        setExpandedItems([]);
         return;
       }
 
@@ -229,7 +234,9 @@ const PodWidget = () => {
           generate_audio: url,
         }));
 
+        // Clear active step and close all accordions when finished
         setActiveStep("");
+        setExpandedItems([]);
       } catch (error) {
         clientLogger.error(
           "generateAudio",
@@ -238,11 +245,13 @@ const PodWidget = () => {
           error
         );
         setActiveStep("");
+        setExpandedItems([]);
       }
     },
     onError: (error) => {
       clientLogger.error("generateAudio", "onError", error.toString());
       setActiveStep("");
+      setExpandedItems([]);
     },
   });
 
@@ -266,9 +275,6 @@ const PodWidget = () => {
     // Reset previous results
     setResults({});
 
-    // Reset expanded items
-    setExpandedItems(["search"]);
-
     // Start with search
     runNextStep("search");
   };
@@ -288,12 +294,9 @@ const PodWidget = () => {
     );
 
     setActiveStep(currentStep);
-    setExpandedItems((prev) => {
-      if (!prev.includes(currentStep)) {
-        return [...prev, currentStep];
-      }
-      return prev;
-    });
+
+    // Only show the current accordion
+    setExpandedItems([currentStep]);
 
     const handler = stepHandlers[currentStep as keyof typeof stepHandlers];
     if (handler) {
@@ -314,6 +317,7 @@ const PodWidget = () => {
               { availableResults: Object.keys(results) }
             );
             setActiveStep("");
+            setExpandedItems([]);
             return;
           }
 
@@ -356,6 +360,7 @@ const PodWidget = () => {
           error
         );
         setActiveStep("");
+        setExpandedItems([]);
       }
     }
   };
