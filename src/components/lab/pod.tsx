@@ -232,6 +232,7 @@ const PodWidget = () => {
     api: "/api/pod",
     body: {
       action: "generate_audio",
+      prompt: results.generate_script,
     },
     onResponse: async (response) => {
       if (!response.ok) return;
@@ -246,7 +247,7 @@ const PodWidget = () => {
       runNextStep("generate_questions");
     },
     onError: (error) => {
-      clientLogger.error("generateAudio", "onError", error);
+      clientLogger.error("generateAudio", "onError", error.toString());
     },
   });
 
