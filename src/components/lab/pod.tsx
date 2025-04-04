@@ -744,9 +744,19 @@ const PodWidget = () => {
       `Creating new pod for topic: ${topic}`
     );
 
-    // Add a new pod with the current topic
-    setPods((prev) => [{ id: nextPodId, topic }, ...prev]);
-    setNextPodId((prev) => prev + 1);
+    // Create the new pod
+    const newPodId = nextPodId;
+    const newPod = { id: newPodId, topic };
+
+    // Update state with the new pod
+    const updatedPods = [newPod, ...pods];
+    setPods(updatedPods);
+
+    // Save to localStorage immediately
+    storageUtils.savePods(updatedPods, newPodId + 1);
+
+    // Update next ID after saving
+    setNextPodId(newPodId + 1);
     setIsGenerating(true);
 
     // Clear the topic for next input
