@@ -48,7 +48,7 @@ export default function Home({
           </Link>
           .
         </p>
-        <p>
+        <p className="mb-4">
           I use this site to explore, test, prototype, and bring ideas to life —
           from my sketchbook to my{" "}
           <Link
@@ -59,6 +59,23 @@ export default function Home({
           </Link>
           .
         </p>
+        <div className="flex flex-col items-start text-sm gap-2">
+          <Link
+            href="/pov"
+            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300"
+          >
+            <ArrowRight className="size-3" />
+            Why I do this
+          </Link>
+
+          <Link
+            href="/resume"
+            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300"
+          >
+            <ArrowRight className="size-3" />
+            Resume
+          </Link>
+        </div>
       </motion.section>
       <motion.section
         variants={VARIANTS_SECTION}
