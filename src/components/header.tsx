@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
 import { cn } from "@/lib/utils";
+import { useOthers } from "@liveblocks/react";
 export const ExperimentHeader = () => {
   const pathname = usePathname();
   return (
@@ -71,6 +72,7 @@ const Header = () => {
           </div>
         </div>
       </Link>
+
       <div className="flex gap-2 items-center">
         {HEADER_LINKS.map((link) => (
           <Button variant="ghost" size="sm" asChild key={link}>
