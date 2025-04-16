@@ -5,6 +5,9 @@ import localFont from "next/font/local";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Main from "@/components/main";
+import LiveCursors from "@/components/liveblocks/cursors";
+import { Room } from "@/components/liveblocks/room";
+import { showCursorsFlag } from "@/lib/flags";
 
 import "./globals.css";
 
@@ -33,20 +36,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Check if cursors should be shown
+  const showCursors = await showCursorsFlag();
+
   return (
     <html lang="en">
       <body
         className={`${oracle.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-oracle)] dark min-h-screen flex flex-col transition`}
       >
-        <Header />
-        <Main>{children}</Main>
-        <Footer />
-        <Analytics />
+        <Room>
+          <Header />
+          <Main>{children}</Main>
+          <Footer />
+          <Analytics />
+          {showCursors && <LiveCursors />}
+        </Room>
       </body>
     </html>
   );

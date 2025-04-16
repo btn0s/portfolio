@@ -152,6 +152,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    cursor: none !important;
+  }
+  a, button, [role="button"], input, select, textarea, [tabindex]:not([tabindex="-1"]) {
+    cursor: none !important;
+  }
+  * {
+    cursor: none !important;
   }
 }
 
