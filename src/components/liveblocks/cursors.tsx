@@ -123,7 +123,7 @@ const CursorElement = ({
   isExiting,
   isLocalCursor = false,
 }: {
-  position: { x: number; y: number };
+  position: { x: number; y: number; pageX: number; pageY: number };
   color: { bg: string; fill: string; text: string };
   name: string;
   isClicking: boolean;
@@ -141,12 +141,20 @@ const CursorElement = ({
   // Only apply exit animation for remote cursors, not local
   const shouldApplyExitAnimation = !isLocalCursor && isExiting;
 
+  // Calculate position adjusted for current scroll
+  const scrollX = typeof window !== "undefined" ? window.scrollX : 0;
+  const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
+
+  // For local cursor use viewport coordinates, for remote cursors use document coordinates adjusted by current scroll
+  const leftPos = isLocalCursor ? position.x : position.pageX - scrollX;
+  const topPos = isLocalCursor ? position.y : position.pageY - scrollY;
+
   return (
     <div
       className="fixed transition-opacity duration-200 cursor-none"
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
+        left: `${leftPos}px`,
+        top: `${topPos}px`,
         zIndex: 50,
       }}
     >
@@ -317,6 +325,12 @@ function LiveCursors() {
       scheduleUpdate();
     };
 
+    // Scroll handler to update remote cursor positions
+    const handleScroll = () => {
+      // We only need to call scheduleUpdate to ensure other cursors adjust position
+      scheduleUpdate();
+    };
+
     // Mouse click handlers
     const handleMouseDown = (event: MouseEvent) => {
       isClicking.current = true;
@@ -361,6 +375,8 @@ function LiveCursors() {
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
 
     // Clean up all event listeners
     return () => {
@@ -370,6 +386,7 @@ function LiveCursors() {
       document.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("scroll", handleScroll);
 
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
