@@ -88,7 +88,6 @@ const STAR_WARS_NAMES = [
   "Mars Guo",
   "Ody Mandrell",
   "Boles Roor",
-  "Elan Mak",
   "Aldar Beedo",
   "Clegg Holdfast",
   "Dud Bolt",
