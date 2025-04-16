@@ -1,6 +1,6 @@
 ---
 title: "Strella"
-description: "Reimagining the IDE for design engineers"
+description: "The first IDE for design engineers"
 imagePath: "lab/strella/cover.png"
 ---
 
@@ -14,33 +14,34 @@ import pageViewGraph from "@/assets/images/lab/strella/page-view-graph.png";
 import pageViewGraphWPreview from "@/assets/images/lab/strella/page-view-graph-w-preview.png";
 import blueprintsCover from "@/assets/images/lab/game-dev-prototypes/cover.png";
 
-# Chasing the Magic of Visual Programming
+# Strella: The Visual Development Environment
 
-Strella is my dream project—a node-based IDE where designers and engineers speak the same language. Inspired by Unreal Engine's <Link href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-in-unreal-engine" target="_blank" rel="noopener noreferrer">Blueprints</Link>, it replaces the fragmented workflow of Figma-to-code with a unified canvas where visual components connect directly to functional logic, eliminating the translation gap.
+Strella is a new kind of tool—a Visual Development Environment (VDE) where layout, logic, and state come together in a single canvas. Inspired by Unreal Engine’s <Link href="https://dev.epicgames.com/documentation/en-us/unreal-engine/blueprints-visual-scripting-in-unreal-engine" target="_blank" rel="noopener noreferrer">Blueprints</Link>, Strella is built for design engineers: people who think visually but build interactively. It replaces the Figma-to-code pipeline with a unified authoring system—no handoff, no translation, no loss of intent.
 
+<div className="flex gap-2">
 <Button asChild variant={"secondary"} className="not-prose" size={"sm"}>
   <Link href="https://strella.dev" target="_blank" rel="noopener noreferrer">Live <ExternalLinkIcon className="size-3" /></Link>
 </Button>
+<Button asChild variant={"secondary"} className="not-prose" size={"sm"}>
+  <Link href="/lab/strella/proto-01">Proto <ExternalLinkIcon className="size-3" /></Link>
+</Button>
+</div>
 
 <div className="mb-8" />
 
 <Image
   src={pageViewGraphWPreview}
-  alt="Strella Page View Graph"
+  alt="Strella Graph View with Live Preview"
   width={1600}
   height={900}
   className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-## Overview
+## The Origin Story
 
-I believe the best tools don't just help us work—they transform how we think. They shape our creative process, influence our problem-solving, and ultimately determine what we believe is possible. This is especially true in software development, where our tools often force us to choose between visual thinking and programming logic.
+The seed for Strella was planted late one night, while playing with Unreal Engine’s Blueprints. For years, I had lived between two worlds—design and engineering—switching between tools that didn’t speak the same language. But Blueprints changed that. I could see logic. Follow data. Build behavior in a way that felt immediate, expressive, and powerful.
 
-But what if we didn't have to choose? What if our tools could bridge the gap between design and code, creating an environment where both modes of thinking could flourish together? This is the story of how a game development tool changed my perspective on software creation, and inspired a vision for a new kind of development environment.
-
-## The Blueprint Moment
-
-I remember the exact moment I fell in love with visual programming. It was late one night, tinkering with Unreal Engine's Blueprint system. After years of bouncing between design tools and code editors, always feeling like I was speaking two different languages, something clicked.
+It was the first time I felt like I wasn’t *translating* ideas—I was simply expressing them.
 
 <Image
   src={blueprintsCover}
@@ -50,80 +51,76 @@ I remember the exact moment I fell in love with visual programming. It was late 
   className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-As I connected those first nodes, watching logic flow through visible paths, my brain lit up. Each connection felt tactile, immediate. I wasn't just programming—I was thinking in a new way. Complex systems became visual puzzles I could solve by connecting pieces. Data stopped being abstract and became something I could see flowing through my creation.
+That moment unlocked something: the idea that maybe UI development didn’t have to live in a code editor at all. Maybe we could have tools where visual thinkers and engineers *start* in the same space—not convert between them.
 
-For someone who's always lived between the worlds of design and engineering, this felt like coming home. The distinction between "designing" and "developing" simply melted away. Here was a tool that didn't ask me to choose between being a designer or an engineer—it embraced both sides of my brain at once.
+## The Gap Today
 
-And then the icing on the cake: when I showed my work to developers, they didn't see a designer's prototype—they saw architecture. This was so much more than a prototyping too this was real, deep collaboration. We could have deep technical discussions while looking at the same artifact. No translation needed. No fidelity lost. For the first time, we had a shared language that bridged the gap between design thinking and engineering logic.
+The problem isn’t just that our tools are separate—it’s that they ask us to think in fragments. Visual structure lives in Figma. Logic and behavior live in code. You spend time writing specs, prototyping flows, then rebuilding them in code—all while your mental model shifts between systems.
 
-## The Gap
+That translation tax is real. And it adds up.
 
-Our current tools don't just separate our workflows—they fragment our thinking. When I'm designing in Figma, I'm thinking in visual systems and user flows. When I'm coding in VS Code, I'm thinking in data structures and state management. But real product thinking happens at the intersection of both.
+In contrast, Blueprints offered something rare: a space where prototyping and production happened in the same medium. You didn’t lose fidelity moving from idea to implementation. There was no throwaway work. Just continuous evolution.
 
-I've spent countless hours writing detailed specs, creating high-fidelity prototypes, and then rebuilding everything in code. Each transition feels like starting over, losing fidelity, losing momentum. The energy drain isn't just in the work—it's in the constant mental gear-shifting between tools that speak different languages.
+That’s the spirit Strella is built on.
 
-What made Blueprints different wasn't just its visual nature—it was how it unified thinking and doing. I could prototype an idea and refine it into production code in the same environment. No throwaway work. No translation loss. Just continuous evolution from concept to reality.
+## What Strella Is
 
-## How I Think This Could Work
+Strella is the first IDE designed specifically for design engineers. It combines:
 
-The experience with Blueprints left me with a question: What if we could bring this same unified approach to product design? After years of working in fragmented toolchains, I began envisioning a system built specifically for design engineers.
+### Visual Scripting, Fully Executable
 
-Strella embodies this vision—inspired by Blueprints but reimagined for the unique challenges of product design. It would unite three capabilities that have always existed separately:
-
-### Unified Visual Scripting
-
-Blueprint's greatest strength is how it makes complex logic accessible while preserving programming power. Strella would offer a node-based system where designers connect visual elements that represent code constructs. This isn't just about making programming easier—it's about creating a new language that speaks to both design and engineering mindsets simultaneously.
+A node-based graph editor for building real product logic—conditionals, loops, state, event flows. Everything is Turing complete. You can wire up logic without writing code, but without losing any expressive power.
 
 <Image
   src={pageViewGraph}
-  alt="Strella Page View Graph"
+  alt="Strella Graph View"
   width={1600}
   height={900}
   className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-The visual nature makes relationships explicit. Data flows become tangible paths you can follow with your eyes. Complex behaviors emerge from simple connections. And critically, everything remains turing-complete—there's no ceiling to what you can build.
+### A Layout-First Design Surface
 
-### Precision Design Tools
-
-For design fidelity, Strella would integrate vector-based tools inspired by systems like Rive and Figma. This allows for pixel-perfect control while maintaining resolution independence.
+A visual editor for constructing component structure—just like Figma or Framer. But this isn’t a static mockup. These elements are live. Every visual change is reflected in your component’s rendered output and graph bindings.
 
 <Image
   src={pageViewDesign}
-  alt="Strella Page View Design"
+  alt="Strella Design View"
   width={1600}
   height={900}
   className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-But the breakthrough comes from how these design elements connect directly to the node system. When you adjust a visual property, you're modifying the same artifact that drives the functional behavior. There's no translation layer in between—the design is the implementation.
+### A Runtime That Stays in Sync
 
-### Live, Universal Runtime
-
-The system would provide instant previews across platforms, enabling rapid testing and iteration. Changes to both design and logic would appear immediately in context, allowing you to see exactly how your work behaves in real-time.
+The system is always live. Changes in the graph or design surface update the preview instantly. You can trigger flows, test interactions, or simulate data in real-time—without rebuilding or redeploying anything.
 
 <Image
   src={pageViewGraphWPreview}
-  alt="Strella Project View Design"
+  alt="Strella Graph and Preview"
   width={1600}
   height={900}
   className="rounded-sm shrink-0 bg-muted border shadow"
 />
 
-This runtime would allow for true cross-platform prototyping. The same definition could render natively on web, iOS, Android, or desktop—ensuring that fidelity carries through to every environment.
+### Real Components, No Translation
 
-### Open Source & Extensible by Design
+Every graph is a real component. Components can be nested, reused, or composed visually. Props are passed via ports. State is managed visually. When you create a new component, you’re not making a prototype—you’re defining behavior and structure at the same time.
 
-Crucially, all of this must be **open source and deeply customizable**. No single configuration can satisfy the diverse needs of every design engineer. The system should be extensible at every level—from adding custom nodes to creating specialized tools for specific product domains.
+### Extensible by Default
 
-## Where I'm At
-
-Right now, Strella exists in wireframes and prototypes. But these aren't just mockups—they're the first steps toward a future where tools amplify our creativity instead of constraining it. A future where the gap between imagination and reality gets smaller every day.
-
-There's a super simple landing page for the project [here](https://strella.dev), feel free to check it out and even drop your email if you're interested in being notified when I have something to show.
+Strella is being built as an open system. You’ll be able to add custom node types, define reusable subgraphs, and extend the environment to fit your team’s mental model—whether that’s product flows, games, data tools, or creative tooling.
 
 ---
 
-In the end, Strella is a love letter to tools that dare to think differently. To Blueprints, which showed me what was possible. To every system that pushed boundaries. But mostly, it's a commitment to the future—to building tools that help ideas grow, that raise the floor for everyone, that make the complex feel natural.
+## Where Things Stand
 
-Let's make software creation feel more like magic.
+Right now, Strella is in prototype. The core execution engine works. The graph runtime is functional. The ideas are in motion. What’s next is polish, iteration, and putting it in the hands of the right people.
+
+If you want to follow along—or be one of those people—[sign up at strella.dev](https://strella.dev).
+
+---
+
+Strella is a bet on a better kind of tool. One that doesn't just help you work, but helps you think. One that removes the artificial gap between design and implementation. One that makes software creation visual, expressive, and collaborative from the start.
+
+Let’s build the future of UI, one node at a time.
