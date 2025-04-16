@@ -7,6 +7,11 @@ import React, {
   useRef,
   useState,
 } from "react";
+import {
+  useOthers,
+  useMyPresence,
+  useUpdateMyPresence,
+} from "@liveblocks/react";
 
 interface FlickeringGridProps {
   squareSize?: number;
@@ -22,15 +27,36 @@ interface FlickeringGridProps {
   rippleSize?: number;
   rippleIntensity?: number;
   enableRipple?: boolean;
+  colorShift?: boolean;
+  rippleDecay?: number;
+  waveFrequency?: number;
+  multiplayer?: boolean;
 }
 
 // Ripple interface to track ripple animations
 interface Ripple {
+  id: string;
   x: number;
   y: number;
   startTime: number;
   maxRadius: number;
   intensity: number;
+  velocity: number;
+  hue: number;
+  userId?: string; // Track which user created this ripple
+}
+
+// Define types for presence data
+interface RipplePresence {
+  ripple?: {
+    id: string;
+    x: number;
+    y: number;
+    maxRadius: number;
+    intensity: number;
+    velocity: number;
+    hue: number;
+  } | null;
 }
 
 const FlickeringGrid: React.FC<FlickeringGridProps> = ({
@@ -46,6 +72,10 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   rippleSize = 150,
   rippleIntensity = 0.7,
   enableRipple = true,
+  colorShift = true,
+  rippleDecay = 0.85,
+  waveFrequency = 0.3,
+  multiplayer = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,6 +85,19 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   // Track mouse position and active ripples
   const mousePos = useRef<{ x: number; y: number } | null>(null);
   const ripplesRef = useRef<Ripple[]>([]);
+  const baseColorRef = useRef<{ r: number; g: number; b: number }>({
+    r: 0,
+    g: 0,
+    b: 0,
+  });
+  const lastRippleTime = useRef<number>(0);
+  const rippleThrottleMs = 50; // Minimum time between ripples for throttling
+
+  // Liveblocks integration
+  const others = multiplayer ? useOthers() : null;
+  const [myPresence, updateMyPresence] = multiplayer
+    ? [useMyPresence()[0], useMyPresence()[1]]
+    : [null, null];
 
   const memoizedColor = useMemo(() => {
     const toRGBA = (color: string) => {
@@ -68,10 +111,102 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, 1, 1);
       const [r, g, b] = Array.from(ctx.getImageData(0, 0, 1, 1).data);
+      // Store base color components for potential color shifts
+      baseColorRef.current = { r, g, b };
       return `rgba(${r}, ${g}, ${b},`;
     };
     return toRGBA(color);
   }, [color]);
+
+  const getColorWithShift = useCallback(
+    (opacity: number, hueShift: number = 0) => {
+      if (!colorShift || hueShift === 0) {
+        return `${memoizedColor}${opacity})`;
+      }
+
+      // Apply a subtle hue shift
+      const { r, g, b } = baseColorRef.current;
+
+      // Convert RGB to HSL, shift hue, convert back to RGB
+      const [h, s, l] = rgbToHsl(r, g, b);
+      const newHue = (h + hueShift) % 360;
+      const [newR, newG, newB] = hslToRgb(newHue, s, l);
+
+      return `rgba(${newR}, ${newG}, ${newB}, ${opacity})`;
+    },
+    [memoizedColor, colorShift]
+  );
+
+  // Helper functions for color conversion
+  const rgbToHsl = (
+    r: number,
+    g: number,
+    b: number
+  ): [number, number, number] => {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0,
+      s,
+      l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+
+      h /= 6;
+    }
+
+    return [h * 360, s, l];
+  };
+
+  const hslToRgb = (
+    h: number,
+    s: number,
+    l: number
+  ): [number, number, number] => {
+    h /= 360;
+    let r, g, b;
+
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  };
 
   const setupCanvas = useCallback(
     (canvas: HTMLCanvasElement, width: number, height: number) => {
@@ -95,21 +230,100 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
   // Add ripple at current mouse position
   const addRipple = useCallback(
-    (x: number, y: number) => {
+    (x: number, y: number, isClick: boolean = false, userId?: string) => {
       if (!enableRipple) return;
 
+      const now = performance.now();
+
+      // Apply throttling for non-click ripples to prevent too many during fast mouse movement
+      if (!isClick && now - lastRippleTime.current < rippleThrottleMs) {
+        return;
+      }
+
+      lastRippleTime.current = now;
+
+      // Create random hue shift for this ripple
+      const hueShift = colorShift ? Math.random() * 30 - 15 : 0;
+
+      // Clicks create stronger, faster ripples
+      const intensity = isClick ? rippleIntensity * 1.5 : rippleIntensity;
+      const velocity = isClick ? 1.5 : 1.0;
+
+      // Generate a unique ID for this ripple
+      const rippleId = `ripple_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
       const newRipple: Ripple = {
+        id: rippleId,
         x,
         y,
-        startTime: performance.now(),
-        maxRadius: rippleSize,
-        intensity: rippleIntensity,
+        startTime: now,
+        maxRadius: isClick ? rippleSize * 1.5 : rippleSize,
+        intensity,
+        velocity,
+        hue: hueShift,
+        userId,
       };
 
       ripplesRef.current.push(newRipple);
+
+      // If using multiplayer and no userId is provided (meaning this is a local ripple),
+      // broadcast the ripple to other users
+      if (multiplayer && updateMyPresence && !userId) {
+        updateMyPresence({
+          ripple: {
+            id: rippleId,
+            x,
+            y,
+            maxRadius: newRipple.maxRadius,
+            intensity,
+            velocity,
+            hue: hueShift,
+          },
+        });
+
+        // Clear the ripple from presence after a brief delay (so others can receive it)
+        setTimeout(() => {
+          updateMyPresence({ ripple: null });
+        }, 100);
+      }
+
+      return newRipple;
     },
-    [enableRipple, rippleSize, rippleIntensity]
+    [
+      enableRipple,
+      rippleSize,
+      rippleIntensity,
+      colorShift,
+      multiplayer,
+      updateMyPresence,
+      rippleThrottleMs,
+    ]
   );
+
+  // Process incoming ripples from other users
+  useEffect(() => {
+    if (!multiplayer || !others) return;
+
+    others.forEach((other) => {
+      const otherPresence = other.presence as unknown as RipplePresence;
+      if (otherPresence.ripple) {
+        const { id, x, y, maxRadius, intensity, velocity, hue } =
+          otherPresence.ripple;
+
+        // Check if we already have this ripple (avoid duplicates)
+        const existingRipple = ripplesRef.current.find((r) => r.id === id);
+        if (!existingRipple) {
+          // Add the ripple with the other user's ID
+          addRipple(
+            x,
+            y,
+            intensity > rippleIntensity,
+            other.connectionId.toString()
+          );
+        }
+      }
+    });
+  }, [others, addRipple, multiplayer, rippleIntensity]);
 
   // Update active ripples
   const updateRipples = useCallback(
@@ -132,24 +346,35 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       const elapsed = currentTime - ripple.startTime;
       const progress = elapsed / rippleDuration;
 
-      // Current radius of the ripple (expands over time)
-      const currentRadius = ripple.maxRadius * Math.min(progress * 1.2, 1);
+      // Current radius of the ripple (expands over time with velocity)
+      const currentRadius =
+        ripple.maxRadius * Math.min(progress * 1.2 * ripple.velocity, 1);
 
       // How far from the leading edge of the ripple (positive = inside ripple, negative = outside)
       const distanceFromRippleEdge = currentRadius - distance;
 
+      // Apply decay over time (ripples lose energy)
+      const decayFactor = Math.pow(rippleDecay, progress * 10);
+
       // Ripple effect is strongest at the edge and decreases toward the center and outside
       if (distanceFromRippleEdge < -20 || distanceFromRippleEdge > 20) {
-        return 0;
+        return { effect: 0, hue: 0 };
       }
 
-      // Create a wave-like effect using sine
-      const waveEffect = Math.sin(distanceFromRippleEdge * 0.3) * 0.5 + 0.5;
+      // Create a wave-like effect using sine with configurable frequency
+      const waveEffect =
+        Math.sin(distanceFromRippleEdge * waveFrequency) * 0.5 + 0.5;
 
       // Scale effect based on ripple intensity and fade out as ripple ages
-      return waveEffect * ripple.intensity * (1 - progress);
+      const effect =
+        waveEffect * ripple.intensity * (1 - progress) * decayFactor;
+
+      return {
+        effect,
+        hue: ripple.hue,
+      };
     },
-    [rippleDuration]
+    [rippleDuration, rippleDecay, waveFrequency]
   );
 
   // Update squares based on flickering and ripples
@@ -170,6 +395,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         }
       }
 
+      // Store hue shifts for each square that has ripple effects
+      const hueShifts = new Float32Array(squares.length);
+
       // Then apply ripple effects
       if (enableRipple && ripplesRef.current.length > 0) {
         for (let i = 0; i < cols; i++) {
@@ -178,25 +406,40 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
             const squareX = i * itemSize + squareSize / 2;
             const squareY = j * itemSize + squareSize / 2;
 
-            let rippleEffect = 0;
+            let totalRippleEffect = 0;
+            let weightedHueShift = 0;
+            let totalWeight = 0;
 
-            // Combine effects from all active ripples
+            // Combine effects from all active ripples with interference patterns
             for (const ripple of ripplesRef.current) {
-              rippleEffect += calculateRippleEffect(
+              const { effect, hue } = calculateRippleEffect(
                 ripple,
                 squareX,
                 squareY,
                 currentTime
               );
+
+              if (effect > 0) {
+                totalRippleEffect += effect;
+                weightedHueShift += hue * effect;
+                totalWeight += effect;
+              }
             }
 
+            // Calculate weighted average hue shift
+            hueShifts[index] =
+              totalWeight > 0 ? weightedHueShift / totalWeight : 0;
+
             // Apply ripple effect to square opacity (clamped between 0 and 1)
-            if (rippleEffect > 0) {
-              squares[index] = Math.min(maxOpacity + rippleEffect, 1);
+            if (totalRippleEffect > 0) {
+              squares[index] = Math.min(maxOpacity + totalRippleEffect, 1);
             }
           }
         }
       }
+
+      // Store hue shifts for use in drawing
+      return hueShifts;
     },
     [
       flickerChance,
@@ -216,6 +459,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       cols: number,
       rows: number,
       squares: Float32Array,
+      hueShifts: Float32Array,
       dpr: number
     ) => {
       ctx.clearRect(0, 0, width, height);
@@ -224,8 +468,13 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-          const opacity = squares[i * rows + j];
-          ctx.fillStyle = `${memoizedColor}${opacity})`;
+          const index = i * rows + j;
+          const opacity = squares[index];
+          const hueShift = hueShifts[index];
+
+          // Apply color with potential hue shift
+          ctx.fillStyle = getColorWithShift(opacity, hueShift);
+
           ctx.fillRect(
             i * (squareSize + gridGap) * dpr,
             j * (squareSize + gridGap) * dpr,
@@ -235,12 +484,12 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         }
       }
     },
-    [memoizedColor, squareSize, gridGap]
+    [memoizedColor, squareSize, gridGap, getColorWithShift]
   );
 
-  // Handle mouse movement
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
+  // Use PointerEvent for better performance and cross-device support
+  const handlePointerMove = useCallback(
+    (e: PointerEvent) => {
       if (!containerRef.current || !enableRipple) return;
 
       const rect = containerRef.current.getBoundingClientRect();
@@ -249,17 +498,26 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
       mousePos.current = { x, y };
 
-      // Add ripple occasionally during mouse movement
-      if (Math.random() < 0.05) {
-        addRipple(x, y);
+      // Add ripple more frequently during fast movement by checking pointer velocity
+      const speed = Math.sqrt(
+        e.movementX * e.movementX + e.movementY * e.movementY
+      );
+      const speedThreshold = 5; // Minimum speed to create ripple
+
+      if (speed > speedThreshold) {
+        // Higher chance to create ripple when moving fast
+        const chance = Math.min(0.3, 0.05 + speed / 100);
+        if (Math.random() < chance) {
+          addRipple(x, y, false);
+        }
       }
     },
     [addRipple, enableRipple]
   );
 
-  // Handle mouse enter
-  const handleMouseEnter = useCallback(
-    (e: MouseEvent) => {
+  // Handle pointer enter
+  const handlePointerEnter = useCallback(
+    (e: PointerEvent) => {
       if (!containerRef.current || !enableRipple) return;
 
       const rect = containerRef.current.getBoundingClientRect();
@@ -267,7 +525,22 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       const y = e.clientY - rect.top;
 
       mousePos.current = { x, y };
-      addRipple(x, y);
+      addRipple(x, y, false);
+    },
+    [addRipple, enableRipple]
+  );
+
+  // Handle mouse click for bigger ripples
+  const handleClick = useCallback(
+    (e: MouseEvent) => {
+      if (!containerRef.current || !enableRipple) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Create a stronger ripple on click
+      addRipple(x, y, true);
     },
     [addRipple, enableRipple]
   );
@@ -296,11 +569,11 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     const animate = (time: number) => {
       if (!isInView) return;
 
-      const deltaTime = (time - lastTime) / 1000;
+      const deltaTime = Math.min((time - lastTime) / 1000, 0.1); // Cap deltaTime to avoid large jumps
       lastTime = time;
 
       updateRipples(time);
-      updateSquares(
+      const hueShifts = updateSquares(
         gridParams.squares,
         deltaTime,
         gridParams.cols,
@@ -315,6 +588,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         gridParams.cols,
         gridParams.rows,
         gridParams.squares,
+        hueShifts,
         gridParams.dpr
       );
       animationFrameId = requestAnimationFrame(animate);
@@ -335,10 +609,17 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
     intersectionObserver.observe(canvas);
 
-    // Add mouse event listeners
+    // Add pointer event listeners for better performance
     if (enableRipple) {
-      container.addEventListener("mousemove", handleMouseMove);
-      container.addEventListener("mouseenter", handleMouseEnter);
+      container.addEventListener(
+        "pointermove",
+        handlePointerMove as EventListener
+      );
+      container.addEventListener(
+        "pointerenter",
+        handlePointerEnter as EventListener
+      );
+      container.addEventListener("click", handleClick);
     }
 
     if (isInView) {
@@ -350,10 +631,17 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
 
-      // Remove mouse event listeners
+      // Remove event listeners
       if (enableRipple) {
-        container.removeEventListener("mousemove", handleMouseMove);
-        container.removeEventListener("mouseenter", handleMouseEnter);
+        container.removeEventListener(
+          "pointermove",
+          handlePointerMove as EventListener
+        );
+        container.removeEventListener(
+          "pointerenter",
+          handlePointerEnter as EventListener
+        );
+        container.removeEventListener("click", handleClick);
       }
     };
   }, [
@@ -364,8 +652,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     height,
     isInView,
     enableRipple,
-    handleMouseMove,
-    handleMouseEnter,
+    handlePointerMove,
+    handlePointerEnter,
+    handleClick,
     updateRipples,
   ]);
 

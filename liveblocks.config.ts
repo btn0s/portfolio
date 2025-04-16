@@ -10,6 +10,16 @@ declare global {
       isClicking: boolean;
       isThrowingConfetti: boolean;
       isExiting: boolean;
+      // Added for FlickeringGrid ripple effects
+      ripple?: {
+        id: string;
+        x: number;
+        y: number;
+        maxRadius: number;
+        intensity: number;
+        velocity: number;
+        hue: number;
+      } | null;
     };
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
