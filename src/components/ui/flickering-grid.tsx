@@ -498,21 +498,14 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
       mousePos.current = { x, y };
 
-      // Add ripple more frequently during fast movement by checking pointer velocity
-      const speed = Math.sqrt(
-        e.movementX * e.movementX + e.movementY * e.movementY
-      );
-      const speedThreshold = 5; // Minimum speed to create ripple
-
-      if (speed > speedThreshold) {
-        // Higher chance to create ripple when moving fast
-        const chance = Math.min(0.3, 0.05 + speed / 100);
-        if (Math.random() < chance) {
-          addRipple(x, y, false);
-        }
+      // Create ripples on mouse movement regardless of speed
+      // Apply minimal throttling to prevent overwhelming the system
+      const now = performance.now();
+      if (now - lastRippleTime.current > rippleThrottleMs) {
+        addRipple(x, y, false);
       }
     },
-    [addRipple, enableRipple]
+    [addRipple, enableRipple, rippleThrottleMs]
   );
 
   // Handle pointer enter
