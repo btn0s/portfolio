@@ -9,16 +9,12 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { LuMousePointer2 } from "react-icons/lu";
 import confetti from "canvas-confetti";
 import { usePathname } from "next/navigation";
-import useSound from "use-sound";
 import { useSoundSettings } from "@/contexts/sound-context";
+import { loadCursorPosition, saveCursorPosition } from "@/lib/cursor-storage";
 
 // Configuration
 const SHOW_MY_CURSOR = true;
 const SHOW_OTHER_CURSORS = true;
-const SOUND_VOLUME = 0.3;
-const CURSOR_STORAGE_KEY = "liveblocks-cursor-position";
-const CLICK_SOUND = "/assets/audio/fast-dbl-click.wav";
-const CONFETTI_SOUND = "/assets/audio/sad-party-horn.wav";
 
 // Function to detect if device is using touch
 const isTouchDevice = () => {
@@ -35,8 +31,10 @@ const isTouchDevice = () => {
 type CursorCoordinates = {
   x: number; // Viewport X
   y: number; // Viewport Y
-  pageX: number; // Document X
-  pageY: number; // Document Y
+  pageX: number; // Document X (Primary)
+  pageY: number; // Document Y (Primary)
+  xPercent?: number; // Viewport X percentage (Context)
+  yPercent?: number; // Viewport Y percentage (Context)
 };
 
 // Define types for presence data
@@ -130,7 +128,14 @@ const CursorElement = ({
   isExiting,
   isLocalCursor = false,
 }: {
-  position: { x: number; y: number; pageX: number; pageY: number };
+  position: {
+    x: number; // For local cursor and confetti
+    y: number; // For local cursor and confetti
+    pageX: number; // Primary for remote rendering
+    pageY: number; // Primary for remote rendering
+    xPercent?: number;
+    yPercent?: number;
+  };
   color: { bg: string; fill: string; text: string };
   name: string;
   isClicking: boolean;
@@ -138,30 +143,33 @@ const CursorElement = ({
   isExiting?: boolean;
   isLocalCursor?: boolean;
 }) => {
-  // Trigger confetti effect when isThrowingConfetti changes to true
-  useEffect(() => {
-    if (isThrowingConfetti) {
-      throwConfetti(position.x, position.y);
-    }
-  }, [isThrowingConfetti, position.x, position.y]);
-
-  // Only apply exit animation for remote cursors, not local
-  const shouldApplyExitAnimation = !isLocalCursor && isExiting;
-
-  // Calculate position adjusted for current scroll
+  // Calculate position adjusted for local scroll
   const scrollX = typeof window !== "undefined" ? window.scrollX : 0;
   const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
 
-  // For local cursor use viewport coordinates, for remote cursors use document coordinates adjusted by current scroll
-  const leftPos = isLocalCursor ? position.x : position.pageX - scrollX;
-  const topPos = isLocalCursor ? position.y : position.pageY - scrollY;
+  // Calculate the visual position based on document coordinates and local scroll
+  // For local cursor, just use its direct viewport coordinates.
+  const left = isLocalCursor ? position.x : position.pageX - scrollX;
+  const top = isLocalCursor ? position.y : position.pageY - scrollY;
+
+  // Trigger confetti effect using the calculated visual position
+  useEffect(() => {
+    if (isThrowingConfetti) {
+      // Use 'left' and 'top' which represent the current viewport position
+      throwConfetti(left, top);
+    }
+  }, [isThrowingConfetti, left, top]);
+
+  // Only apply exit animation for remote cursors, not local
+  const shouldApplyExitAnimation = !isLocalCursor && isExiting;
 
   return (
     <div
       className="fixed transition-opacity duration-200 cursor-none"
       style={{
-        left: `${leftPos}px`,
-        top: `${topPos}px`,
+        // Use the calculated visual position
+        left: `${left}px`,
+        top: `${top}px`,
         zIndex: 50,
       }}
     >
@@ -194,25 +202,12 @@ function LiveCursors() {
   const [myPresence] = useMyPresence();
   const others = useOthers();
   const pathname = usePathname();
-  const { isMuted } = useSoundSettings();
+  const { playSound } = useSoundSettings();
 
   // Check if user is on a touch device
   const [isTouch, setIsTouch] = useState(false);
   // Track if mouse has moved yet
   const [hasMouseMoved, setHasMouseMoved] = useState(false);
-
-  // Sounds - with volume controlled by mute setting
-  const [playClick] = useSound(CLICK_SOUND, {
-    volume: isMuted ? 0 : SOUND_VOLUME,
-  });
-  const [playConfetti] = useSound(CONFETTI_SOUND, {
-    volume: isMuted ? 0 : SOUND_VOLUME,
-  });
-
-  // Set touch detection on mount
-  useEffect(() => {
-    setIsTouch(isTouchDevice());
-  }, []);
 
   // State for tracking mouse position and click state
   const [myId] = useState(() => Math.floor(Math.random() * 1000));
@@ -241,40 +236,36 @@ function LiveCursors() {
   // Handle route changes
   useEffect(() => {
     // On mount, try to restore cursor position from localStorage
-    const savedPosition = localStorage.getItem(CURSOR_STORAGE_KEY);
+    const savedPosition = loadCursorPosition();
     if (savedPosition && !isTouch) {
-      try {
-        const { x, y } = JSON.parse(savedPosition);
-        if (x !== undefined && y !== undefined) {
-          const scrollX = window.scrollX || 0;
-          const scrollY = window.scrollY || 0;
-          cursorPosition.current = { x, y };
-          // Update presence with saved position
-          updateMyPresence({
-            cursor: {
-              x,
-              y,
-              pageX: x + scrollX,
-              pageY: y + scrollY,
-            },
-          });
-          setHasMouseMoved(true);
-        }
-      } catch (e) {
-        console.error("Failed to restore cursor position:", e);
-      }
+      const { x, y } = savedPosition;
+      const scrollX = window.scrollX || 0;
+      const scrollY = window.scrollY || 0;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight; // Need viewport height
+
+      cursorPosition.current = { x, y };
+      // Update presence with saved position
+      updateMyPresence({
+        cursor: {
+          x: x,
+          y: y,
+          pageX: x + scrollX,
+          pageY: y + scrollY,
+          xPercent: x / viewportWidth,
+          yPercent: y / viewportHeight,
+        },
+      });
+      setHasMouseMoved(true);
     }
 
     return () => {
       // When component unmounts or before route change, save current position
       if (cursorPosition.current.x && cursorPosition.current.y) {
-        localStorage.setItem(
-          CURSOR_STORAGE_KEY,
-          JSON.stringify({
-            x: cursorPosition.current.x,
-            y: cursorPosition.current.y,
-          })
-        );
+        saveCursorPosition({
+          x: cursorPosition.current.x,
+          y: cursorPosition.current.y,
+        });
       }
 
       // Also mark as exiting for animation
@@ -305,6 +296,8 @@ function LiveCursors() {
 
     const scrollX = window.scrollX || 0;
     const scrollY = window.scrollY || 0;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight; // Need viewport height for yPercent
 
     // Check if we need to throw confetti (meta key + clicking)
     const shouldThrowConfetti = isMetaKeyPressed.current && isClicking.current;
@@ -320,12 +313,22 @@ function LiveCursors() {
       }, 500);
     }
 
+    // Calculate all coordinate types
+    const currentX = cursorPosition.current.x;
+    const currentY = cursorPosition.current.y;
+    const pageX = currentX + scrollX;
+    const pageY = currentY + scrollY;
+    const xPercent = currentX / viewportWidth;
+    const yPercent = currentY / viewportHeight;
+
     updateMyPresence({
       cursor: {
-        x: cursorPosition.current.x,
-        y: cursorPosition.current.y,
-        pageX: cursorPosition.current.x + scrollX,
-        pageY: cursorPosition.current.y + scrollY,
+        x: currentX,
+        y: currentY,
+        pageX: pageX,
+        pageY: pageY,
+        xPercent: xPercent,
+        yPercent: yPercent,
       },
       isClicking: isClicking.current,
       isThrowingConfetti: isThrowingConfetti.current,
@@ -382,9 +385,9 @@ function LiveCursors() {
       isMetaKeyPressed.current = event.metaKey || event.ctrlKey;
 
       if (isMetaKeyPressed.current) {
-        playConfetti();
+        playSound("confetti");
       } else {
-        playClick();
+        playSound("click");
       }
 
       scheduleUpdate();
@@ -467,7 +470,13 @@ function LiveCursors() {
     isTouch,
     hasMouseMoved,
     typedMyPresence,
+    playSound,
   ]);
+
+  // Set touch detection on mount
+  useEffect(() => {
+    setIsTouch(isTouchDevice());
+  }, []);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">

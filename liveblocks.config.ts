@@ -6,7 +6,14 @@ declare global {
     Presence: {
       // Example, real-time cursor coordinates
       name: string | null;
-      cursor: { x: number; y: number; pageX: number; pageY: number } | null;
+      cursor: {
+        x: number; // Local viewport X (for reference)
+        y: number; // Local viewport Y (for reference)
+        pageX: number; // Document X coordinate (Primary for positioning/interaction)
+        pageY: number; // Document Y coordinate (Primary for positioning/interaction)
+        xPercent?: number; // Viewport X percentage (Context)
+        yPercent?: number; // Viewport Y percentage (Context)
+      } | null;
       isClicking: boolean;
       isThrowingConfetti: boolean;
       isExiting: boolean;

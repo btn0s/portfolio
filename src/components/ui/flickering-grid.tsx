@@ -31,6 +31,7 @@ interface FlickeringGridProps {
   rippleDecay?: number;
   waveFrequency?: number;
   multiplayer?: boolean;
+  debug?: boolean;
 }
 
 // Ripple interface to track ripple animations
@@ -76,6 +77,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   rippleDecay = 0.85,
   waveFrequency = 0.3,
   multiplayer = true,
+  debug = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,6 +94,13 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   });
   const lastRippleTime = useRef<number>(0);
   const rippleThrottleMs = 50; // Minimum time between ripples for throttling
+
+  // Add a ref to track last ripple time for each cursor
+  const lastCursorRippleRef = useRef<Record<string, number>>({});
+  // Store debug points for visualization
+  const debugPointsRef = useRef<Array<{ x: number; y: number; color: string }>>(
+    []
+  );
 
   // Liveblocks integration
   const others = multiplayer ? useOthers() : null;
@@ -304,6 +313,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   useEffect(() => {
     if (!multiplayer || !others) return;
 
+    // DPR is primarily needed for drawing, not coordinate calculation here
+    // const dpr = window.devicePixelRatio || 1;
+
     others.forEach((other) => {
       const otherPresence = other.presence as unknown as RipplePresence;
       if (otherPresence.ripple) {
@@ -322,8 +334,62 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
           );
         }
       }
+
+      // Create ripples from remote cursor movements using pageX/pageY
+      const cursor = (other.presence as any)?.cursor;
+      if (
+        cursor?.pageX !== undefined &&
+        cursor?.pageY !== undefined &&
+        containerRef.current
+      ) {
+        // Get container's position relative to the document
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const containerDocLeft = containerRect.left + window.scrollX;
+        const containerDocTop = containerRect.top + window.scrollY;
+        const containerWidth = containerRect.width;
+        const containerHeight = containerRect.height;
+
+        // Calculate ripple position relative to the container's top-left corner (unscaled CSS pixels)
+        const rippleX = cursor.pageX - containerDocLeft;
+        const rippleY = cursor.pageY - containerDocTop;
+
+        // Scale coordinates by DPR for consistency with canvas drawing << REVERTED
+        // const rippleX = relativeX * dpr;
+        // const rippleY = relativeY * dpr;
+
+        // For debugging, store calculated points (unscaled relative coordinates)
+        if (debug) {
+          debugPointsRef.current.push({
+            x: rippleX,
+            y: rippleY,
+            color: `hsl(${(other.connectionId * 30) % 360}, 100%, 50%)`, // Color based on user ID
+          });
+          if (debugPointsRef.current.length > 20) {
+            debugPointsRef.current.shift();
+          }
+        }
+
+        // Bounds check using unscaled relative coordinates
+        if (
+          rippleY >= 0 &&
+          rippleY <= containerHeight &&
+          rippleX >= 0 &&
+          rippleX <= containerWidth
+        ) {
+          // Throttle ripple creation based on cursor movement
+          const rippleKey = `${other.connectionId}_cursor_ripple`;
+          const lastRippleTime = lastCursorRippleRef.current[rippleKey] || 0;
+          const now = performance.now();
+
+          if (now - lastRippleTime > 500) {
+            // Create ripple every 500ms - Pass unscaled relative coordinates
+            addRipple(rippleX, rippleY, false, other.connectionId.toString());
+            lastCursorRippleRef.current[rippleKey] = now;
+          }
+        }
+      }
     });
-  }, [others, addRipple, multiplayer, rippleIntensity]);
+  }, [others, addRipple, multiplayer, rippleIntensity, debug]);
 
   // Update active ripples
   const updateRipples = useCallback(
@@ -487,6 +553,28 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     [memoizedColor, squareSize, gridGap, getColorWithShift]
   );
 
+  // Draw debug visualization on top of the canvas if enabled
+  const drawDebugVisualization = useCallback(
+    (ctx: CanvasRenderingContext2D, dpr: number) => {
+      if (!debug) return;
+
+      // Draw debug points (coordinates are unscaled, so scale them now for drawing)
+      debugPointsRef.current.forEach((point, i) => {
+        ctx.beginPath();
+        // Scale by dpr here for drawing
+        ctx.arc(point.x * dpr, point.y * dpr, 5 * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = point.color;
+        ctx.fill();
+
+        // Draw a number next to the point to show the sequence
+        ctx.font = `${12 * dpr}px Arial`;
+        // Scale text position by dpr
+        ctx.fillText(String(i), (point.x + 10) * dpr, (point.y + 5) * dpr);
+      });
+    },
+    [debug]
+  );
+
   // Use PointerEvent for better performance and cross-device support
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
@@ -584,6 +672,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         hueShifts,
         gridParams.dpr
       );
+      drawDebugVisualization(ctx, gridParams.dpr);
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -641,6 +730,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     setupCanvas,
     updateSquares,
     drawGrid,
+    drawDebugVisualization,
     width,
     height,
     isInView,
