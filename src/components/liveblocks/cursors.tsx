@@ -9,18 +9,26 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { LuMousePointer2 } from "react-icons/lu";
 import confetti from "canvas-confetti";
 import { usePathname } from "next/navigation";
+import useSound from "use-sound";
+import { useSoundSettings } from "@/contexts/sound-context";
 
 // Configuration
 const SHOW_MY_CURSOR = true;
 const SHOW_OTHER_CURSORS = true;
+const SOUND_VOLUME = 0.3;
+const CURSOR_STORAGE_KEY = "liveblocks-cursor-position";
+const CLICK_SOUND = "/assets/audio/fast-dbl-click.wav";
+const CONFETTI_SOUND = "/assets/audio/sad-party-horn.wav";
 
 // Function to detect if device is using touch
 const isTouchDevice = () => {
-  if (typeof window === 'undefined') return false;
-  return ('ontouchstart' in window) || 
-    (navigator.maxTouchPoints > 0) || 
+  if (typeof window === "undefined") return false;
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
     // @ts-ignore
-    (navigator.msMaxTouchPoints > 0);
+    navigator.msMaxTouchPoints > 0
+  );
 };
 
 // Define cursor coordinates type
@@ -186,11 +194,20 @@ function LiveCursors() {
   const [myPresence] = useMyPresence();
   const others = useOthers();
   const pathname = usePathname();
+  const { isMuted } = useSoundSettings();
 
   // Check if user is on a touch device
   const [isTouch, setIsTouch] = useState(false);
   // Track if mouse has moved yet
   const [hasMouseMoved, setHasMouseMoved] = useState(false);
+
+  // Sounds - with volume controlled by mute setting
+  const [playClick] = useSound(CLICK_SOUND, {
+    volume: isMuted ? 0 : SOUND_VOLUME,
+  });
+  const [playConfetti] = useSound(CONFETTI_SOUND, {
+    volume: isMuted ? 0 : SOUND_VOLUME,
+  });
 
   // Set touch detection on mount
   useEffect(() => {
@@ -223,14 +240,50 @@ function LiveCursors() {
 
   // Handle route changes
   useEffect(() => {
+    // On mount, try to restore cursor position from localStorage
+    const savedPosition = localStorage.getItem(CURSOR_STORAGE_KEY);
+    if (savedPosition && !isTouch) {
+      try {
+        const { x, y } = JSON.parse(savedPosition);
+        if (x !== undefined && y !== undefined) {
+          const scrollX = window.scrollX || 0;
+          const scrollY = window.scrollY || 0;
+          cursorPosition.current = { x, y };
+          // Update presence with saved position
+          updateMyPresence({
+            cursor: {
+              x,
+              y,
+              pageX: x + scrollX,
+              pageY: y + scrollY,
+            },
+          });
+          setHasMouseMoved(true);
+        }
+      } catch (e) {
+        console.error("Failed to restore cursor position:", e);
+      }
+    }
+
     return () => {
-      // When component unmounts or before route change
+      // When component unmounts or before route change, save current position
+      if (cursorPosition.current.x && cursorPosition.current.y) {
+        localStorage.setItem(
+          CURSOR_STORAGE_KEY,
+          JSON.stringify({
+            x: cursorPosition.current.x,
+            y: cursorPosition.current.y,
+          })
+        );
+      }
+
+      // Also mark as exiting for animation
       isExiting.current = true;
       updateMyPresence({
         isExiting: true,
       });
     };
-  }, [pathname, updateMyPresence]);
+  }, [pathname, updateMyPresence, isTouch]);
 
   // Handle beforeunload event
   useEffect(() => {
@@ -289,15 +342,21 @@ function LiveCursors() {
     }
   }, [updatePresence]);
 
+  // Type cast to access presence properties safely
+  const typedMyPresence = myPresence as unknown as Presence;
+
   // Set up event listeners
   useEffect(() => {
     // Skip cursor initialization for touch devices
     if (isTouch) return;
 
-    // Don't initialize cursor position - wait for first mouse move instead
-
     // Mouse movement handler
     const handlePointerMove = (event: PointerEvent) => {
+      // Reset exiting state if mouse re-enters
+      if (isExiting.current) {
+        isExiting.current = false;
+      }
+
       // Update cursor position
       cursorPosition.current = {
         x: event.clientX,
@@ -318,10 +377,16 @@ function LiveCursors() {
       scheduleUpdate();
     };
 
-    // Mouse click handlers
     const handleMouseDown = (event: MouseEvent) => {
       isClicking.current = true;
       isMetaKeyPressed.current = event.metaKey || event.ctrlKey;
+
+      if (isMetaKeyPressed.current) {
+        playConfetti();
+      } else {
+        playClick();
+      }
+
       scheduleUpdate();
     };
 
@@ -348,11 +413,25 @@ function LiveCursors() {
       isExiting.current = true;
       scheduleUpdate();
 
-      // Give animation time to play
+      // Give animation time to play before removing cursor
       setTimeout(() => {
-        updateMyPresence({ cursor: undefined });
-        isExiting.current = false;
+        if (document.visibilityState === "hidden") {
+          updateMyPresence({ cursor: undefined });
+        }
       }, 300);
+    };
+
+    // Handle visibility change (tab change)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // User switched tabs, mark cursor as exiting but keep position
+        isExiting.current = true;
+        scheduleUpdate();
+      } else {
+        // User came back to tab
+        isExiting.current = false;
+        scheduleUpdate();
+      }
     };
 
     // Add event listeners - only for non-touch devices
@@ -364,6 +443,8 @@ function LiveCursors() {
     document.addEventListener("keyup", handleKeyUp);
     // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
+    // Add visibility change listener
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Clean up all event listeners
     return () => {
@@ -374,19 +455,23 @@ function LiveCursors() {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
 
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
       }
     };
-  }, [scheduleUpdate, updateMyPresence, isTouch, hasMouseMoved]);
-
-  // Type cast to access presence properties safely
-  const typedMyPresence = myPresence as unknown as Presence;
+  }, [
+    scheduleUpdate,
+    updateMyPresence,
+    isTouch,
+    hasMouseMoved,
+    typedMyPresence,
+  ]);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
-      {/* Show my cursor only if not on a touch device AND mouse has moved */}
+      {/* Show my cursor only if not on a touch device AND mouse has moved or position was restored */}
       {typedMyPresence.cursor &&
         SHOW_MY_CURSOR &&
         !isTouch &&

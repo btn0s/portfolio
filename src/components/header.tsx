@@ -6,12 +6,14 @@ import Link from "next/link";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { motion } from "motion/react";
 import RemoveBaseLayout from "@/components/remove-base-layout";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/images/logo.svg";
 import { cn } from "@/lib/utils";
 import { useOthers } from "@liveblocks/react";
+import { useSoundSettings } from "@/contexts/sound-context";
+
 export const ExperimentHeader = () => {
   const pathname = usePathname();
   return (
@@ -44,6 +46,8 @@ const HEADER_LINKS = ["/work", "/lab", "/pov"];
 
 const Header = () => {
   const pathname = usePathname();
+  const { isMuted, toggleMute } = useSoundSettings();
+
   return (
     <motion.header
       id="header"
@@ -86,6 +90,20 @@ const Header = () => {
             </Link>
           </Button>
         ))}
+        {/* Sound toggle button - hidden on mobile */}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={toggleMute}
+          className="hidden md:flex items-center"
+          title={isMuted ? "Unmute sounds" : "Mute sounds"}
+        >
+          {isMuted ? (
+            <VolumeXIcon className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <Volume2Icon className="h-4 w-4 text-muted-foreground" />
+          )}
+        </Button>
       </div>
     </motion.header>
   );
