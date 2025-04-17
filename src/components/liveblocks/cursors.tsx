@@ -189,6 +189,8 @@ function LiveCursors() {
 
   // Check if user is on a touch device
   const [isTouch, setIsTouch] = useState(false);
+  // Track if mouse has moved yet
+  const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
   // Set touch detection on mount
   useEffect(() => {
@@ -215,6 +217,7 @@ function LiveCursors() {
       isClicking: false,
       isThrowingConfetti: false,
       isExiting: false,
+      // Don't set cursor until mouse moves
     });
   }, [myName, updateMyPresence]);
 
@@ -291,36 +294,21 @@ function LiveCursors() {
     // Skip cursor initialization for touch devices
     if (isTouch) return;
 
-    // Initialize cursor position immediately to center of screen
-    if (typeof window !== "undefined") {
-      const scrollX = window.scrollX || 0;
-      const scrollY = window.scrollY || 0;
-
-      cursorPosition.current = {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      };
-
-      // Update presence immediately
-      updateMyPresence({
-        cursor: {
-          x: cursorPosition.current.x,
-          y: cursorPosition.current.y,
-          pageX: cursorPosition.current.x + scrollX,
-          pageY: cursorPosition.current.y + scrollY,
-        },
-        isClicking: false,
-        isThrowingConfetti: false,
-        isExiting: false,
-      });
-    }
+    // Don't initialize cursor position - wait for first mouse move instead
 
     // Mouse movement handler
     const handlePointerMove = (event: PointerEvent) => {
+      // Update cursor position
       cursorPosition.current = {
         x: event.clientX,
         y: event.clientY,
       };
+
+      // If this is the first mouse movement, set the flag
+      if (!hasMouseMoved) {
+        setHasMouseMoved(true);
+      }
+
       scheduleUpdate();
     };
 
@@ -391,25 +379,28 @@ function LiveCursors() {
         cancelAnimationFrame(rafId.current);
       }
     };
-  }, [scheduleUpdate, updateMyPresence, isTouch]);
+  }, [scheduleUpdate, updateMyPresence, isTouch, hasMouseMoved]);
 
   // Type cast to access presence properties safely
   const typedMyPresence = myPresence as unknown as Presence;
 
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
-      {/* Show my cursor only if not on a touch device */}
-      {typedMyPresence.cursor && SHOW_MY_CURSOR && !isTouch && (
-        <CursorElement
-          position={typedMyPresence.cursor}
-          color={myColor}
-          name="you"
-          isClicking={!!typedMyPresence.isClicking}
-          isThrowingConfetti={!!typedMyPresence.isThrowingConfetti}
-          isExiting={!!typedMyPresence.isExiting}
-          isLocalCursor={true}
-        />
-      )}
+      {/* Show my cursor only if not on a touch device AND mouse has moved */}
+      {typedMyPresence.cursor &&
+        SHOW_MY_CURSOR &&
+        !isTouch &&
+        hasMouseMoved && (
+          <CursorElement
+            position={typedMyPresence.cursor}
+            color={myColor}
+            name="you"
+            isClicking={!!typedMyPresence.isClicking}
+            isThrowingConfetti={!!typedMyPresence.isThrowingConfetti}
+            isExiting={!!typedMyPresence.isExiting}
+            isLocalCursor={true}
+          />
+        )}
 
       {/* Show other cursors */}
       {SHOW_OTHER_CURSORS &&
