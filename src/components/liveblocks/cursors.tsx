@@ -220,7 +220,6 @@ function LiveCursors() {
   const isMetaKeyPressed = useRef(false);
   const isThrowingConfetti = useRef(false);
   const isExiting = useRef(false);
-  const rafId = useRef<number | null>(null);
 
   // Initialize presence
   useEffect(() => {
@@ -297,7 +296,7 @@ function LiveCursors() {
     const scrollX = window.scrollX || 0;
     const scrollY = window.scrollY || 0;
     const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight; // Need viewport height for yPercent
+    const viewportHeight = window.innerHeight;
 
     // Check if we need to throw confetti (meta key + clicking)
     const shouldThrowConfetti = isMetaKeyPressed.current && isClicking.current;
@@ -309,7 +308,6 @@ function LiveCursors() {
       // Reset after a short delay
       setTimeout(() => {
         isThrowingConfetti.current = false;
-        scheduleUpdate();
       }, 500);
     }
 
@@ -334,15 +332,24 @@ function LiveCursors() {
       isThrowingConfetti: isThrowingConfetti.current,
       isExiting: isExiting.current,
     });
-
-    rafId.current = null;
   }, [updateMyPresence]);
 
-  // Schedule an update
-  const scheduleUpdate = useCallback(() => {
-    if (rafId.current === null) {
-      rafId.current = requestAnimationFrame(updatePresence);
+  // Set up continuous RAF loop
+  useEffect(() => {
+    let rafId: number;
+
+    function animate() {
+      updatePresence();
+      rafId = requestAnimationFrame(animate);
     }
+
+    // Start the animation loop
+    rafId = requestAnimationFrame(animate);
+
+    // Cleanup
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [updatePresence]);
 
   // Type cast to access presence properties safely
@@ -370,14 +377,11 @@ function LiveCursors() {
       if (!hasMouseMoved) {
         setHasMouseMoved(true);
       }
-
-      scheduleUpdate();
     };
 
     // Scroll handler to update remote cursor positions
     const handleScroll = () => {
-      // We only need to call scheduleUpdate to ensure other cursors adjust position
-      scheduleUpdate();
+      // No need to do anything - RAF loop will handle updates
     };
 
     const handleMouseDown = (event: MouseEvent) => {
@@ -389,13 +393,10 @@ function LiveCursors() {
       } else {
         playSound("click");
       }
-
-      scheduleUpdate();
     };
 
     const handleMouseUp = () => {
       isClicking.current = false;
-      scheduleUpdate();
     };
 
     // Key handlers for meta keys
@@ -414,7 +415,6 @@ function LiveCursors() {
     // Cleanup when cursor leaves window
     const handlePointerLeave = () => {
       isExiting.current = true;
-      scheduleUpdate();
 
       // Give animation time to play before removing cursor
       setTimeout(() => {
@@ -429,11 +429,9 @@ function LiveCursors() {
       if (document.visibilityState === "hidden") {
         // User switched tabs, mark cursor as exiting but keep position
         isExiting.current = true;
-        scheduleUpdate();
       } else {
         // User came back to tab
         isExiting.current = false;
-        scheduleUpdate();
       }
     };
 
@@ -459,19 +457,8 @@ function LiveCursors() {
       document.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
     };
-  }, [
-    scheduleUpdate,
-    updateMyPresence,
-    isTouch,
-    hasMouseMoved,
-    typedMyPresence,
-    playSound,
-  ]);
+  }, [updatePresence, isTouch, hasMouseMoved, typedMyPresence, playSound]);
 
   // Set touch detection on mount
   useEffect(() => {
