@@ -64,9 +64,20 @@ export async function getFrontmatter(slug: string) {
       ? await import(`@/assets/images/${frontmatter.imagePath}`)
       : await import(`@/assets/images/placeholder.png`);
 
+    // Handle sticker paths if they exist
+    const stickerImports = frontmatter.stickerPaths
+      ? await Promise.all(
+          frontmatter.stickerPaths.map(async (path: string) => {
+            const stickerImport = await import(`@/assets/images/${path}`);
+            return JSON.stringify(stickerImport);
+          })
+        )
+      : undefined;
+
     return {
       ...frontmatter,
       imagePath: JSON.stringify(imageImport),
+      stickerPaths: stickerImports,
       slug: normalizedSlug,
     };
   } catch (error) {

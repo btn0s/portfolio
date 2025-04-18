@@ -9,6 +9,7 @@ import LiveCursors from "@/components/liveblocks/cursors";
 import { Room } from "@/components/liveblocks/room";
 import { showCursorsFlag } from "@/lib/flags";
 import { SoundProvider } from "@/contexts/sound-context";
+import { ReactFlowProvider } from "@xyflow/react";
 
 import "./globals.css";
 
@@ -51,13 +52,15 @@ export default async function RootLayout({
         className={`${oracle.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-oracle)] dark min-h-screen flex flex-col transition`}
       >
         <SoundProvider>
-          <Room>
-            <Header />
-            <Main>{children}</Main>
-            <Footer />
-            <Analytics />
-            {showCursors && <LiveCursors />}
-          </Room>
+          <ReactFlowProvider>
+            <Room>
+              <Header />
+              <Main>{children}</Main>
+              <Footer />
+              <Analytics />
+              {showCursors && <LiveCursors />}
+            </Room>
+          </ReactFlowProvider>
         </SoundProvider>
       </body>
     </html>

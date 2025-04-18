@@ -1,0 +1,166 @@
+{
+  "nodes": [
+    {
+      "id": "intro-text",
+      "type": "simpleContentNode",
+      "position": {
+        "x": 30,
+        "y": -30
+      },
+      "data": {
+        "textContent": "I'm a designer and programmer interested in games, tools, artificial intelligence, and driven by the joy of discovery."
+      },
+      "measured": {
+        "width": 448,
+        "height": 354
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "work-/work/backbone/",
+      "type": "workCardNode",
+      "position": {
+        "x": 525,
+        "y": -30
+      },
+      "data": {
+        "title": "Backbone",
+        "description": "Leading front-end development for a global ecommerce brand and establishing its design engineering practice",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.2fbfd1df.png\",\"height\":2160,\"width\":3840,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.2fbfd1df.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/work/backbone/"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": true,
+      "dragging": false
+    },
+    {
+      "id": "work-/work/backbone/games-db-figma-plugin",
+      "type": "workCardNode",
+      "position": {
+        "x": 885,
+        "y": 15
+      },
+      "data": {
+        "title": "Games DB Figma Plugin",
+        "description": "A Figma plugin that connected designers directly to Backbone's game assets database",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.4b123adc.png\",\"height\":1080,\"width\":1920,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.4b123adc.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/work/backbone/games-db-figma-plugin"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "work-/work/amex",
+      "type": "workCardNode",
+      "position": {
+        "x": 555,
+        "y": 195
+      },
+      "data": {
+        "title": "American Express",
+        "description": "Leading transformation of legacy systems into modern customer care platforms",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.26d69241.png\",\"height\":2025,\"width\":3600,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.26d69241.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/work/amex"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "work-/work/amex/time-machine",
+      "type": "workCardNode",
+      "position": {
+        "x": 945,
+        "y": 225
+      },
+      "data": {
+        "title": "TimeMachine",
+        "description": "Modernizing a legacy application without disrupting service quality or business operations",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.f7af21ac.png\",\"height\":3240,\"width\":5760,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.f7af21ac.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/work/amex/time-machine"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "lab-/lab/strella",
+      "type": "workCardNode",
+      "position": {
+        "x": 120,
+        "y": 390
+      },
+      "data": {
+        "title": "Strella",
+        "description": "The first IDE for design engineers",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.c32a78aa.png\",\"height\":2160,\"width\":3840,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.c32a78aa.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/lab/strella"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "lab-/lab/echelon",
+      "type": "workCardNode",
+      "position": {
+        "x": 480,
+        "y": 435
+      },
+      "data": {
+        "title": "Echelon",
+        "description": "A multiplayer stealth game concept I designed and prototyped in Unreal Engine Blueprints",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.1ca480d0.png\",\"height\":3240,\"width\":5760,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.1ca480d0.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/lab/echelon"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "lab-/lab/game-dev-prototypes",
+      "type": "workCardNode",
+      "position": {
+        "x": 870,
+        "y": 450
+      },
+      "data": {
+        "title": "Unreal Blueprints Prototypes",
+        "description": "Prototyping and iterating on game designs",
+        "imagePath": "{\"default\":{\"src\":\"/_next/static/media/cover.6ff4f7e4.png\",\"height\":3240,\"width\":5760,\"blurDataURL\":\"/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fcover.6ff4f7e4.png&w=8&q=70\",\"blurWidth\":8,\"blurHeight\":5}}",
+        "slug": "/lab/game-dev-prototypes"
+      },
+      "measured": {
+        "width": 300,
+        "height": 170
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "viewport": {
+    "x": 34.4887766554433,
+    "y": 171.13206135428356,
+    "zoom": 1.1215862326973438
+  }
+}
