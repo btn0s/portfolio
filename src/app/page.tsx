@@ -1,3 +1,4 @@
+import FlowHome from "@/components/flow-home";
 import Home from "@/components/home";
 import { getFrontmatter } from "@/lib/utils";
 
@@ -27,5 +28,5 @@ export default async function Page() {
     })
   );
 
-  return <Home featuredWork={featuredWork} featuredLab={featuredLab} />;
+  return <FlowHome featuredWork={featuredWork} featuredLab={featuredLab} />;
 }

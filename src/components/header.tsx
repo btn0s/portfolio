@@ -13,6 +13,7 @@ import logo from "@/assets/images/logo.svg";
 import { cn } from "@/lib/utils";
 import { useOthers } from "@liveblocks/react";
 import { useSoundSettings } from "@/contexts/sound-context";
+import FlowSaveButton from "./flow-save-button";
 
 export const ExperimentHeader = () => {
   const pathname = usePathname();
@@ -51,7 +52,7 @@ const Header = () => {
   return (
     <motion.header
       id="header"
-      className="px-6 pt-6 flex justify-between max-w-content items-center mx-auto w-full"
+      className="px-6 pt-6 flex justify-between items-center mx-auto w-full relative z-10"
       variants={VARIANTS_HEADER}
       transition={TRANSITION_HEADER}
       initial="hidden"
@@ -104,6 +105,7 @@ const Header = () => {
             <Volume2Icon className="h-4 w-4 text-muted-foreground" />
           )}
         </Button>
+        <FlowSaveButton />
       </div>
     </motion.header>
   );

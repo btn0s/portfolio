@@ -9,6 +9,7 @@ export interface WorkCardProps {
   title: string;
   description: string;
   slug: string;
+  stickerPaths?: string[];
 }
 
 const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
@@ -20,7 +21,7 @@ const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
       prefetch
     >
       <Image
-        src={imageSrc}
+        src={imageSrc.default}
         alt={title}
         width={416}
         height={234}
