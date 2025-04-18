@@ -62,7 +62,7 @@ export default function Home({
         <div className="flex flex-col items-start text-sm gap-2">
           <Link
             href="/pov"
-            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300 active:scale-95"
+            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300 active:scale-[0.8]"
           >
             <ArrowRight className="size-3" />
             Why I do this
@@ -70,7 +70,7 @@ export default function Home({
 
           <Link
             href="/resume"
-            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300 active:scale-95"
+            className="flex items-center gap-1 hover:text-foreground hover:translate-x-1 transition-all duration-300 active:scale-[0.8]"
           >
             <ArrowRight className="size-3" />
             Resume
