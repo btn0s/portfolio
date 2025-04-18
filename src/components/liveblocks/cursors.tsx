@@ -201,7 +201,7 @@ function LiveCursors() {
 
   // Refs for non-rendering state or immediate access
   const cursorPosition = useRef<CursorCoordinates | null>(null);
-  const isClicking = useRef(false);
+  const [isClicking, setIsClicking] = useState(false);
   const isMetaKeyPressed = useRef(false);
   const isThrowingConfetti = useRef(false);
   const isExiting = useRef(false);
@@ -371,7 +371,7 @@ function LiveCursors() {
     };
 
     const handleMouseDown = (event: MouseEvent) => {
-      isClicking.current = true;
+      setIsClicking(true);
       isMetaKeyPressed.current = event.metaKey || event.ctrlKey;
 
       if (isMetaKeyPressed.current) {
@@ -397,7 +397,7 @@ function LiveCursors() {
     };
 
     const handleMouseUp = () => {
-      isClicking.current = false;
+      setIsClicking(false);
       isThrowingConfetti.current = false;
 
       try {
@@ -517,9 +517,9 @@ function LiveCursors() {
             position={localCursorVisualPosition} // Use state for smooth rendering
             color={LOCAL_CURSOR_COLOR}
             name="you"
-            isClicking={isClicking.current} // Refs are fine for discrete states
-            isThrowingConfetti={isThrowingConfetti.current} // Refs are fine for discrete states
-            isExiting={isExiting.current} // Refs are fine for discrete states
+            isClicking={isClicking}
+            isThrowingConfetti={isThrowingConfetti.current}
+            isExiting={isExiting.current}
             isLocalCursor={true}
           />
         )}
