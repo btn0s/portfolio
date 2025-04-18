@@ -22,6 +22,12 @@ const nextConfig = {
   },
   webpack: (config, options) => {
     config.module.rules.push({
+      test: /\.mp3/,
+      use: {
+        loader: 'file-loader',
+      },
+    });
+    config.module.rules.push({
       test: /\.glsl/,
       type: "asset/source",
     });
