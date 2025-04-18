@@ -4,6 +4,7 @@ import {
   useOthers,
   useUpdateMyPresence,
   useMyPresence,
+  useSelf,
 } from "@liveblocks/react";
 import { useEffect, useState, useRef } from "react";
 import { LuMousePointer2 } from "react-icons/lu";
@@ -43,34 +44,31 @@ function throwConfetti(x: number, y: number) {
 // Color options for cursors
 const COLORS = {
   blue: {
-    bg: "bg-blue-500/50 backdrop-blur-xs",
+    bg: "bg-blue-500/50 backdrop-blur-xs border-blue-500 border-1",
     fill: "#3b82f6",
     text: "text-white",
   },
   pink: {
-    bg: "bg-pink-500/50 backdrop-blur-xs",
+    bg: "bg-pink-500/50 backdrop-blur-xs border-pink-500 border-1",
     fill: "#ec4899",
     text: "text-white",
   },
   orange: {
-    bg: "bg-orange-500/50 backdrop-blur-xs",
+    bg: "bg-orange-500/50 backdrop-blur-xs border-orange-500 border-1",
     fill: "#f97316",
     text: "text-white",
   },
   yellow: {
-    bg: "bg-yellow-500/50 backdrop-blur-xs",
+    bg: "bg-yellow-500/50 backdrop-blur-xs border-yellow-500 border-1",
     fill: "#eab308",
     text: "text-black",
   },
   green: {
-    bg: "bg-green-500/50 backdrop-blur-xs",
+    bg: "bg-green-500/50 backdrop-blur-xs border-green-500 border-1",
     fill: "#22c55e",
     text: "text-white",
   },
 };
-
-// Local cursor always gets blue
-const LOCAL_CURSOR_COLOR = COLORS.blue;
 
 // Get a color based on connection ID - spread them out by multiplying by a prime number
 const getColorForId = (id: number) => {
@@ -190,6 +188,7 @@ function LiveCursors() {
   const others = useOthers();
   const pathname = usePathname();
   const { playSound } = useSoundSettings();
+  const self = useSelf();
 
   // Check if user is on a touch device
   const [isTouch, setIsTouch] = useState(false);
@@ -515,7 +514,7 @@ function LiveCursors() {
         hasMouseMoved && (
           <CursorElement
             position={localCursorVisualPosition} // Use state for smooth rendering
-            color={LOCAL_CURSOR_COLOR}
+            color={getColorForId(self?.connectionId || 0)} // Use getColorForId for local cursor
             name="you"
             isClicking={isClicking}
             isThrowingConfetti={isThrowingConfetti.current}
