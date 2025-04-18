@@ -7,11 +7,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  useOthers,
-  useMyPresence,
-  useUpdateMyPresence,
-} from "@liveblocks/react";
 
 interface FlickeringGridProps {
   squareSize?: number;
@@ -30,7 +25,6 @@ interface FlickeringGridProps {
   colorShift?: boolean;
   rippleDecay?: number;
   waveFrequency?: number;
-  multiplayer?: boolean;
   debug?: boolean;
 }
 
@@ -44,20 +38,6 @@ interface Ripple {
   intensity: number;
   velocity: number;
   hue: number;
-  userId?: string; // Track which user created this ripple
-}
-
-// Define types for presence data
-interface RipplePresence {
-  ripple?: {
-    id: string;
-    x: number;
-    y: number;
-    maxRadius: number;
-    intensity: number;
-    velocity: number;
-    hue: number;
-  } | null;
 }
 
 const FlickeringGrid: React.FC<FlickeringGridProps> = ({
@@ -76,7 +56,6 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   colorShift = true,
   rippleDecay = 0.85,
   waveFrequency = 0.3,
-  multiplayer = true,
   debug = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -95,18 +74,10 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   const lastRippleTime = useRef<number>(0);
   const rippleThrottleMs = 50; // Minimum time between ripples for throttling
 
-  // Add a ref to track last ripple time for each cursor
-  const lastCursorRippleRef = useRef<Record<string, number>>({});
   // Store debug points for visualization
   const debugPointsRef = useRef<Array<{ x: number; y: number; color: string }>>(
     []
   );
-
-  // Liveblocks integration
-  const others = multiplayer ? useOthers() : null;
-  const [myPresence, updateMyPresence] = multiplayer
-    ? [useMyPresence()[0], useMyPresence()[1]]
-    : [null, null];
 
   const memoizedColor = useMemo(() => {
     const toRGBA = (color: string) => {
@@ -239,7 +210,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
   // Add ripple at current mouse position
   const addRipple = useCallback(
-    (x: number, y: number, isClick: boolean = false, userId?: string) => {
+    (x: number, y: number, isClick: boolean = false) => {
       if (!enableRipple) return;
 
       const now = performance.now();
@@ -270,126 +241,14 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         intensity,
         velocity,
         hue: hueShift,
-        userId,
       };
 
       ripplesRef.current.push(newRipple);
 
-      // If using multiplayer and no userId is provided (meaning this is a local ripple),
-      // broadcast the ripple to other users
-      if (multiplayer && updateMyPresence && !userId) {
-        updateMyPresence({
-          ripple: {
-            id: rippleId,
-            x,
-            y,
-            maxRadius: newRipple.maxRadius,
-            intensity,
-            velocity,
-            hue: hueShift,
-          },
-        });
-
-        // Clear the ripple from presence after a brief delay (so others can receive it)
-        setTimeout(() => {
-          updateMyPresence({ ripple: null });
-        }, 100);
-      }
-
       return newRipple;
     },
-    [
-      enableRipple,
-      rippleSize,
-      rippleIntensity,
-      colorShift,
-      multiplayer,
-      updateMyPresence,
-      rippleThrottleMs,
-    ]
+    [enableRipple, rippleSize, rippleIntensity, colorShift, rippleThrottleMs]
   );
-
-  // Process incoming ripples from other users
-  useEffect(() => {
-    if (!multiplayer || !others) return;
-
-    // DPR is primarily needed for drawing, not coordinate calculation here
-    // const dpr = window.devicePixelRatio || 1;
-
-    others.forEach((other) => {
-      const otherPresence = other.presence as unknown as RipplePresence;
-      if (otherPresence.ripple) {
-        const { id, x, y, maxRadius, intensity, velocity, hue } =
-          otherPresence.ripple;
-
-        // Check if we already have this ripple (avoid duplicates)
-        const existingRipple = ripplesRef.current.find((r) => r.id === id);
-        if (!existingRipple) {
-          // Add the ripple with the other user's ID
-          addRipple(
-            x,
-            y,
-            intensity > rippleIntensity,
-            other.connectionId.toString()
-          );
-        }
-      }
-
-      // Create ripples from remote cursor movements using pageX/pageY
-      const cursor = (other.presence as any)?.cursor;
-      if (
-        cursor?.pageX !== undefined &&
-        cursor?.pageY !== undefined &&
-        containerRef.current
-      ) {
-        // Get container's position relative to the document
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const containerDocLeft = containerRect.left + window.scrollX;
-        const containerDocTop = containerRect.top + window.scrollY;
-        const containerWidth = containerRect.width;
-        const containerHeight = containerRect.height;
-
-        // Calculate ripple position relative to the container's top-left corner (unscaled CSS pixels)
-        const rippleX = cursor.pageX - containerDocLeft;
-        const rippleY = cursor.pageY - containerDocTop;
-
-        // Scale coordinates by DPR for consistency with canvas drawing << REVERTED
-        // const rippleX = relativeX * dpr;
-        // const rippleY = relativeY * dpr;
-
-        // For debugging, store calculated points (unscaled relative coordinates)
-        if (debug) {
-          debugPointsRef.current.push({
-            x: rippleX,
-            y: rippleY,
-            color: `hsl(${(other.connectionId * 30) % 360}, 100%, 50%)`, // Color based on user ID
-          });
-          if (debugPointsRef.current.length > 20) {
-            debugPointsRef.current.shift();
-          }
-        }
-
-        // Bounds check using unscaled relative coordinates
-        if (
-          rippleY >= 0 &&
-          rippleY <= containerHeight &&
-          rippleX >= 0 &&
-          rippleX <= containerWidth
-        ) {
-          // Throttle ripple creation based on cursor movement
-          const rippleKey = `${other.connectionId}_cursor_ripple`;
-          const lastRippleTime = lastCursorRippleRef.current[rippleKey] || 0;
-          const now = performance.now();
-
-          if (now - lastRippleTime > 500) {
-            // Create ripple every 500ms - Pass unscaled relative coordinates
-            addRipple(rippleX, rippleY, false, other.connectionId.toString());
-            lastCursorRippleRef.current[rippleKey] = now;
-          }
-        }
-      }
-    });
-  }, [others, addRipple, multiplayer, rippleIntensity, debug]);
 
   // Update active ripples
   const updateRipples = useCallback(
