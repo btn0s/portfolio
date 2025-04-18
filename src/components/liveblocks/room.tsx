@@ -8,24 +8,6 @@ import {
 } from "@liveblocks/react/suspense";
 import { usePathname } from "next/navigation";
 
-// Define cursor coordinates type to avoid repetition
-type CursorCoordinates = {
-  x: number; // Viewport X (client coordinates)
-  y: number; // Viewport Y (client coordinates)
-  pageX: number; // Document X (page coordinates)
-  pageY: number; // Document Y (page coordinates)
-};
-
-// Make sure cursor.tsx is imported before this file
-// so that the Presence interface is properly extended
-declare module "@liveblocks/react" {
-  interface Presence {
-    cursor?: CursorCoordinates | null;
-    name?: string | null;
-    isClicking?: boolean;
-  }
-}
-
 function RoomContent({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
