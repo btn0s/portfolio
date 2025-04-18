@@ -43,27 +43,27 @@ function throwConfetti(x: number, y: number) {
 // Color options for cursors
 const COLORS = {
   blue: {
-    bg: "bg-blue-500/50 border-blue-500 border-2 backdrop-blur-sm",
+    bg: "bg-blue-500/50 backdrop-blur-xs",
     fill: "#3b82f6",
     text: "text-white",
   },
   pink: {
-    bg: "bg-pink-500/50 border-pink-500 border-2 backdrop-blur-sm",
+    bg: "bg-pink-500/50 backdrop-blur-xs",
     fill: "#ec4899",
     text: "text-white",
   },
   orange: {
-    bg: "bg-orange-500/50 border-orange-500 border-2 backdrop-blur-sm",
+    bg: "bg-orange-500/50 backdrop-blur-xs",
     fill: "#f97316",
     text: "text-white",
   },
   yellow: {
-    bg: "bg-yellow-500/50 border-yellow-500 border-2 backdrop-blur-sm",
+    bg: "bg-yellow-500/50 backdrop-blur-xs",
     fill: "#eab308",
     text: "text-black",
   },
   green: {
-    bg: "bg-green-500/50 border-green-500 border-2 backdrop-blur-sm",
+    bg: "bg-green-500/50 backdrop-blur-xs",
     fill: "#22c55e",
     text: "text-white",
   },
@@ -176,7 +176,7 @@ const CursorElement = ({
         }}
       >
         <LuMousePointer2
-          className="h-6 w-6 -translate-x-[4px] -translate-y-[4px] fill-current/60"
+          className="h-6 w-6 -translate-x-[4px] -translate-y-[4px] [fill:color-mix(in_oklab,currentColor,black_20%)]"
           color={color.fill}
         />
         <LiveCursorNameTag name={name} color={color.bg} />
@@ -195,13 +195,17 @@ function LiveCursors() {
   const [isTouch, setIsTouch] = useState(false);
   // Track if mouse has moved yet
   const [hasMouseMoved, setHasMouseMoved] = useState(false);
+  // State for visual rendering of local cursor position
+  const [localCursorVisualPosition, setLocalCursorVisualPosition] =
+    useState<CursorCoordinates | null>(null);
 
-  // Track cursor state locally
+  // Refs for non-rendering state or immediate access
   const cursorPosition = useRef<CursorCoordinates | null>(null);
   const isClicking = useRef(false);
   const isMetaKeyPressed = useRef(false);
   const isThrowingConfetti = useRef(false);
   const isExiting = useRef(false);
+  const animationFrameId = useRef<number | null>(null);
 
   // Function to check if element is clickable
   const isClickableElement = (element: Element | null): boolean => {
@@ -326,6 +330,7 @@ function LiveCursors() {
       // Reset exiting state if mouse re-enters
       if (isExiting.current) {
         isExiting.current = false;
+        // Ensure visual state reflects this if needed, though presence update handles others
       }
 
       // Calculate all cursor coordinates
@@ -338,8 +343,16 @@ function LiveCursors() {
         yPercent: event.clientY / window.innerHeight,
       };
 
-      // Update local cursor position
+      // Update local cursor position ref immediately for network/saving
       cursorPosition.current = newPosition;
+
+      // Schedule visual update in next animation frame
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      animationFrameId.current = requestAnimationFrame(() => {
+        setLocalCursorVisualPosition(newPosition);
+      });
 
       // If this is the first mouse movement, set the flag
       if (!hasMouseMoved) {
@@ -431,6 +444,8 @@ function LiveCursors() {
             // Ignore presence update errors
           }
           cursorPosition.current = null;
+          // Optionally hide local cursor immediately visually
+          // setLocalCursorVisualPosition(null);
         }
       }, 300);
     };
@@ -471,6 +486,10 @@ function LiveCursors() {
 
     // Clean up all event listeners
     return () => {
+      // Cancel any pending animation frame
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerleave", handlePointerLeave);
       document.removeEventListener("mousedown", handleMouseDown);
@@ -489,17 +508,18 @@ function LiveCursors() {
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
       {/* Show my cursor only if not on a touch device AND mouse has moved or position was restored */}
-      {cursorPosition.current &&
+      {/* Use the visual position state for rendering */}
+      {localCursorVisualPosition &&
         SHOW_MY_CURSOR &&
         !isTouch &&
         hasMouseMoved && (
           <CursorElement
-            position={cursorPosition.current}
+            position={localCursorVisualPosition} // Use state for smooth rendering
             color={LOCAL_CURSOR_COLOR}
             name="you"
-            isClicking={isClicking.current}
-            isThrowingConfetti={isThrowingConfetti.current}
-            isExiting={isExiting.current}
+            isClicking={isClicking.current} // Refs are fine for discrete states
+            isThrowingConfetti={isThrowingConfetti.current} // Refs are fine for discrete states
+            isExiting={isExiting.current} // Refs are fine for discrete states
             isLocalCursor={true}
           />
         )}
