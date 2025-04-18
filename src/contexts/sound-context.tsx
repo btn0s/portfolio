@@ -8,7 +8,8 @@ export const SOUND_VOLUME = 0.3;
 
 // Sound files
 export const SOUNDS = {
-  click: "/assets/audio/fast-dbl-click.wav",
+  click: "/assets/audio/click.wav",
+  clickAlt: "/assets/audio/click-alt.mp3",
   confetti: "/assets/audio/sad-party-horn.wav",
 };
 
@@ -16,7 +17,7 @@ export const SOUNDS = {
 type SoundContextType = {
   isMuted: boolean;
   toggleMute: () => void;
-  playSound: (sound: keyof typeof SOUNDS) => void;
+  playSound: (sound: keyof typeof SOUNDS, alt?: boolean) => void;
 };
 
 // Create context
@@ -34,17 +35,20 @@ export const SoundProvider = ({ children }: { children: React.ReactNode }) => {
   const [playClick] = useSound(SOUNDS.click, {
     volume: isMuted ? 0 : SOUND_VOLUME,
   });
+  const [playClickAlt] = useSound(SOUNDS.clickAlt, {
+    volume: isMuted ? 0 : SOUND_VOLUME,
+  });
   const [playConfetti] = useSound(SOUNDS.confetti, {
     volume: isMuted ? 0 : SOUND_VOLUME,
   });
 
   // Sound player utility
-  const playSound = (sound: keyof typeof SOUNDS) => {
+  const playSound = (sound: keyof typeof SOUNDS, alt?: boolean) => {
     if (isMuted) return;
 
     switch (sound) {
       case "click":
-        playClick();
+        alt ? playClickAlt() : playClick();
         break;
       case "confetti":
         playConfetti();

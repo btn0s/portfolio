@@ -221,6 +221,34 @@ function LiveCursors() {
   const isThrowingConfetti = useRef(false);
   const isExiting = useRef(false);
 
+  // Function to check if element is clickable
+  const isClickableElement = (element: Element | null): boolean => {
+    if (!element) return false;
+
+    // Check for common clickable elements
+    const clickableElements = ["a", "button", "input", "select", "textarea"];
+    if (clickableElements.includes(element.tagName.toLowerCase())) return true;
+
+    // Check for elements with click-related attributes
+    const clickAttributes = ["onclick", "role"];
+    if (clickAttributes.some((attr) => element.hasAttribute(attr))) return true;
+
+    // Check for elements with cursor: pointer
+    const computedStyle = window.getComputedStyle(element);
+    if (computedStyle.cursor === "pointer") return true;
+
+    return false;
+  };
+
+  // Function to get clickable element at position
+  const getClickableElementAtPosition = (
+    x: number,
+    y: number
+  ): Element | null => {
+    const elements = document.elementsFromPoint(x, y);
+    return elements.find(isClickableElement) || null;
+  };
+
   // Initialize presence
   useEffect(() => {
     updateMyPresence({
@@ -391,7 +419,12 @@ function LiveCursors() {
       if (isMetaKeyPressed.current) {
         playSound("confetti");
       } else {
-        playSound("click");
+        // Check if we're clicking a clickable element
+        const clickableElement = getClickableElementAtPosition(
+          event.clientX,
+          event.clientY
+        );
+        playSound("click", !!clickableElement);
       }
     };
 
