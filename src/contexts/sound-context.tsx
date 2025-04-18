@@ -11,6 +11,7 @@ export const SOUNDS = {
   click: "/assets/audio/click.wav",
   clickAlt: "/assets/audio/click-alt.mp3",
   confetti: "/assets/audio/sad-party-horn.wav",
+  drop: "/assets/audio/drop.mp3",
 };
 
 // Types
@@ -41,6 +42,9 @@ export const SoundProvider = ({ children }: { children: React.ReactNode }) => {
   const [playConfetti] = useSound(SOUNDS.confetti, {
     volume: isMuted ? 0 : SOUND_VOLUME,
   });
+  const [playDrop] = useSound(SOUNDS.drop, {
+    volume: isMuted ? 0 : SOUND_VOLUME,
+  });
 
   // Sound player utility
   const playSound = (sound: keyof typeof SOUNDS, alt?: boolean) => {
@@ -52,6 +56,9 @@ export const SoundProvider = ({ children }: { children: React.ReactNode }) => {
         break;
       case "confetti":
         playConfetti();
+        break;
+      case "drop":
+        playDrop();
         break;
     }
   };

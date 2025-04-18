@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useSoundSettings } from "@/contexts/sound-context";
 
 interface FlickeringGridProps {
   squareSize?: number;
@@ -62,6 +63,7 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const { playSound } = useSoundSettings();
 
   // Track mouse position and active ripples
   const mousePos = useRef<{ x: number; y: number } | null>(null);
@@ -481,8 +483,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
 
       // Create a stronger ripple on click
       addRipple(x, y, true);
+      playSound("drop");
     },
-    [addRipple, enableRipple]
+    [addRipple, enableRipple, playSound]
   );
 
   useEffect(() => {
