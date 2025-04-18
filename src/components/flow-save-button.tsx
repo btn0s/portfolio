@@ -7,21 +7,11 @@ export function FlowSaveButton() {
   const { getNodes, getViewport } = useReactFlow();
 
   const saveState = async () => {
-    // Save node positions, viewport, and sticker rotations
-    const nodes = getNodes().map((node) => ({
-      id: node.id,
-      type: node.type,
-      position: node.position,
-      data:
-        node.type === "stickerStackNode"
-          ? {
-              // For sticker stack nodes, save the rotations
-              stickerTransforms: node.data.stickerTransforms,
-            }
-          : {}, // Empty object for other node types
-    }));
-
+    const nodes = getNodes();
     const viewport = getViewport();
+
+    console.log("nodes", nodes);
+    console.log("viewport", viewport);
 
     const response = await fetch("/api/flow-state", {
       method: "POST",

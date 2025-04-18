@@ -39,7 +39,7 @@ function WorkCardNode({ data }: NodeProps<WorkCardNode>) {
           alt={data.title}
           width={416}
           height={234}
-          className="rounded-sm w-full relative z-20"
+          className="rounded-sm w-full relative z-20 border"
         />
       )}
     </div>
