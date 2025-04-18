@@ -79,10 +79,15 @@ const COLORS = {
   green: { bg: "bg-green-500", fill: "#22c55e", text: "text-white" },
 };
 
-// Get a color based on connection ID
+// Local cursor always gets blue
+const LOCAL_CURSOR_COLOR = COLORS.blue;
+
+// Get a color based on connection ID - spread them out by multiplying by a prime number
 const getColorForId = (id: number) => {
   const colorKeys = Object.keys(COLORS);
-  const colorKey = colorKeys[id % colorKeys.length] as keyof typeof COLORS;
+  // Multiply by a prime number to spread out the colors more
+  const spreadId = (id * 31) % colorKeys.length;
+  const colorKey = colorKeys[spreadId] as keyof typeof COLORS;
   return COLORS[colorKey];
 };
 
@@ -209,11 +214,6 @@ function LiveCursors() {
   // Track if mouse has moved yet
   const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
-  // State for tracking mouse position and click state
-  const [myId] = useState(() => Math.floor(Math.random() * 1000));
-  const myColor = getColorForId(myId);
-  const myName = getNameForId(myId);
-
   // Track cursor state locally
   const cursorPosition = useRef<CursorCoordinates | null>(null);
   const isClicking = useRef(false);
@@ -253,7 +253,7 @@ function LiveCursors() {
   useEffect(() => {
     try {
       updateMyPresence({
-        name: myName,
+        name: getNameForId(Math.floor(Math.random() * 1000)),
         isClicking: false,
         isThrowingConfetti: false,
         isExiting: false,
@@ -261,7 +261,7 @@ function LiveCursors() {
     } catch (e) {
       // Ignore presence update errors
     }
-  }, [myName, updateMyPresence]);
+  }, [updateMyPresence]);
 
   // Handle route changes
   useEffect(() => {
@@ -513,7 +513,7 @@ function LiveCursors() {
         hasMouseMoved && (
           <CursorElement
             position={cursorPosition.current}
-            color={myColor}
+            color={LOCAL_CURSOR_COLOR}
             name="you"
             isClicking={isClicking.current}
             isThrowingConfetti={isThrowingConfetti.current}
