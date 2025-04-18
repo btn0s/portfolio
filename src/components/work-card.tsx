@@ -16,18 +16,22 @@ const WorkCard = ({ imagePath, title, description, slug }: WorkCardProps) => {
   return (
     <Link
       href={slug}
-      className={cn("flex gap-4 not-prose w-full max-w-content flex-col")}
+      className={cn(
+        "flex gap-4 not-prose w-full max-w-content flex-col group active:scale-99"
+      )}
       prefetch
     >
-      <Image
-        src={imageSrc}
-        alt={title}
-        width={416}
-        height={234}
-        className={cn(
-          "rounded-sm shrink-0 bg-muted flex text-muted-foreground border w-full"
-        )}
-      />
+      <div className="rounded-sm shrink-0 bg-muted flex text-muted-foreground border w-full overflow-hidden">
+        <Image
+          src={imageSrc}
+          alt={title}
+          width={416}
+          height={234}
+          className={cn(
+            "object-cover group-hover:scale-105 transition-all duration-300"
+          )}
+        />
+      </div>
       <div className="flex flex-col md:flex-row items-start justify-between">
         <div
           className={cn("flex flex-col items-start justify-start gap-1", {})}

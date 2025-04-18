@@ -57,7 +57,7 @@ const Header = () => {
       initial="hidden"
       animate="visible"
     >
-      <Link href="/" className="font-medium leading-none">
+      <Link href="/" className="font-medium leading-none active:scale-95">
         <div className="flex items-center gap-2">
           <Image src={logo} alt="bt norris" width={18} />
           <div className="flex flex-col gap-0 justify-center text-sm">
