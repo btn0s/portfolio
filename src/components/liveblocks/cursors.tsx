@@ -27,36 +27,6 @@ const isTouchDevice = () => {
   );
 };
 
-// Define cursor coordinates type
-type CursorCoordinates = {
-  x: number; // Viewport X
-  y: number; // Viewport Y
-  pageX: number; // Document X (Primary)
-  pageY: number; // Document Y (Primary)
-  xPercent?: number; // Viewport X percentage (Context)
-  yPercent?: number; // Viewport Y percentage (Context)
-};
-
-// Define types for presence data
-type Presence = {
-  cursor: CursorCoordinates | undefined;
-  name?: string;
-  isClicking?: boolean;
-  isThrowingConfetti?: boolean;
-  isExiting?: boolean;
-};
-
-// Define the type for Liveblocks presence
-declare module "@liveblocks/react" {
-  interface Presence {
-    cursor?: CursorCoordinates | null;
-    name?: string | null;
-    isClicking?: boolean;
-    isThrowingConfetti?: boolean;
-    isExiting?: boolean;
-  }
-}
-
 // Function to trigger confetti
 function throwConfetti(x: number, y: number) {
   confetti({
@@ -133,14 +103,7 @@ const CursorElement = ({
   isExiting,
   isLocalCursor = false,
 }: {
-  position: {
-    x: number; // For local cursor and confetti
-    y: number; // For local cursor and confetti
-    pageX: number; // Primary for remote rendering
-    pageY: number; // Primary for remote rendering
-    xPercent?: number;
-    yPercent?: number;
-  };
+  position: CursorCoordinates;
   color: { bg: string; fill: string; text: string };
   name: string;
   isClicking: boolean;
@@ -204,7 +167,6 @@ const CursorElement = ({
 
 function LiveCursors() {
   const updateMyPresence = useUpdateMyPresence();
-  const [myPresence] = useMyPresence();
   const others = useOthers();
   const pathname = usePathname();
   const { playSound } = useSoundSettings();
@@ -525,8 +487,7 @@ function LiveCursors() {
       {/* Show other cursors */}
       {SHOW_OTHER_CURSORS &&
         others.map((other) => {
-          // Use type assertion for presence
-          const presence = other.presence as unknown as Presence;
+          const presence = other.presence;
           if (!presence?.cursor) return null;
 
           // Assign color based on connection ID

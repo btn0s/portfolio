@@ -1,19 +1,22 @@
 // Define Liveblocks types for your application
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
+
 declare global {
+  // Define cursor coordinates type
+  type CursorCoordinates = {
+    x: number; // Viewport X
+    y: number; // Viewport Y
+    pageX: number; // Document X (Primary)
+    pageY: number; // Document Y (Primary)
+    xPercent?: number; // Viewport X percentage (Context)
+    yPercent?: number; // Viewport Y percentage (Context)
+  };
+
   interface Liveblocks {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
-      // Example, real-time cursor coordinates
       name: string | null;
-      cursor: {
-        x: number; // Local viewport X (for reference)
-        y: number; // Local viewport Y (for reference)
-        pageX: number; // Document X coordinate (Primary for positioning/interaction)
-        pageY: number; // Document Y coordinate (Primary for positioning/interaction)
-        xPercent?: number; // Viewport X percentage (Context)
-        yPercent?: number; // Viewport Y percentage (Context)
-      } | null;
+      cursor: CursorCoordinates | null;
       isClicking: boolean;
       isThrowingConfetti: boolean;
       isExiting: boolean;
