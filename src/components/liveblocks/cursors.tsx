@@ -5,7 +5,7 @@ import {
   useUpdateMyPresence,
   useMyPresence,
 } from "@liveblocks/react";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { LuMousePointer2 } from "react-icons/lu";
 import confetti from "canvas-confetti";
 import { usePathname } from "next/navigation";
@@ -214,8 +214,8 @@ function LiveCursors() {
   const myColor = getColorForId(myId);
   const myName = getNameForId(myId);
 
-  // Track cursor state
-  const cursorPosition = useRef({ x: 0, y: 0 });
+  // Track cursor state locally
+  const cursorPosition = useRef<CursorCoordinates | null>(null);
   const isClicking = useRef(false);
   const isMetaKeyPressed = useRef(false);
   const isThrowingConfetti = useRef(false);
@@ -251,13 +251,16 @@ function LiveCursors() {
 
   // Initialize presence
   useEffect(() => {
-    updateMyPresence({
-      name: myName,
-      isClicking: false,
-      isThrowingConfetti: false,
-      isExiting: false,
-      // Don't set cursor until mouse moves
-    });
+    try {
+      updateMyPresence({
+        name: myName,
+        isClicking: false,
+        isThrowingConfetti: false,
+        isExiting: false,
+      });
+    } catch (e) {
+      // Ignore presence update errors
+    }
   }, [myName, updateMyPresence]);
 
   // Handle route changes
@@ -269,26 +272,32 @@ function LiveCursors() {
       const scrollX = window.scrollX || 0;
       const scrollY = window.scrollY || 0;
       const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight; // Need viewport height
+      const viewportHeight = window.innerHeight;
 
-      cursorPosition.current = { x, y };
-      // Update presence with saved position
-      updateMyPresence({
-        cursor: {
-          x: x,
-          y: y,
-          pageX: x + scrollX,
-          pageY: y + scrollY,
-          xPercent: x / viewportWidth,
-          yPercent: y / viewportHeight,
-        },
-      });
+      const newPosition = {
+        x,
+        y,
+        pageX: x + scrollX,
+        pageY: y + scrollY,
+        xPercent: x / viewportWidth,
+        yPercent: y / viewportHeight,
+      };
+
+      cursorPosition.current = newPosition;
+
+      try {
+        updateMyPresence({
+          cursor: newPosition,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
       setHasMouseMoved(true);
     }
 
     return () => {
       // When component unmounts or before route change, save current position
-      if (cursorPosition.current.x && cursorPosition.current.y) {
+      if (cursorPosition.current) {
         saveCursorPosition({
           x: cursorPosition.current.x,
           y: cursorPosition.current.y,
@@ -297,18 +306,26 @@ function LiveCursors() {
 
       // Also mark as exiting for animation
       isExiting.current = true;
-      updateMyPresence({
-        isExiting: true,
-      });
+      try {
+        updateMyPresence({
+          isExiting: true,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
     };
   }, [pathname, updateMyPresence, isTouch]);
 
   // Handle beforeunload event
   useEffect(() => {
     const handleBeforeUnload = () => {
-      updateMyPresence({
-        isExiting: true,
-      });
+      try {
+        updateMyPresence({
+          isExiting: true,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -316,72 +333,6 @@ function LiveCursors() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [updateMyPresence]);
-
-  // Update presence in animation frame
-  const updatePresence = useCallback(() => {
-    if (typeof window === "undefined") return;
-
-    const scrollX = window.scrollX || 0;
-    const scrollY = window.scrollY || 0;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // Check if we need to throw confetti (meta key + clicking)
-    const shouldThrowConfetti = isMetaKeyPressed.current && isClicking.current;
-
-    // Only set confetti to true once per click
-    if (shouldThrowConfetti && !isThrowingConfetti.current) {
-      isThrowingConfetti.current = true;
-
-      // Reset after a short delay
-      setTimeout(() => {
-        isThrowingConfetti.current = false;
-      }, 500);
-    }
-
-    // Calculate all coordinate types
-    const currentX = cursorPosition.current.x;
-    const currentY = cursorPosition.current.y;
-    const pageX = currentX + scrollX;
-    const pageY = currentY + scrollY;
-    const xPercent = currentX / viewportWidth;
-    const yPercent = currentY / viewportHeight;
-
-    updateMyPresence({
-      cursor: {
-        x: currentX,
-        y: currentY,
-        pageX: pageX,
-        pageY: pageY,
-        xPercent: xPercent,
-        yPercent: yPercent,
-      },
-      isClicking: isClicking.current,
-      isThrowingConfetti: isThrowingConfetti.current,
-      isExiting: isExiting.current,
-    });
-  }, [updateMyPresence]);
-
-  // Set up continuous RAF loop
-  useEffect(() => {
-    let rafId: number;
-
-    function animate() {
-      updatePresence();
-      rafId = requestAnimationFrame(animate);
-    }
-
-    // Start the animation loop
-    rafId = requestAnimationFrame(animate);
-
-    // Cleanup
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [updatePresence]);
-
-  // Type cast to access presence properties safely
-  const typedMyPresence = myPresence as unknown as Presence;
 
   // Set up event listeners
   useEffect(() => {
@@ -395,21 +346,33 @@ function LiveCursors() {
         isExiting.current = false;
       }
 
-      // Update cursor position
-      cursorPosition.current = {
+      // Calculate all cursor coordinates
+      const newPosition = {
         x: event.clientX,
         y: event.clientY,
+        pageX: event.pageX,
+        pageY: event.pageY,
+        xPercent: event.clientX / window.innerWidth,
+        yPercent: event.clientY / window.innerHeight,
       };
+
+      // Update local cursor position
+      cursorPosition.current = newPosition;
 
       // If this is the first mouse movement, set the flag
       if (!hasMouseMoved) {
         setHasMouseMoved(true);
       }
-    };
 
-    // Scroll handler to update remote cursor positions
-    const handleScroll = () => {
-      // No need to do anything - RAF loop will handle updates
+      // Try to update presence
+      try {
+        updateMyPresence({
+          cursor: newPosition,
+          isExiting: false,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
     };
 
     const handleMouseDown = (event: MouseEvent) => {
@@ -418,6 +381,7 @@ function LiveCursors() {
 
       if (isMetaKeyPressed.current) {
         playSound("confetti");
+        isThrowingConfetti.current = true;
       } else {
         // Check if we're clicking a clickable element
         const clickableElement = getClickableElementAtPosition(
@@ -426,10 +390,29 @@ function LiveCursors() {
         );
         playSound("click", !!clickableElement);
       }
+
+      try {
+        updateMyPresence({
+          isClicking: true,
+          isThrowingConfetti: isMetaKeyPressed.current,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
     };
 
     const handleMouseUp = () => {
       isClicking.current = false;
+      isThrowingConfetti.current = false;
+
+      try {
+        updateMyPresence({
+          isClicking: false,
+          isThrowingConfetti: false,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
     };
 
     // Key handlers for meta keys
@@ -449,10 +432,23 @@ function LiveCursors() {
     const handlePointerLeave = () => {
       isExiting.current = true;
 
+      try {
+        updateMyPresence({
+          isExiting: true,
+        });
+      } catch (e) {
+        // Ignore presence update errors
+      }
+
       // Give animation time to play before removing cursor
       setTimeout(() => {
         if (document.visibilityState === "hidden") {
-          updateMyPresence({ cursor: undefined });
+          try {
+            updateMyPresence({ cursor: undefined });
+          } catch (e) {
+            // Ignore presence update errors
+          }
+          cursorPosition.current = null;
         }
       }, 300);
     };
@@ -462,9 +458,23 @@ function LiveCursors() {
       if (document.visibilityState === "hidden") {
         // User switched tabs, mark cursor as exiting but keep position
         isExiting.current = true;
+        try {
+          updateMyPresence({
+            isExiting: true,
+          });
+        } catch (e) {
+          // Ignore presence update errors
+        }
       } else {
         // User came back to tab
         isExiting.current = false;
+        try {
+          updateMyPresence({
+            isExiting: false,
+          });
+        } catch (e) {
+          // Ignore presence update errors
+        }
       }
     };
 
@@ -475,9 +485,6 @@ function LiveCursors() {
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll);
-    // Add visibility change listener
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Clean up all event listeners
@@ -488,10 +495,9 @@ function LiveCursors() {
       document.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
-      window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [updatePresence, isTouch, hasMouseMoved, typedMyPresence, playSound]);
+  }, [updateMyPresence, isTouch, hasMouseMoved, playSound]);
 
   // Set touch detection on mount
   useEffect(() => {
@@ -501,17 +507,17 @@ function LiveCursors() {
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
       {/* Show my cursor only if not on a touch device AND mouse has moved or position was restored */}
-      {typedMyPresence.cursor &&
+      {cursorPosition.current &&
         SHOW_MY_CURSOR &&
         !isTouch &&
         hasMouseMoved && (
           <CursorElement
-            position={typedMyPresence.cursor}
+            position={cursorPosition.current}
             color={myColor}
             name="you"
-            isClicking={!!typedMyPresence.isClicking}
-            isThrowingConfetti={!!typedMyPresence.isThrowingConfetti}
-            isExiting={!!typedMyPresence.isExiting}
+            isClicking={isClicking.current}
+            isThrowingConfetti={isThrowingConfetti.current}
+            isExiting={isExiting.current}
             isLocalCursor={true}
           />
         )}
