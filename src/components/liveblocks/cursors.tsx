@@ -11,7 +11,12 @@ import { LuMousePointer2 } from "react-icons/lu";
 import confetti from "canvas-confetti";
 import { usePathname } from "next/navigation";
 import { useSoundSettings } from "@/contexts/sound-context";
-import { loadCursorPosition, saveCursorPosition } from "@/lib/cursor-storage";
+import {
+  loadCursorPosition,
+  saveCursorPosition,
+  getOrCreateSession,
+  type StoredSessionData,
+} from "@/lib/cursor-storage";
 
 // Configuration
 const SHOW_MY_CURSOR = true;
@@ -77,6 +82,41 @@ const getColorForId = (id: number) => {
   const spreadId = (id * 31) % colorKeys.length;
   const colorKey = colorKeys[spreadId] as keyof typeof COLORS;
   return COLORS[colorKey];
+};
+
+// Get a color based on stored color index
+const getColorByIndex = (index: number) => {
+  const colorKeys = Object.keys(COLORS);
+  const colorKey = colorKeys[index % colorKeys.length] as keyof typeof COLORS;
+  return COLORS[colorKey];
+};
+
+// Create a stable color mapping for session IDs
+const sessionColorMap = new Map<string, number>();
+
+// Get a color for a session ID (creates stable mapping)
+const getColorForSession = (
+  sessionId: string | null | undefined,
+  fallbackId: number
+) => {
+  if (!sessionId) {
+    // Fallback to connection ID based color
+    return getColorForId(fallbackId);
+  }
+
+  if (!sessionColorMap.has(sessionId)) {
+    // Create a stable color index based on session ID hash
+    let hash = 0;
+    for (let i = 0; i < sessionId.length; i++) {
+      const char = sessionId.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    const colorIndex = Math.abs(hash) % Object.keys(COLORS).length;
+    sessionColorMap.set(sessionId, colorIndex);
+  }
+
+  return getColorByIndex(sessionColorMap.get(sessionId)!);
 };
 
 // Star Wars themed fallback names
@@ -197,6 +237,10 @@ function LiveCursors() {
   // State for visual rendering of local cursor position
   const [localCursorVisualPosition, setLocalCursorVisualPosition] =
     useState<CursorCoordinates | null>(null);
+  // Session data for persistent identity
+  const [sessionData, setSessionData] = useState<StoredSessionData | null>(
+    null
+  );
 
   // Refs for non-rendering state or immediate access
   const cursorPosition = useRef<CursorCoordinates | null>(null);
@@ -234,11 +278,19 @@ function LiveCursors() {
     return elements.find(isClickableElement) || null;
   };
 
-  // Initialize presence
+  // Initialize session and presence
   useEffect(() => {
+    // Get or create session data
+    const session = getOrCreateSession(
+      STAR_WARS_NAMES,
+      Object.keys(COLORS).length
+    );
+    setSessionData(session);
+
     try {
       updateMyPresence({
-        name: getNameForId(Math.floor(Math.random() * 1000)),
+        name: session.name,
+        sessionId: session.sessionId,
         isClicking: false,
         isThrowingConfetti: false,
         isExiting: false,
@@ -511,10 +563,11 @@ function LiveCursors() {
       {localCursorVisualPosition &&
         SHOW_MY_CURSOR &&
         !isTouch &&
-        hasMouseMoved && (
+        hasMouseMoved &&
+        sessionData && (
           <CursorElement
             position={localCursorVisualPosition} // Use state for smooth rendering
-            color={getColorForId(self?.connectionId || 0)} // Use getColorForId for local cursor
+            color={getColorByIndex(sessionData.colorIndex)} // Use session color
             name="you"
             isClicking={isClicking}
             isThrowingConfetti={isThrowingConfetti.current}
@@ -529,8 +582,11 @@ function LiveCursors() {
           const presence = other.presence;
           if (!presence?.cursor) return null;
 
-          // Assign color based on connection ID
-          const cursorColor = getColorForId(other.connectionId);
+          // Assign color based on session ID (with connection ID fallback)
+          const cursorColor = getColorForSession(
+            presence.sessionId,
+            other.connectionId
+          );
           // Get a fallback name
           const fallbackName = getNameForId(other.connectionId);
 

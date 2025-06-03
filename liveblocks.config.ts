@@ -16,6 +16,7 @@ declare global {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
       name: string | null;
+      sessionId?: string | null;
       cursor: CursorCoordinates | null;
       isClicking: boolean;
       isThrowingConfetti: boolean;
