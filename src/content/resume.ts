@@ -40,34 +40,46 @@ interface ResumeData {
 
 export const resumeData: ResumeData = {
   name: "Brendan T. Norris",
-  title: "Senior Design Engineer",
+  title: "Lead Design Engineer",
   contact: {
     location: "Remote",
     website: "btn0s.dev",
   },
   summary:
-    "Design Engineer specializing in rapid validation and product development. I build high-impact systems across the stack, from user interfaces to developer tooling. My focus is on strengthening product direction through early prototyping and creating experiences that empower both users and developers.",
+    "Design Engineer operating at the intersection of product, design, and engineering. I lead -1 to 1 initiatives from strategic framing through hands-on execution—validating early-stage bets, building scalable systems, and shipping production code. My work spans from roadmap strategy to implementation details, always with a focus on momentum and measurable impact.",
   experience: [
     {
       company: "Backbone",
       period: "2021 - Present",
       roles: [
         {
-          title: "Senior Design Engineer, Labs",
-          period: "2023 - Present",
+          title: "Lead Design Engineer, Labs",
+          period: "2024 - Present",
           achievements: [
-            "Founded and led Backbone Labs, the company's first Design Engineering team, operating as an independent unit to rapidly validate and ship focused, high-impact projects.",
-            "Transformed internal workflows through strategic UX improvements: built a Figma plugin reducing design handoff time by 80% and implemented staging environments to increase shipping confidence.",
-            "Led multiple high-impact projects from concept to production, supporting 3 product teams while reducing development cycles by 40% through improved tooling and automated workflows.",
+            "Report directly to the CEO to lead Backbone Labs, an R&D function operating at the edge of product, design, and engineering.",
+            "Hand-crafted multiple UXR prototypes for user research, then productionized the validated concepts into shipping features across iOS and Android platforms.",
+            "Solved complex integration challenges for the emulator feature, architecting the technical solution while addressing strategic product positioning and user experience design.",
+            "Hand-built most of the app flavor shipped to China, navigating technical constraints, localization requirements, and market-specific feature adaptations.",
+            "Partner with the Director of Product to shape roadmap priorities while maintaining deep involvement in implementation and technical decisions.",
+            "Built and shipped internal tooling including multiple Figma plugins (React/TypeScript) and workflow automation tools that reduced handoff time by 80% and implemented staging infrastructure to improve team velocity.",
+          ],
+        },
+        {
+          title: "Senior Design Engineer, Labs",
+          period: "2023 - 2024",
+          achievements: [
+            "Founded and led Backbone Labs, personally building the team's first prototypes and establishing development workflows for rapid validation.",
+            "Shipped multiple high-impact features from concept to production, writing code across frontend, backend, and tooling systems.",
+            "Transformed internal workflows by building custom automation tools and UX improvements that increased shipping confidence across product teams.",
           ],
         },
         {
           title: "Senior Frontend Engineer, Web",
           period: "2021 - 2023",
           achievements: [
-            "Architected and led development of Backbone's global ecommerce platform using Next.js and headless Shopify, scaling from startup to worldwide brand.",
-            "Built a dynamic game discovery system generating hundreds of SEO-optimized landing pages, increasing organic traffic by 30% and improving conversion rates.",
-            "Implemented a custom cart system with intelligent upsells and localization support, driving a 20% increase in average order value.",
+            "Architected and built Backbone's global ecommerce platform using Next.js and headless Shopify, personally writing the core systems that scaled from startup to worldwide brand.",
+            "Built dynamic game discovery and SEO systems generating hundreds of optimized pages, increasing organic traffic by 30% and conversion by 20%.",
+            "Developed and shipped intelligent cart systems with localization support, handling complex state management and payment flows for international users.",
           ],
         },
       ],
@@ -80,9 +92,9 @@ export const resumeData: ResumeData = {
           title: "Senior Software Engineer",
           period: "2020 - 2021",
           achievements: [
-            "Designed and built TimeMachine, a bi-directional bridge system that enabled incremental React adoption while maintaining 99.9% uptime across millions of daily customer interactions.",
-            "Unlocked a new market segment by architecting and shipping the travel vertical launch, expanding operations to 300+ specialized agents with zero downtime.",
-            "Established patterns for legacy modernization that enabled continuous feature delivery in React while preserving Angular stability.",
+            "Built TimeMachine, a bi-directional system enabling incremental React adoption with 99.9% uptime across millions of customer sessions.",
+            "Expanded Amex's customer support platform by launching a new travel vertical, unlocking a specialized agent network of 300+ agents.",
+            "Created modernization patterns for legacy Angular applications to support hybrid delivery models and continuous feature development.",
           ],
         },
       ],
@@ -104,40 +116,55 @@ export const resumeData: ResumeData = {
       company: "Yandy",
       period: "2017-2018",
     },
+    {
+      title: "Freelance Designer & Developer",
+      company: "Independent",
+      period: "2015-2017",
+    },
   ],
   currentProjects: [
     {
-      title: "Strella",
+      title: "rune.design",
       description:
-        "an IDE built by design technologists, for design technologists.",
+        "Visual development environment for systems-level product thinking, built by and for design technologists.",
+    },
+    {
+      title: "indiefindr.gg",
+      description:
+        "Indie game discovery platform focused on nuanced tagging, personalization, and community-driven curation.",
     },
     {
       title: "thinkhuman.co",
       description:
-        "Independent design studio focused on rapid validation and design-driven development.",
+        "Independent design/dev studio for rapid validation and idea-stage product development.",
     },
   ],
   skills: [
     {
       category: "Design Engineering",
       items: [
-        "UI Development",
-        "Design Systems",
         "Rapid Prototyping",
-        "User Experience",
+        "Systems Thinking",
+        "Figma Plugins",
+        "Design Systems",
+      ],
+    },
+    {
+      category: "Product & Strategy",
+      items: [
+        "Product Definition",
+        "Cross-functional Leadership",
+        "Roadmapping",
+        "Validation",
       ],
     },
     {
       category: "Development",
-      items: ["React", "TypeScript", "Frontend Architecture", "Design Tools"],
-    },
-    {
-      category: "Leadership",
       items: [
-        "Team Enablement",
-        "Process Design",
-        "Technical Strategy",
-        "Rapid Validation",
+        "React",
+        "TypeScript",
+        "Frontend Architecture",
+        "Full-Stack Product Delivery",
       ],
     },
   ],
