@@ -23,8 +23,8 @@ export default function Home({
         className="flex flex-col gap-4 max-w-xl text-muted-foreground mb-12"
       >
         <p>
-          I'm a <span className="font-medium text-foreground">designer</span>{" "}
-          and <span className="font-medium text-foreground">programmer</span>{" "}
+          I'm a{" "}
+          <span className="font-medium text-foreground">design engineer</span>{" "}
           interested in games, tools, artificial intelligence, and{" "}
           <Link
             href="/pov"
@@ -35,9 +35,9 @@ export default function Home({
           .
         </p>
         <p>
-          I'm currently a{" "}
+          I'm currently{" "}
           <span className="font-medium text-foreground">
-            senior design engineer
+            leading design engineering
           </span>{" "}
           at{" "}
           <Link
@@ -46,7 +46,8 @@ export default function Home({
           >
             Backbone
           </Link>
-          .
+          , where I operate at the intersection of product strategy and hands-on
+          execution.
         </p>
         <p className="mb-4">
           I use this site to explore, test, prototype, and bring ideas to life —
