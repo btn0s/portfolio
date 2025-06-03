@@ -559,7 +559,7 @@ function LiveCursors() {
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
       {/* Top-left: Online status or share hint */}
-      <div className="fixed bottom-6 left-6 z-40 pointer-events-none">
+      <div className="hidden md:block fixed bottom-6 left-6 z-40 pointer-events-none">
         <span className="text-xs font-mono text-muted-foreground/50">
           {others.length > 0
             ? `${others.length} online - share with a friend`
@@ -568,7 +568,7 @@ function LiveCursors() {
       </div>
 
       {/* Top-right: Cmd+click hint */}
-      <div className="fixed bottom-6 right-6 z-40 pointer-events-none">
+      <div className="hidden md:block fixed bottom-6 right-6 z-40 pointer-events-none">
         <span className="text-xs font-mono text-muted-foreground/50">
           cmd+click for a surprise
         </span>
